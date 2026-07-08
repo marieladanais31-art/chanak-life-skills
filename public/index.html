@@ -155,6 +155,71 @@ textarea:focus{outline:none;border-color:var(--green)}
 footer{border-top:1px solid var(--line);padding:24px 0;text-align:center;font-size:12px;color:var(--muted)}
 footer b{color:var(--navy)}
 @media(max-width:600px){.match-wrap{grid-template-columns:1fr}.top-inner{flex-wrap:wrap}.badges{width:100%;margin-left:0}.two-col{grid-template-columns:1fr}}
+
+/* v2 additions: chip.team, project/no-deliverable boxes, teamwork banner, tracks intro, kahoot CTA, wallet + kahoot modals */
+.chip.team{background:#e0f0f5;color:#1f7a8c}
+.trust-chip{cursor:pointer}
+.coins{cursor:pointer}
+.project-box{background:var(--gold-soft);border:1px solid #e8d5a3;border-radius:12px;padding:16px 18px;margin:14px 0}
+.project-box h4{color:var(--gold);font-size:14px;margin-bottom:8px;font-family:'Inter',sans-serif;font-weight:700}
+.project-box p{color:#5a4419;font-size:14px;margin:0}
+.project-box small{display:block;margin-top:8px;color:#8a6a28;font-size:11px}
+.no-deliver{background:var(--green-soft);border:1px solid #c3e0cd;border-radius:12px;padding:16px 18px;margin:14px 0;font-size:14px;color:var(--green);line-height:1.5}
+.team-banner{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;cursor:pointer;transition:.2s;margin-bottom:8px}
+.team-banner:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:#c9d3e0}
+.team-banner .ti{font-size:36px;flex-shrink:0}
+.team-banner .tt{flex:1}
+.team-banner h4{font-size:18px;color:var(--navy);margin-bottom:4px}
+.team-banner p{font-size:13px;color:var(--muted);margin:0}
+.team-banner .btn{flex-shrink:0}
+.tracks-intro{background:var(--green-soft);border:1px solid #c3e0cd;border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;font-size:14px;color:var(--navy-2);line-height:1.65}
+.kahoot-cta{cursor:pointer;display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,var(--green),var(--navy-2));color:#fff;border-radius:var(--radius);padding:20px 24px;margin:8px 0 36px;transition:.2s;border:none;width:100%;text-align:left;font-family:inherit}
+.kahoot-cta:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.kahoot-cta .kc-icon{font-size:32px;flex-shrink:0}
+.kahoot-cta .kc-text{flex:1}
+.kahoot-cta .kc-text h4{color:#fff;font-size:17px;margin-bottom:2px}
+.kahoot-cta .kc-text p{color:rgba(255,255,255,.85);font-size:13px;margin:0}
+.kahoot-cta .kc-go{font-size:22px;flex-shrink:0;color:var(--gold-soft)}
+.modal-overlay{position:fixed;inset:0;background:rgba(18,40,75,.6);display:none;align-items:center;justify-content:center;z-index:300;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--navy)}
+.wallet-box{background:#fff;border-radius:22px;max-width:400px;width:100%;padding:32px;text-align:center;position:relative;box-shadow:0 20px 60px rgba(18,40,75,.35);animation:fade .3s ease}
+.wallet-box h3{color:var(--navy);font-size:22px;margin-bottom:6px}
+.wallet-box .wsub{color:var(--muted);font-size:13px;margin-bottom:24px;line-height:1.5}
+.bill{background:linear-gradient(135deg,var(--navy),var(--navy-2));border-radius:16px;padding:28px 20px;position:relative;color:#fff;margin-bottom:20px;border:2px solid var(--gold)}
+.bill-corner{position:absolute;font-size:18px;opacity:.5}
+.bill-corner.tl{top:12px;left:14px}.bill-corner.tr{top:12px;right:14px}.bill-corner.bl{bottom:12px;left:14px}.bill-corner.br{bottom:12px;right:14px}
+.bill-mid{text-align:center}
+.bill-em{font-size:34px;margin-bottom:4px}
+.bill-amount{font-family:'Fraunces',serif;font-size:44px;font-weight:700;color:var(--gold);line-height:1}
+.bill-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-top:4px}
+.bill-foot{margin-top:14px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.trust-row{display:flex;justify-content:space-between;font-size:13px;color:var(--navy);margin-bottom:8px}
+.trust-bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-bottom:8px}
+.trust-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:8px;transition:width .5s ease}
+.trust-next{font-size:12px;color:var(--muted)}
+.kahoot-box{background:#fff;border-radius:22px;max-width:480px;width:100%;padding:32px;text-align:center;position:relative;box-shadow:0 20px 60px rgba(18,40,75,.35);animation:fade .3s ease}
+.k-start .k-emoji{font-size:44px;margin-bottom:8px}
+.k-start h3{color:var(--navy);font-size:22px;margin-bottom:8px}
+.k-start p{color:var(--muted);font-size:14px;margin-bottom:16px;line-height:1.5}
+.k-meta{font-size:12px;color:var(--green);font-weight:700;margin-bottom:20px;text-transform:uppercase;letter-spacing:.06em}
+.k-top{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px}
+.k-timerbar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:20px}
+.k-timerbar i{display:block;height:100%;background:var(--gold);width:100%}
+.k-q{font-size:19px;color:var(--navy);margin-bottom:18px;text-align:left}
+.k-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.k-opt{display:flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:16px 12px;font-family:inherit;font-size:14px;font-weight:600;color:#fff;cursor:pointer;text-align:left;transition:.15s}
+.k-opt:hover:not(:disabled){filter:brightness(1.08)}
+.k-opt:disabled{cursor:default}
+.k-shape{font-size:16px;flex-shrink:0}
+.k-red{background:#c0392b}.k-blue{background:#2461a8}.k-yellow{background:#c98a1e}.k-green{background:#2f7d4f}
+.k-opt.correct{box-shadow:0 0 0 3px #fff inset,0 0 0 5px currentColor}
+.k-opt.wrong{opacity:.35}
+.k-fb{min-height:20px;margin-top:14px;font-weight:700;font-size:14px}
+.k-fb.ok{color:var(--green)}.k-fb.no{color:#b0413c}
+.k-final-score{font-size:17px;color:var(--navy);margin-bottom:10px}
+@media(max-width:600px){.k-opts{grid-template-columns:1fr}.team-banner{flex-wrap:wrap}.team-banner .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -172,7 +237,8 @@ footer b{color:var(--navy)}
         <button id="btn-en" onclick="setLang('en')">EN</button>
       </div>
       <span class="badge gold">MSA Candidacy</span>
-      <span class="coins">🪙 <b id="coinCount">0</b> <span data-i="coins">ChanakCoins</span></span>
+      <span class="coins" onclick="openWallet()" title="Ver billetera">🪙 <b id="coinCount">0</b> <span data-i="coins">ChanakCoins</span></span>
+      <span class="badge green trust-chip" id="trust-chip" onclick="openWallet()"></span>
       <div class="user-chip" id="user-chip">
         <div><div class="uc-name"></div><div class="uc-band"></div></div>
         <button onclick="logout()" data-i="logout">Salir</button>
@@ -199,6 +265,15 @@ footer b{color:var(--navy)}
     <div class="profiles" id="mainProfiles"></div>
     <div class="section-label"><h3 data-i="sec-modules"></h3></div>
     <div class="profiles" id="moduleProfiles"></div>
+    <div class="section-label"><h3 data-i="team-sec"></h3></div>
+    <div class="team-banner" onclick="openCapsuleDirect('trabajo-equipo')">
+      <div class="ti">🤝</div>
+      <div class="tt">
+        <h4 data-i="team-title"></h4>
+        <p data-i="team-note"></p>
+      </div>
+      <button class="btn primary" data-i="team-cta"></button>
+    </div>
     <div class="section-label"><h3 data-i="sec-adult"></h3></div>
     <div class="profiles" id="adultProfiles"></div>
   </div>
@@ -216,7 +291,9 @@ footer b{color:var(--navy)}
     </div>
     <div class="section-label"><h3 data-i="sec-capsules"></h3></div>
     <div class="grid" id="lvl-capsules"></div>
+    <div id="lvl-kahoot"></div>
     <div class="section-label"><h3 data-i="sec-tracks"></h3></div>
+    <div id="lvl-tracks-intro" class="tracks-intro"></div>
     <p style="color:var(--muted);font-size:14px;margin-bottom:16px" data-i="tracks-note"></p>
     <div class="tracks" id="lvl-tracks"></div>
     <div class="rubric">
@@ -245,6 +322,21 @@ footer b{color:var(--navy)}
   <b>Chanak International Academy</b> · FLDOE #134620 · MSA Candidacy · <span data-i="footer-1"></span><br>
   <span data-i="footer-2"></span>
 </footer>
+
+<!-- WALLET MODAL -->
+<div class="modal-overlay" id="wallet-modal">
+  <div class="wallet-box">
+    <button class="modal-close" onclick="closeWallet()">✕</button>
+    <h3 id="wallet-title"></h3>
+    <p class="wsub" id="wallet-sub"></p>
+    <div id="wallet-body"></div>
+  </div>
+</div>
+
+<!-- KAHOOT-STYLE LIGHTNING CHALLENGE MODAL -->
+<div class="modal-overlay" id="kahoot-modal">
+  <div class="kahoot-box" id="kahoot-box"></div>
+</div>
 
 <script src="data.js"></script>
 <script src="data-capsules.js"></script>

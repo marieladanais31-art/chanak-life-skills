@@ -34,6 +34,7 @@ const UI = {
   faith:T('Fe','Faith'),
   care:T('Cuidado','Wellbeing'),
   study:T('Estudio','Study'),
+  team:T('Equipo','Team'),
   cap4step:T('Cápsula interactiva.','Interactive capsule.'),
   step:T('paso','step'), of:T('de','of'),
   back:T('← Atrás','← Back'), continue:T('Continuar →','Continue →'),
@@ -74,6 +75,44 @@ const UI = {
   'mentor-guides':T('Este tema se profundiza con tu mentor.','This topic goes deeper with your mentor.'),
   'safe-title':T('Nunca estás solo','You are never alone'),
   'safe-space':T('Espacio seguro','Safe space'),
+  // wallet / billetera
+  'wallet-open':T('Ver billetera','View wallet'),
+  'wallet-title':T('Tu billetera ChanakCoins','Your ChanakCoins wallet'),
+  'wallet-sub':T('Tu billete virtual crece con cada cápsula que completas. Los ChanakCoins no son dinero real: representan tu crecimiento y confianza.','Your virtual bill grows with each capsule you complete. ChanakCoins aren\'t real money: they represent your growth and trust.'),
+  'wallet-close':T('Cerrar','Close'),
+  'wallet-note':T('El billete Chanak — moneda de crecimiento','The Chanak bill — currency of growth'),
+  'trust-label':T('Nivel de confianza','Trust level'),
+  'trust-next':T('Para el siguiente nivel','To the next level'),
+  'trust-max':T('¡Nivel máximo alcanzado! Sigue sembrando.','Top level reached! Keep sowing.'),
+  'coins-word':T('ChanakCoins','ChanakCoins'),
+  // kahoot
+  'kahoot-cta':T('⚡ Desafío relámpago','⚡ Lightning challenge'),
+  'kahoot-sub':T('Responde las preguntas del nivel contrarreloj: cuanto más rápido aciertes, más ChanakCoins ganas.','Answer the level\'s questions against the clock: the faster you\'re right, the more ChanakCoins you earn.'),
+  'kahoot-start':T('Empezar','Start'),
+  'kahoot-next':T('Siguiente','Next'),
+  'kahoot-time':T('¡Tiempo!','Time!'),
+  'kahoot-correct':T('¡Correcto!','Correct!'),
+  'kahoot-wrong':T('Casi…','Almost…'),
+  'kahoot-result':T('Desafío completado','Challenge complete'),
+  'kahoot-score':T('Aciertos','Correct'),
+  'kahoot-earned':T('ChanakCoins ganados','ChanakCoins earned'),
+  'kahoot-again':T('Repetir','Play again'),
+  'kahoot-back':T('Volver al nivel','Back to level'),
+  'kahoot-none':T('Este nivel aún no tiene preguntas para el desafío. Completa alguna cápsula primero.','This level has no challenge questions yet. Complete a capsule first.'),
+  'kahoot-questions':T('preguntas','questions'),
+  // teamwork
+  'team-sec':T('Trabajo en equipo','Teamwork'),
+  'team-note':T('El liderazgo se demuestra con otros. Estas cápsulas se hacen mejor acompañado: haz amigos, escucha, influye con integridad y sirve.','Leadership is shown with others. These capsules are best done together: make friends, listen, influence with integrity, and serve.'),
+  'team-cta':T('Explorar trabajo en equipo','Explore teamwork'),
+  'team-title':T('Hazlo con otros','Do it with others'),
+  // tracks
+  'tracks-intro':T('Dios nos hizo diferentes y con llamados distintos (Romanos 12:4-6). La habilidad que desarrollas — liderar, crear, servir, comunicar — es la misma; lo que cambia es el <b>track</b> donde la aplicas. Elige el que más te apasione: no te encierra, te enfoca.','God made us different, with different callings (Romans 12:4-6). The skill you develop — to lead, create, serve, communicate — is the same; what changes is the <b>track</b> where you apply it. Pick the one you\'re most passionate about: it doesn\'t box you in, it focuses you.'),
+  // deliverables
+  'project-title':T('Tu proyecto a entregar','Your project to deliver'),
+  'project-note':T('Sube tu evidencia al SIS. Se evalúa con la rúbrica Chanak 40/30/30.','Upload your evidence to the SIS. Assessed with the Chanak 40/30/30 rubric.'),
+  'no-deliver-title':T('Esta cápsula no tiene entregable','This capsule has no deliverable'),
+  'no-deliver-body':T('Los módulos transversales (Fe, Conociéndome y Estudio) son para tu vida, no para calificar. Guárdalo en tu corazón y aplícalo — ese es el verdadero fruto.','Cross-cutting modules (Faith, Knowing Myself and Study) are for your life, not for grading. Keep it in your heart and apply it — that is the real fruit.'),
+  'total-coins':T('Llevas','You have'),
 };
 
 /* ---------------- Book references (bilingual) ---------------- */
@@ -136,7 +175,7 @@ const LEVELS = {
   explorer:{eyebrow:T('Programa Principal · Nivel 2','Main Program · Level 2'),age:T('15 años','age 15'),title:T('Explorer','Explorer'),em:'🧭',
     desc:T('Vocación, propósito, investigación y primeras habilidades académicas. Test de Dones y reto Shark Tank Junior.','Calling, purpose, research and first academic skills. Gifts Test and Shark Tank Junior challenge.'),
     quarters:[[T('Q1','Q1'),T('Vocación y Dones','Calling & Gifts')],[T('Q2','Q2'),T('Investigación + Proyecto Científico','Research + Science Project')],[T('Q3','Q3'),T('Emprendimiento — Shark Tank','Entrepreneurship — Shark Tank')]],
-    capsules:['idea-negocio','encuestas','ganar-amigos','presentaciones']},
+    capsules:['idea-negocio','encuestas','ganar-amigos','presentaciones','trabajo-equipo']},
   builder:{eyebrow:T('Programa Principal · Nivel 3','Main Program · Level 3'),age:T('16 años','age 16'),title:T('Builder','Builder'),em:'🔨',
     desc:T('Liderazgo real, portfolio financiero virtual y SAT. Cada entregable construye el expediente de Launch.','Real leadership, virtual financial portfolio and SAT. Each deliverable builds the Launch dossier.'),
     quarters:[[T('Q1','Q1'),T('Liderazgo BOLD expandido','Expanded BOLD leadership')],[T('Q2','Q2'),T('Finanzas reales — Portfolio $10,000','Real finance — $10,000 Portfolio')],[T('Q3','Q3'),T('SAT Prep + inicio Capstone','SAT Prep + Capstone start')]],
@@ -144,7 +183,7 @@ const LEVELS = {
   launch:{eyebrow:T('Programa Principal · Nivel 4','Main Program · Level 4'),age:T('17 años','age 17'),title:T('Launch','Launch'),em:'🚀',
     desc:T('El nivel de legado. Produce el Capstone y construye el expediente universitario que demuestra quién eres.','The legacy level. Produces the Capstone and builds the college dossier that shows who you are.'),
     quarters:[[T('Q1','Q1'),T('Capstone Project','Capstone Project')],[T('Q2','Q2'),T('Resume USA + Personal Statement','US Resume + Personal Statement')],[T('Q3','Q3'),T('Legado + aplicación universitaria','Legacy + college application')]],
-    capsules:['curriculum','expediente','carreras','presentaciones']},
+    capsules:['curriculum','expediente','carreras','presentaciones','entrevista']},
   vida:{eyebrow:T('Módulo transversal · Fe','Cross-module · Faith'),age:T('Todas las edades','All ages'),title:T('Vida Cristiana','Christian Life'),em:'✝️',
     desc:T('El corazón de la ruta. Evangelismo, misiones, cómo preparar una predicación, cosmovisiones sobre la creación y el fin de los tiempos, y tu temperamento al servicio de Dios. El contenido sube de nivel según tu edad.','The heart of the journey. Evangelism, missions, how to prepare a sermon, worldviews on creation and the end times, and your temperament in service to God. Content scales up with your age.'),
     quarters:[[T('Base','Base'),T('Fe y testimonio','Faith & testimony')],[T('Servicio','Service'),T('Evangelismo y misiones','Evangelism & missions')],[T('Estudio','Study'),T('Cosmovisiones y carácter','Worldviews & character')]],
@@ -156,7 +195,7 @@ const LEVELS = {
   estudio:{eyebrow:T('Módulo transversal · Aprender','Cross-module · Learning'),age:T('Todas las edades','All ages'),title:T('Técnicas de Estudio','Study Skills'),em:'📚',
     desc:T('Aprende a aprender. Descubre tu estilo de aprendizaje y domina técnicas que se ajustan a tu edad: desde organizar tu espacio hasta la repetición espaciada y el método Cornell.','Learn how to learn. Discover your learning style and master techniques scaled to your age: from organizing your space to spaced repetition and the Cornell method.'),
     quarters:[[T('Yo','Me'),T('Mi estilo de aprendizaje','My learning style')],[T('Técnicas','Techniques'),T('Métodos por edad','Methods by age')],[T('Hábito','Habit'),T('Rutina de estudio','Study routine')]],
-    capsules:['estilos-aprendizaje','tecnicas-estudio','concentracion']},
+    capsules:['estilos-aprendizaje','tecnicas-estudio','concentracion','memoria','gestion-tiempo']},
   adulto:{eyebrow:T('Adultos','Adults'),age:T('25+ años','age 25+'),title:T('Adulto Emprendedor','Adult Entrepreneur'),em:'💼',
     desc:T('Ruta independiente para emprendedores. Del plan de negocio financiable a los impuestos, el financiamiento y la contabilidad diaria.','Independent route for entrepreneurs. From a fundable business plan to taxes, financing and day-to-day accounting.'),
     quarters:[[T('Fase 1','Phase 1'),T('Idea y plan','Idea & plan')],[T('Fase 2','Phase 2'),T('Constitución y finanzas','Setup & finance')],[T('Fase 3','Phase 3'),T('Crecimiento y liderazgo','Growth & leadership')]],
@@ -164,8 +203,32 @@ const LEVELS = {
   junior:{eyebrow:T('Programa Juniors','Juniors Program'),age:T('8–13 años','ages 8–13'),title:T('Juniors','Juniors'),em:'🧒',
     desc:T('Programa complementario: 80 mini-proyectos prácticos, cada uno con un entregable claro, en 10 tracks temáticos.','Complementary program: 80 hands-on mini-projects, each with a clear deliverable, across 10 themed tracks.'),
     quarters:[[T('1–2 sem','1–2 wks'),T('Cada mini-proyecto','Each mini-project')],[T('10 tracks','10 tracks'),T('Artes a Economía del hogar','Arts to Home economics')],[T('Entregable','Deliverable'),T('Siempre concreto','Always concrete')]],
-    capsules:['estilos-aprendizaje','ia-responsable']}
+    capsules:['estilos-aprendizaje','ia-responsable','ganar-amigos','trabajo-equipo']}
 };
+
+/* ---------------- Gamification economy ---------------- */
+const COINS_PER_CAPSULE = 20;
+const KAHOOT_BASE = 4;   // coins per correct answer
+const KAHOOT_SPEED = 6;  // extra coins for a fast correct answer
+
+/* Trust levels (ChanakCoins thresholds) */
+const TRUST = [
+  {key:'sembrador', em:'🌱', min:0,   name:T('Sembrador','Sower')},
+  {key:'mayordomo', em:'🛡️', min:80,  name:T('Mayordomo','Steward')},
+  {key:'embajador', em:'👑', min:200, name:T('Embajador','Ambassador')},
+];
+function trustFor(coins){
+  let t = TRUST[0];
+  for(const lv of TRUST){ if(coins >= lv.min) t = lv; }
+  return t;
+}
+function trustNext(coins){
+  for(const lv of TRUST){ if(coins < lv.min) return lv; }
+  return null;
+}
+
+/* Capsules whose tag makes them cross-cutting (no graded deliverable) */
+const NO_DELIVERABLE_TAGS = ['faith','care','study'];
 
 /* SAFE box for wellbeing capsules */
 const SAFE_BOX = T(

@@ -39,10 +39,17 @@ function setLang(l){
   applyUI();
   renderAuth();
   if(USER){
-    renderHome();
+    updateUserChip();
+    renderHome(); updateCoins();
     if(isActive('level')) openLevel(STATE.level);
     if(isActive('capsule')) openCapsule(STATE.capsule);
   }
+}
+function updateUserChip(){
+  if(!USER) return;
+  const chip = document.getElementById('user-chip');
+  chip.querySelector('.uc-name').textContent = UI['auth-welcome'][LANG]+', '+USER.name.split(' ')[0];
+  chip.querySelector('.uc-band').textContent = g(BAND_LABEL[USER.band]);
 }
 function applyUI(){
   document.querySelectorAll('[data-i]').forEach(el=>{
@@ -106,10 +113,8 @@ function logout(){
   document.getElementById('user-chip').style.display = 'none';
 }
 function enterApp(){
-  const chip = document.getElementById('user-chip');
-  chip.style.display = 'flex';
-  chip.querySelector('.uc-name').textContent = UI['auth-welcome'][LANG]+', '+USER.name.split(' ')[0];
-  chip.querySelector('.uc-band').textContent = g(BAND_LABEL[USER.band]);
+  document.getElementById('user-chip').style.display = 'flex';
+  updateUserChip();
   renderHome(); updateCoins(); showView('home');
 }
 
@@ -121,7 +126,13 @@ function showView(v){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function isActive(v){ return document.getElementById('view-'+v).classList.contains('active'); }
-function updateCoins(){ document.getElementById('coinCount').textContent = PROG.coins; }
+function updateCoins(){
+  document.getElementById('coinCount').textContent = PROG.coins;
+  const chip = document.getElementById('trust-chip');
+  if(chip){ const t = trustFor(PROG.coins); chip.innerHTML = `${t.em} <b>${g(t.name)}</b>`; }
+  const wm = document.getElementById('wallet-modal');
+  if(wm && wm.classList.contains('open')) renderWallet();
+}
 
 /* ---------- HOME ---------- */
 function profileCard(key){
@@ -158,6 +169,7 @@ function openLevel(key){
     else if(cap.tag==='faith') tag=`<span class="chip faith">${UI['faith'][LANG]}</span>`;
     else if(cap.tag==='care') tag=`<span class="chip care">${UI['care'][LANG]}</span>`;
     else if(cap.tag==='study') tag=`<span class="chip study">${UI['study'][LANG]}</span>`;
+    else if(cap.tag==='team') tag=`<span class="chip team">${UI['team'][LANG]}</span>`;
     else tag=`<span class="chip new">${UI['new'][LANG]}</span>`;
     const sub = cap.scaffold ? g(cap.meta) : UI['cap4step'][LANG];
     const status = cap.scaffold ? UI['coming'][LANG] : UI['open'][LANG];
@@ -168,6 +180,19 @@ function openLevel(key){
     </div>`;
   }).join('');
   document.getElementById('lvl-tracks').innerHTML = TRACKS.map(t=>`<div class="tcard"><div class="ic">${t.ic}</div><h5>${t.name}</h5><small>${g(t.sub)}</small></div>`).join('');
+  document.getElementById('lvl-tracks-intro').innerHTML = UI['tracks-intro'][LANG];
+  // Lightning (Kahoot-style) challenge CTA — only if the level has quiz questions
+  const qCount = kahootPool(key).length;
+  const kEl = document.getElementById('lvl-kahoot');
+  if(qCount>0){
+    const kd = PROG.kahoot && PROG.kahoot[key];
+    kEl.style.display='block';
+    kEl.innerHTML = `<div class="kahoot-cta" onclick="openKahoot('${key}')">
+      <div class="kc-icon">⚡</div>
+      <div class="kc-text"><h4>${UI['kahoot-cta'][LANG]}</h4><p>${UI['kahoot-sub'][LANG]}</p></div>
+      <div class="kc-go">${kd?'★':'▶'}</div>
+    </div>`;
+  } else { kEl.style.display='none'; kEl.innerHTML=''; }
   showView('level');
 }
 
@@ -178,8 +203,8 @@ function openCapsule(key){
   document.getElementById('cap-eyebrow').textContent = g(cap.eyebrow);
   document.getElementById('cap-title').textContent = g(cap.title);
   const back = document.getElementById('cap-back');
-  back.textContent = UI['back-level'][LANG];
-  back.onclick = ()=>openLevel(STATE.level);
+  back.textContent = STATE.level ? UI['back-level'][LANG] : UI['back-home'][LANG];
+  back.onclick = STATE.level ? ()=>openLevel(STATE.level) : ()=>showView('home');
 
   if(cap.scaffold){
     let bookHtml = cap.book ? `<div class="book">${g(cap.book)}</div>` : '';
@@ -226,6 +251,11 @@ function renderStep(s,i,total,key){
     html += `<div class="deepen-box">${g(challenge)}</div>`;
     if(cap.mentor) html += `<div class="note">🧑‍🏫 ${UI['mentor-guides'][LANG]}</div>`;
     if(cap.book) html += `<div class="book"><b>${UI['read-more'][LANG]}:</b><br>${g(cap.book)}</div>`;
+    if(cap.project){
+      html += `<div class="project-box"><h4>📦 ${UI['project-title'][LANG]}</h4><p>${g(cap.project)}</p><small>${UI['project-note'][LANG]}</small></div>`;
+    } else if(NO_DELIVERABLE_TAGS.includes(cap.tag)){
+      html += `<div class="no-deliver">🌿 <b>${UI['no-deliver-title'][LANG]}</b><br>${UI['no-deliver-body'][LANG]}</div>`;
+    }
     return `<div class="step" data-step="${i}">${html}${navHtml(i,total,key,true)}</div>`;
   }
   return `<div class="step" data-step="${i}"><div class="kicker">${g(s.kicker)} · ${UI['step'][LANG]} ${i+1} ${UI['of'][LANG]} ${total}</div><h3>${g(s.h)}</h3>${inner}${navHtml(i,total,key,false)}</div>`;
@@ -288,19 +318,181 @@ function bindInteractions(key){
 }
 
 function finishCapsule(key){
-  if(!PROG.done[key]){ PROG.done[key]=true; PROG.coins+=15; saveProgress(PROG); updateCoins(); }
+  if(!PROG.done[key]){ PROG.done[key]=true; PROG.coins+=COINS_PER_CAPSULE; saveProgress(PROG); updateCoins(); }
   const cap = CAPSULES[key];
-  document.getElementById('cap-steps').innerHTML = `<div class="step active done-card">
-    <div class="medal">🏅</div><h3>${UI['done-title'][LANG]}</h3>
-    <div class="coins-earned">🪙 +15 ChanakCoins</div>
-    <p>${g(cap.title)}. ${UI['done-body'][LANG]}</p>
-    <div class="rubric" style="text-align:left;max-width:420px;margin:0 auto 24px"><h4>${UI['deliverable'][LANG]}</h4>
+  const noDeliver = NO_DELIVERABLE_TAGS.includes(cap.tag);
+  let deliverHtml;
+  if(cap.project){
+    deliverHtml = `<div class="project-box" style="text-align:left;max-width:420px;margin:0 auto 24px">
+      <h4>📦 ${UI['project-title'][LANG]}</h4>
+      <p>${g(cap.project)}</p>
+      <small>${UI['project-note'][LANG]}</small></div>`;
+  } else if(noDeliver){
+    deliverHtml = `<div class="no-deliver" style="text-align:left;max-width:420px;margin:0 auto 24px">
+      <b>🌿 ${UI['no-deliver-title'][LANG]}</b><br>${UI['no-deliver-body'][LANG]}</div>`;
+  } else {
+    deliverHtml = `<div class="rubric" style="text-align:left;max-width:420px;margin:0 auto 24px"><h4>${UI['deliverable'][LANG]}</h4>
       <div class="r-row"><span>${UI['del-1'][LANG]}</span><b>40 pts</b></div>
       <div class="r-row"><span>${UI['del-2'][LANG]}</span><b>30 pts</b></div>
-      <div class="r-row"><span>${UI['del-3'][LANG]}</span><b>30 pts</b></div></div>
+      <div class="r-row"><span>${UI['del-3'][LANG]}</span><b>30 pts</b></div></div>`;
+  }
+  const primaryBtn = STATE.level
+    ? `<button class="btn primary" onclick="openLevel(STATE.level)">${UI['back-to-level'][LANG]}</button>`
+    : `<button class="btn primary" onclick="showView('home')">${UI['to-home'][LANG]}</button>`;
+  const ghostBtn = STATE.level ? `<button class="btn ghost" onclick="showView('home')">${UI['to-home'][LANG]}</button>` : '';
+  document.getElementById('cap-steps').innerHTML = `<div class="step active done-card">
+    <div class="medal">🏅</div><h3>${UI['done-title'][LANG]}</h3>
+    <div class="coins-earned">🪙 +${COINS_PER_CAPSULE} ${UI['coins-word'][LANG]}</div>
+    <p>${g(cap.title)}. ${UI['done-body'][LANG]}</p>
+    ${deliverHtml}
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <button class="btn primary" onclick="openLevel(STATE.level)">${UI['back-to-level'][LANG]}</button>
-      <button class="btn ghost" onclick="showView('home')">${UI['to-home'][LANG]}</button></div></div>`;
+      ${primaryBtn}${ghostBtn}</div></div>`;
   document.getElementById('cap-bar').style.width='100%';
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- Open a capsule directly from Home (no parent level) ---------- */
+function openCapsuleDirect(key){
+  STATE.level = null;
+  openCapsule(key);
+}
+
+/* ---------- WALLET ---------- */
+function openWallet(){
+  renderWallet();
+  document.getElementById('wallet-modal').classList.add('open');
+}
+function closeWallet(){
+  document.getElementById('wallet-modal').classList.remove('open');
+}
+function renderWallet(){
+  document.getElementById('wallet-title').textContent = UI['wallet-title'][LANG];
+  document.getElementById('wallet-sub').textContent = UI['wallet-sub'][LANG];
+  const trust = trustFor(PROG.coins);
+  const next = trustNext(PROG.coins);
+  const pct = next ? Math.max(4,Math.min(100, Math.round((PROG.coins-trust.min)/(next.min-trust.min)*100))) : 100;
+  const nextHtml = next
+    ? `${UI['trust-next'][LANG]}: <b>${g(next.name)}</b> ${next.em} · ${next.min-PROG.coins} 🪙`
+    : UI['trust-max'][LANG];
+  document.getElementById('wallet-body').innerHTML = `
+    <div class="bill">
+      <span class="bill-corner tl">🪙</span><span class="bill-corner tr">🪙</span>
+      <div class="bill-mid">
+        <div class="bill-em">${trust.em}</div>
+        <div class="bill-amount">${PROG.coins}</div>
+        <div class="bill-label">${UI['coins-word'][LANG]}</div>
+      </div>
+      <span class="bill-corner bl">🪙</span><span class="bill-corner br">🪙</span>
+      <div class="bill-foot">${UI['wallet-note'][LANG]}</div>
+    </div>
+    <div class="trust-row"><span>${UI['trust-label'][LANG]}</span><b>${trust.em} ${g(trust.name)}</b></div>
+    <div class="trust-bar"><i style="width:${pct}%"></i></div>
+    <div class="trust-next">${nextHtml}</div>`;
+}
+
+/* ---------- KAHOOT-STYLE LIGHTNING CHALLENGE ---------- */
+function kahootPool(levelKey){
+  const l = LEVELS[levelKey]; if(!l) return [];
+  let qs = [];
+  l.capsules.forEach(ck=>{
+    const cap = CAPSULES[ck]; if(!cap || cap.scaffold || !cap.steps) return;
+    cap.steps.forEach(s=>{ if(s.type==='quiz') qs.push(s); });
+  });
+  return qs;
+}
+function shuffleArr(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+const KAHOOT_TIME = 12000;
+let KAHOOT = null, KAHOOT_TIMER = null, KAHOOT_START_T = 0;
+
+function openKahoot(levelKey){
+  const pool = kahootPool(levelKey);
+  document.getElementById('kahoot-modal').classList.add('open');
+  if(!pool.length){
+    document.getElementById('kahoot-box').innerHTML = `<div class="k-start">
+      <div class="k-emoji">⚡</div><h3>${UI['kahoot-cta'][LANG]}</h3><p>${UI['kahoot-none'][LANG]}</p>
+      <button class="btn primary full" onclick="closeKahoot()">${UI['wallet-close'][LANG]}</button></div>`;
+    return;
+  }
+  KAHOOT = {levelKey, questions: shuffleArr(pool).slice(0, Math.min(8,pool.length)), idx:-1, score:0, coins:0};
+  renderKahootStart();
+}
+function closeKahoot(){
+  document.getElementById('kahoot-modal').classList.remove('open');
+  clearTimeout(KAHOOT_TIMER);
+  KAHOOT = null;
+}
+function renderKahootStart(){
+  document.getElementById('kahoot-box').innerHTML = `
+    <div class="k-start">
+      <div class="k-emoji">⚡</div>
+      <h3>${UI['kahoot-cta'][LANG]}</h3>
+      <p>${UI['kahoot-sub'][LANG]}</p>
+      <div class="k-meta">${KAHOOT.questions.length} ${UI['kahoot-questions'][LANG]}</div>
+      <button class="btn primary full" onclick="kahootNext()">${UI['kahoot-start'][LANG]}</button>
+      <button class="btn ghost full" onclick="closeKahoot()">${UI['wallet-close'][LANG]}</button>
+    </div>`;
+}
+function kahootNext(){
+  KAHOOT.idx++;
+  if(KAHOOT.idx >= KAHOOT.questions.length){ kahootFinish(); return; }
+  renderKahootQuestion();
+}
+function renderKahootQuestion(){
+  const q = KAHOOT.questions[KAHOOT.idx];
+  const shapes = ['▲','◆','●','■'];
+  const colors = ['k-red','k-blue','k-yellow','k-green'];
+  const opts = q.opts.map((o,i)=>`<button class="k-opt ${colors[i%4]}" data-ok="${o.ok}" onclick="kahootAnswer(this)"><span class="k-shape">${shapes[i%4]}</span>${g(o.t)}</button>`).join('');
+  document.getElementById('kahoot-box').innerHTML = `
+    <div class="k-quiz">
+      <div class="k-top"><span class="k-progress">${KAHOOT.idx+1}/${KAHOOT.questions.length}</span><span class="k-score">🪙 ${KAHOOT.coins}</span></div>
+      <div class="k-timerbar"><i id="k-timer-i"></i></div>
+      <h3 class="k-q">${g(q.q)}</h3>
+      <div class="k-opts">${opts}</div>
+      <div class="k-fb" id="k-fb"></div>
+    </div>`;
+  const bar = document.getElementById('k-timer-i');
+  bar.style.transition = 'none'; bar.style.width='100%';
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ bar.style.transition = `width ${KAHOOT_TIME}ms linear`; bar.style.width='0%'; }); });
+  KAHOOT_START_T = Date.now();
+  clearTimeout(KAHOOT_TIMER);
+  KAHOOT_TIMER = setTimeout(()=>kahootAnswer(null), KAHOOT_TIME);
+}
+function kahootAnswer(btn){
+  if(!KAHOOT) return;
+  clearTimeout(KAHOOT_TIMER);
+  const elapsed = Date.now() - KAHOOT_START_T;
+  document.querySelectorAll('.k-opt').forEach(b=>b.disabled=true);
+  const fb = document.getElementById('k-fb');
+  let ok = false;
+  if(btn){ ok = btn.dataset.ok === 'true'; btn.classList.add(ok?'correct':'wrong'); }
+  if(!ok) document.querySelectorAll('.k-opt').forEach(b=>{ if(b.dataset.ok==='true') b.classList.add('correct'); });
+  if(ok){
+    KAHOOT.score++;
+    let earned = KAHOOT_BASE;
+    if(elapsed < KAHOOT_TIME/2) earned += KAHOOT_SPEED;
+    KAHOOT.coins += earned;
+    fb.textContent = '✓ '+UI['kahoot-correct'][LANG]+' +'+earned+' 🪙';
+    fb.className = 'k-fb show ok';
+  } else {
+    fb.textContent = btn ? UI['kahoot-wrong'][LANG] : UI['kahoot-time'][LANG];
+    fb.className = 'k-fb show no';
+  }
+  setTimeout(kahootNext, 1400);
+}
+function kahootFinish(){
+  PROG.coins += KAHOOT.coins;
+  PROG.kahoot = PROG.kahoot || {};
+  PROG.kahoot[KAHOOT.levelKey] = Math.max(PROG.kahoot[KAHOOT.levelKey]||0, KAHOOT.score);
+  saveProgress(PROG); updateCoins();
+  const levelKey = KAHOOT.levelKey;
+  document.getElementById('kahoot-box').innerHTML = `
+    <div class="k-start">
+      <div class="k-emoji">🏆</div>
+      <h3>${UI['kahoot-result'][LANG]}</h3>
+      <div class="k-final-score">${UI['kahoot-score'][LANG]}: <b>${KAHOOT.score}/${KAHOOT.questions.length}</b></div>
+      <div class="coins-earned">🪙 +${KAHOOT.coins} ${UI['kahoot-earned'][LANG]}</div>
+      <button class="btn primary full" onclick="openKahoot('${levelKey}')">${UI['kahoot-again'][LANG]}</button>
+      <button class="btn ghost full" onclick="closeKahoot();openLevel('${levelKey}')">${UI['kahoot-back'][LANG]}</button>
+    </div>`;
 }

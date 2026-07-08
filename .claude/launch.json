@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "chanak-life-skills-static",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "public", "-p", "4610"],
+      "port": 4610
+    }
+  ]
+}
