@@ -974,7 +974,301 @@ export const CAPSULES_DATA = {
         h: T('Identifica tu Esfera de Interés', 'Identify your Sphere'),
         body: T('Escribe en cuál de las 7 esferas sientes mayor inclinación y qué problema te gustaría resolver.', 'Which of the 7 spheres attracts you most and what problem would you like to solve?'),
         prompt: T('• Mi esfera elegida: ___\n• Necesidad o injusticia que veo en esa área: ___\n• Cómo puedo aportar una solución con excelencia: ___', '• My chosen sphere: ___\n• Need or injustice observed: ___\n• How I can bring a solution with excellence: ___')
+};
+
+/* ---------------- Expediente Universitario · 6 Categorías de Artefactos ---------------- */
+export const EXPEDIENTE_CATEGORIES = [
+  {
+    id: 'identidad',
+    icon: '🗂️',
+    title: T('Identidad y propósito', 'Identity and Purpose'),
+    artifactsCount: 5,
+    items: [
+      {
+        level: 'seedling',
+        levelLabel: 'Seedling',
+        quarter: 'Q1',
+        title: T('Escudo de Armas Personal', 'Personal Coat of Arms'),
+        file: 'Escudo_de_Armas.[jpg|pdf]',
+        desc: T('Pieza visual de identidad. Se referencia en el Personal Statement de Launch.', 'Visual identity piece. Referenced in Launch Personal Statement.')
+      },
+      {
+        level: 'seedling',
+        levelLabel: 'Seedling',
+        quarter: 'Q1',
+        title: T('Carta al yo futuro', 'Letter to Future Self'),
+        file: 'Carta_yo_futuro.pdf',
+        desc: T('Se relee en Launch para medir el recorrido de cuatro años.', 'Re-read in Launch to measure the four-year growth journey.')
+      },
+      {
+        level: 'seedling',
+        levelLabel: 'Seedling',
+        quarter: 'Q3',
+        title: T('Vídeo «My Story in 2 Minutes»', 'Video "My Story in 2 Minutes"'),
+        file: 'Video_My_Story_2min.mp4',
+        desc: T('Primera versión hablada de la narrativa personal. Base del vídeo de presentación universitario.', 'First spoken version of personal narrative. Foundation for college intro video.')
+      },
+      {
+        level: 'explorer',
+        levelLabel: 'Explorer',
+        quarter: 'Q1',
+        title: T('Resultados del Test de Dones', 'Gifts Test Results'),
+        file: 'Test_Dones_Resultados.pdf',
+        desc: T('Documenta el criterio con que el estudiante eligió su ruta vocacional.', 'Documents the criteria with which the student chose their vocational track.')
+      },
+      {
+        level: 'explorer',
+        levelLabel: 'Explorer',
+        quarter: 'Q1',
+        title: T('Ensayo vocacional (300–500 palabras)', 'Vocational Essay (300–500 words)'),
+        file: 'Ensayo_Vocacional.pdf',
+        desc: T('Puede redactarse en inglés o español. Si es en inglés, sirve como muestra de escritura académica.', 'Written in English or Spanish. If English, serves as academic writing sample.')
+      }
+    ]
+  },
+  {
+    id: 'servicio',
+    icon: '🤝',
+    title: T('Servicio documentado', 'Documented Service'),
+    artifactsCount: 6,
+    items: [
+      {
+        level: 'seedling',
+        levelLabel: 'Seedling',
+        quarter: 'Q2',
+        title: T('Fotos del acto de servicio', 'Service Act Photos'),
+        file: 'Fotos_Servicio_1..3.jpg',
+        desc: T('Primer registro de servicio del expediente.', 'First service record in the student dossier.')
+      },
+      {
+        level: 'seedling',
+        levelLabel: 'Seedling',
+        quarter: 'Q3',
+        title: T('Carta de referencia externa', 'External Reference Letter'),
+        file: 'Referencia_Externa.pdf',
+        tag: 'Opcional',
+        desc: T('Opcional a esta edad, pero obligatoria desde Builder. Conviene empezar a pedirlas.', 'Optional at this age, mandatory from Builder. Good to start requesting early.')
+      },
+      {
+        level: 'explorer',
+        levelLabel: 'Explorer',
+        quarter: 'Q3',
+        title: T('Referencia de quien evaluó el pitch', 'Pitch Evaluator Reference'),
+        file: 'Referencia_Externa.pdf',
+        tag: 'Opcional',
+        desc: T('Validación de la presentación Shark Tank Junior.', 'Validation of the Shark Tank Junior presentation.')
+      },
+      {
+        level: 'builder',
+        levelLabel: 'Builder',
+        quarter: 'Q1',
+        title: T('Service Log (20 h documentadas)', 'Service Log (20 documented hours)'),
+        file: 'Service_Log_Q1.pdf',
+        desc: T('Las horas verificadas son moneda de cambio real en la admisión universitaria estadounidense.', 'Verified hours are real currency in US university admissions.')
+      },
+      {
+        level: 'builder',
+        levelLabel: 'Builder',
+        quarter: 'Q1',
+        title: T('Carta de referencia del supervisor', 'Supervisor Reference Letter'),
+        file: 'Carta_Referencia_Supervisor.pdf',
+        desc: T('OBLIGATORIA desde este nivel. Sin ella las horas no se acreditan.', 'MANDATORY from this level. Without it, service hours cannot be accredited.')
+      },
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'EXPEDIENTE',
+        title: T('Cartas de referencia acumuladas', 'Cumulative Reference Letters'),
+        file: 'Cartas_Referencia/',
+        desc: T('Se acumulan desde Seedling. Builder aporta la primera obligatoria.', 'Accumulated from Seedling onwards. Builder provides the first mandatory letter.')
+      }
+    ]
+  },
+  {
+    id: 'academico',
+    icon: '📚',
+    title: T('Logro académico', 'Academic Achievement'),
+    artifactsCount: 6,
+    items: [
+      {
+        level: 'explorer',
+        levelLabel: 'Explorer',
+        quarter: 'Q2',
+        title: T('Póster o infografía científica', 'Scientific Poster / Infographic'),
+        file: 'Proyecto_Cientifico_Poster.[jpg|pdf]',
+        desc: T('Primera pieza de investigación formal del expediente.', 'First piece of formal research in the academic dossier.')
+      },
+      {
+        level: 'builder',
+        levelLabel: 'Builder',
+        quarter: 'Q2',
+        title: T('Informe financiero trimestral', 'Quarterly Financial Report'),
+        file: 'Reporte_Finance_Q2.pdf',
+        desc: T('Muestra de análisis cuantitativo y criterio propio en Google Finance.', 'Demonstration of quantitative analysis and financial stewardship.')
+      },
+      {
+        level: 'builder',
+        levelLabel: 'Builder',
+        quarter: 'Q3',
+        title: T('Progreso en Khan Academy (20 h)', 'Khan Academy Progress (20 hrs)'),
+        file: 'Khan_Academy_Progreso_Captura.jpg',
+        desc: T('Registro oficial de horas en Grammar, Pre-Algebra o SAT Prep.', 'Official record of prep hours in Khan Academy.')
+      },
+      {
+        level: 'builder',
+        levelLabel: 'Builder',
+        quarter: 'Q3',
+        title: T('Resultado del simulacro SAT', 'SAT Practice Test Result'),
+        file: 'Resultado_Simulacro_SAT.pdf',
+        desc: T('Línea base para medir la mejora hasta el SAT oficial de Launch.', 'Baseline to measure score improvement through official Launch SAT.')
+      },
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'Q3',
+        title: T('Evidencia de SAT / College Prep', 'SAT / College Prep Evidence'),
+        file: 'SAT_CollegePrep_Evidencia.pdf',
+        desc: T('Reporte de simulacros avanzados o registro de examen oficial.', 'Advanced test report or official exam registration.')
+      },
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'EXPEDIENTE',
+        title: T('Evidencia de SAT Oficial', 'Official SAT Score Evidence'),
+        file: 'SAT_Official_Score.pdf',
+        desc: T('Puntuación oficial del College Board incorporada al transcript.', 'Official College Board score attached to transcript.')
+      }
+    ]
+  },
+  {
+    id: 'liderazgo',
+    icon: '📣',
+    title: T('Liderazgo demostrado', 'Demonstrated Leadership'),
+    artifactsCount: 6,
+    items: [
+      {
+        level: 'seedling',
+        levelLabel: 'Seedling',
+        quarter: 'Q3',
+        title: T('Evidencia del Proyecto BOLD', 'BOLD Project Evidence'),
+        file: 'Fotos_BOLD_Project.jpg',
+        desc: T('Primera iniciativa propia documentada en 7 días.', 'First student-led initiative documented in 7 days.')
+      },
+      {
+        level: 'explorer',
+        levelLabel: 'Explorer',
+        quarter: 'Q3',
+        title: T('Vídeo del pitch (2 min)', 'Pitch Video (2 min)'),
+        file: 'Video_Presentacion_2min.mp4',
+        desc: T('Defensa audiovisual de Shark Tank Junior.', 'Audiovisual defense for Shark Tank Junior.')
+      },
+      {
+        level: 'builder',
+        levelLabel: 'Builder',
+        quarter: 'Q1',
+        title: T('Evidencia del liderazgo', 'Leadership Evidence'),
+        file: 'Fotos_BOLD_Liderazgo.jpg',
+        desc: T('Debe verse al estudiante liderando personas, no solo participando.', 'Must clearly show student leading peers/community, not just participating.')
+      },
+      {
+        level: 'builder',
+        levelLabel: 'Builder',
+        quarter: 'Q3',
+        title: T('Propuesta inicial del Capstone', 'Initial Capstone Proposal'),
+        file: 'Plan_Capstone.pdf',
+        desc: T('Puente directo con el nivel 4 y diseño metodológico.', 'Direct bridge to level 4 and methodological design.')
+      },
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'Q1',
+        title: T('Propuesta del Capstone', 'Capstone Formal Proposal'),
+        file: 'Propuesta_Capstone.pdf',
+        desc: T('Proyecto de grado definitivo de impacto comunitario o empresarial.', 'Final graduation project with community or business impact.')
+      },
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'Q3',
+        title: T('Vídeo de la presentación del Capstone', 'Capstone Presentation Video'),
+        file: 'Video_Capstone_Presentacion.mp4',
+        desc: T('Defensa pública final grabada en video ante mentores.', 'Final public defense recorded before mentors.')
+      }
+    ]
+  },
+  {
+    id: 'portafolio',
+    icon: '🎨',
+    title: T('Portafolio vocacional', 'Vocational Portfolio'),
+    artifactsCount: 1,
+    items: [
+      {
+        level: 'explorer',
+        levelLabel: 'Explorer',
+        quarter: 'Q3',
+        title: T('Presentación del pitch', 'Pitch Slide Deck'),
+        file: 'Slides_SharkTank.pdf',
+        desc: T('Muestra de comunicación persuasiva y diseño visual.', 'Sample of persuasive communication and visual design.')
+      }
+    ]
+  },
+  {
+    id: 'solicitud',
+    icon: '🎓',
+    title: T('Documentos de solicitud', 'Application Documents'),
+    artifactsCount: 5,
+    items: [
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'Q2',
+        title: T('Resume académico USA', 'US Academic Resume'),
+        file: 'Resume_USA.pdf',
+        desc: T('Formato estadounidense. Recoge los logros de los cuatro años.', 'US standard format compiling achievements from all 4 high school years.')
+      },
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'Q2',
+        title: T('Personal Statement · versión 1', 'Personal Statement · Version 1'),
+        file: 'Personal_Statement_V1.pdf',
+        desc: T('Primer borrador. Se versiona a propósito: el ensayo definitivo se escribe en Q3 tras recibir feedback de la mentora.', 'First draft. Versioned intentionally: final essay written in Q3 after feedback.')
+      },
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'Q3',
+        title: T('Presupuesto universitario', 'College Budget'),
+        file: 'Presupuesto_Universitario.pdf',
+        desc: T('Plan financiero realista de la ruta universitaria elegida.', 'Realistic financial plan for chosen college pathway.')
+      },
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'EXPEDIENTE',
+        title: T('Resume final', 'Final Resume'),
+        file: 'Resume_Final.pdf',
+        desc: T('Currículum pulido listo para adjuntar en Common App o admisiones.', 'Polished resume ready for Common App or university admissions.')
+      },
+      {
+        level: 'launch',
+        levelLabel: 'Launch',
+        quarter: 'EXPEDIENTE',
+        title: T('Personal Statement definitivo', 'Final Personal Statement'),
+        file: 'Personal_Statement_Final.pdf',
+        desc: T('Ensayo de admisión final revisado y aprobado por mentora.', 'Final admissions essay reviewed and approved by mentor.')
       }
     ]
   }
-};
+];
+
+if (typeof window !== 'undefined') {
+  window.CHANAK_DATA = {
+    BIBLE_VERSES,
+    BOOKS,
+    JUNIORS_RETOS,
+    HIGH_SCHOOL_LEVELS,
+    CAPSULES_DATA,
+    EXPEDIENTE_CATEGORIES
+  };
+}

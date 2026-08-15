@@ -58,29 +58,54 @@
           Todo tu progreso, desafíos completados y ChanakCoins ganadas se sincronizan automáticamente en tu <b>StudentChanakWallet</b> para validación de tus padres y mentora.
         </p>
       </div>
-      <a href="https://portal.chanakacademy.org" target="_blank" class="btn-sis" id="ui-sis-btn">
+      <a href="https://sis.chanakacademy.org" target="_blank" class="btn-sis" id="ui-sis-btn">
         Iniciar Sesión en el SIS Estudiante ↗
       </a>
     </section>
 
-    <!-- Stage Navigation Tabs -->
+    <!-- Unified Navigation Bar (Dual Diploma LMS + Portal Chanak) -->
     <nav class="stage-tabs" id="stage-tabs-nav">
-      <button class="stage-tab-btn" id="tab-juniors" onclick="selectStage('juniors')">
-        🌿 Juniors (8–13 años)
+      <button class="stage-tab-btn active" id="tab-niveles" onclick="setViewMode('niveles')">
+        🌱 Programa por Niveles
       </button>
-      <button class="stage-tab-btn active" id="tab-seedling" onclick="selectStage('seedling')">
-        🌱 Seedling · 14 años (8th/9th)
+      <button class="stage-tab-btn" id="tab-herramientas" onclick="setViewMode('herramientas')">
+        🛠️ Herramientas Interactivas
       </button>
-      <button class="stage-tab-btn" id="tab-explorer" onclick="selectStage('explorer')">
-        🧭 Explorer · 15 años (10th)
+      <button class="stage-tab-btn" id="tab-expediente" onclick="setViewMode('expediente')">
+        🎓 Expediente Universitario
       </button>
-      <button class="stage-tab-btn" id="tab-builder" onclick="selectStage('builder')">
-        🔨 Builder · 16 años (11th)
+      <button class="stage-tab-btn" id="tab-tracks" onclick="setViewMode('tracks')">
+        🎯 Tracks Vocacionales
       </button>
-      <button class="stage-tab-btn" id="tab-launch" onclick="selectStage('launch')">
-        🚀 Launch · 17 años (12th)
+      <button class="stage-tab-btn" id="tab-rubrica" onclick="setViewMode('rubrica')">
+        📋 Rúbrica 40/30/30
+      </button>
+      <button class="stage-tab-btn" id="tab-juniors" onclick="setViewMode('juniors')">
+        🌿 Catálogo Junior (8–13)
+      </button>
+      <button class="stage-tab-btn" id="tab-transversales" onclick="setViewMode('transversales')">
+        ✝️ Módulos Transversales
+      </button>
+      <button class="stage-tab-btn" id="tab-billetera" onclick="openWalletModal()">
+        🪙 Mi Billetera
       </button>
     </nav>
+
+    <!-- Sub-navigation for High School Levels (visible when in 'niveles' view) -->
+    <div id="sub-levels-bar" style="display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+      <button class="track-filter-btn active" id="subtab-seedling" onclick="selectHighSchoolLevel('seedling')">
+        🌱 Seedling · 14 años (8th/9th)
+      </button>
+      <button class="track-filter-btn" id="subtab-explorer" onclick="selectHighSchoolLevel('explorer')">
+        🧭 Explorer · 15 años (10th)
+      </button>
+      <button class="track-filter-btn" id="subtab-builder" onclick="selectHighSchoolLevel('builder')">
+        🔨 Builder · 16 años (11th)
+      </button>
+      <button class="track-filter-btn" id="subtab-launch" onclick="selectHighSchoolLevel('launch')">
+        🚀 Launch · 17 años (12th)
+      </button>
+    </div>
 
     <!-- Content Stage Container -->
     <div id="stage-content-area">
