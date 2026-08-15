@@ -24,8 +24,26 @@ const state = {
   activeSubmittingReto: null,
 };
 
+// ---------------- Global Window Exports ----------------
+window.switchLanguage = switchLanguage;
+window.selectStage = selectStage;
+window.filterJuniors = filterJuniors;
+window.openCapsule = openCapsule;
+window.closeCapsuleModal = closeCapsuleModal;
+window.capsuleNextStep = capsuleNextStep;
+window.capsulePrevStep = capsulePrevStep;
+window.checkQuizOpt = checkQuizOpt;
+window.finishCapsule = finishCapsule;
+window.openWalletModal = openWalletModal;
+window.closeWalletModal = closeWalletModal;
+window.openSubmissionModal = openSubmissionModal;
+window.closeSubmissionModal = closeSubmissionModal;
+window.confirmSubmission = confirmSubmission;
+window.calculateGrade = calculateGrade;
+window.copyFeedbackText = copyFeedbackText;
+
 // ---------------- Initialization ----------------
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
   // Parse URL search parameters
   const params = new URLSearchParams(window.location.search);
   
@@ -65,25 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
   updateHeaderWallet();
   updateStageNav();
   renderCurrentStage();
+}
 
-  // Expose global methods for inline HTML event handlers
-  window.switchLanguage = switchLanguage;
-  window.selectStage = selectStage;
-  window.filterJuniors = filterJuniors;
-  window.openCapsule = openCapsule;
-  window.closeCapsuleModal = closeCapsuleModal;
-  window.capsuleNextStep = capsuleNextStep;
-  window.capsulePrevStep = capsulePrevStep;
-  window.checkQuizOpt = checkQuizOpt;
-  window.finishCapsule = finishCapsule;
-  window.openWalletModal = openWalletModal;
-  window.closeWalletModal = closeWalletModal;
-  window.openSubmissionModal = openSubmissionModal;
-  window.closeSubmissionModal = closeSubmissionModal;
-  window.confirmSubmission = confirmSubmission;
-  window.calculateGrade = calculateGrade;
-  window.copyFeedbackText = copyFeedbackText;
-});
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // ---------------- Language Switcher ----------------
 function switchLanguage(lang) {
