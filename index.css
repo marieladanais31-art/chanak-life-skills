@@ -78,6 +78,19 @@ h1, h2, h3, h4, .serif-font {
   text-decoration: none;
 }
 
+.brand-logo-img {
+  height: 46px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+  border-radius: 6px;
+  transition: transform 0.2s ease;
+}
+
+.brand-logo-img:hover {
+  transform: scale(1.02);
+}
+
 .brand-crest {
   width: 42px;
   height: 42px;
