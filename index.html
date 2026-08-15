@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chanak Life Skills & Leadership Studio</title>
+  <meta name="description" content="Plataforma interactiva y oficial de Life Skills & Leadership de Chanak International Academy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="top-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <div class="brand-crest">C</div>
+        <div class="brand-text">
+          <h1>Chanak International Academy</h1>
+          <p id="ui-subtitle">Life Skills & Leadership Studio · FLDOE #134620</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span class="context-pill" id="context-pill">Modo Portal</span>
+        <div class="lang-toggle">
+          <button id="btn-lang-es" class="active" onclick="switchLanguage('es')">ES</button>
+          <button id="btn-lang-en" onclick="switchLanguage('en')">EN</button>
+        </div>
+        <button class="btn-interactive" onclick="openWalletModal()">
+          🪙 <b id="header-coin-count">20</b> <span id="ui-coins-lbl">Coins</span>
+        </button>
+        <span class="badge badge-gold" id="trust-badge">🌱 Sembrador</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-wrap">
+    
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+      <span class="eyebrow-tag" id="ui-motto">Carácter · Propósito · Servicio · Emprendimiento · College Prep</span>
+      <h2 class="hero-title" id="ui-hero-title">Life Skills & Leadership Studio</h2>
+      <p class="hero-lead" id="ui-hero-lead">
+        Desarrollo de carácter, autodisciplina, mayordomía financiera, relaciones sanas y liderazgo de impacto real con cosmovisión bíblica. Selecciona la etapa correspondiente:
+      </p>
+    </section>
+
+    <!-- SIS Integration Banner -->
+    <section class="sis-banner" id="sis-banner-container">
+      <div class="sis-banner-info">
+        <h4 id="ui-sis-title">🚀 Plataforma Integrada · SIS Chanak</h4>
+        <p id="ui-sis-desc">
+          Todo tu progreso, desafíos completados y ChanakCoins ganadas se sincronizan automáticamente en tu <b>StudentChanakWallet</b> para validación de tus padres y mentora.
+        </p>
+      </div>
+      <a href="https://portal.chanakacademy.org" target="_blank" class="btn-sis" id="ui-sis-btn">
+        Iniciar Sesión en el SIS Estudiante ↗
+      </a>
+    </section>
+
+    <!-- Stage Navigation Tabs -->
+    <nav class="stage-tabs" id="stage-tabs-nav">
+      <button class="stage-tab-btn" id="tab-juniors" onclick="selectStage('juniors')">
+        🌿 Juniors (8–13 años)
+      </button>
+      <button class="stage-tab-btn active" id="tab-seedling" onclick="selectStage('seedling')">
+        🌱 Seedling · 14 años (8th/9th)
+      </button>
+      <button class="stage-tab-btn" id="tab-explorer" onclick="selectStage('explorer')">
+        🧭 Explorer · 15 años (10th)
+      </button>
+      <button class="stage-tab-btn" id="tab-builder" onclick="selectStage('builder')">
+        🔨 Builder · 16 años (11th)
+      </button>
+      <button class="stage-tab-btn" id="tab-launch" onclick="selectStage('launch')">
+        🚀 Launch · 17 años (12th)
+      </button>
+    </nav>
+
+    <!-- Content Stage Container -->
+    <div id="stage-content-area">
+      <!-- Dynamic content rendered via app.js -->
+    </div>
+
+  </main>
+
+  <!-- Interactive Capsule Modal -->
+  <div class="capsule-modal-overlay" id="capsule-modal">
+    <div class="capsule-window">
+      <button class="modal-close-btn" onclick="closeCapsuleModal()">✕</button>
+      <div id="capsule-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ChanakCoins Wallet Modal -->
+  <div class="capsule-modal-overlay" id="wallet-modal">
+    <div class="capsule-window" style="max-width: 480px; text-align: center;">
+      <button class="modal-close-btn" onclick="closeWalletModal()">✕</button>
+      <h3 style="color: var(--navy); font-size: 24px; margin-bottom: 6px;">Billetera ChanakCoins</h3>
+      <p style="color: var(--ink-muted); font-size: 13px; margin-bottom: 20px;">
+        Moneda virtual de crecimiento, mayordomía y confianza formativa.
+      </p>
+
+      <div class="wallet-bill-card">
+        <div style="font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 6px;">
+          Chanak International Academy · Student Wallet
+        </div>
+        <div class="wallet-coins-amount">🪙 <span id="modal-coin-count">20</span></div>
+        <div style="font-size: 12px; color: var(--gold); margin-top: 4px; font-weight: 700;">ChanakCoins Activas</div>
+      </div>
+
+      <div style="text-align: left; background: var(--paper); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px;">
+          <span>Nivel de Confianza:</span>
+          <span id="modal-trust-level" style="color: var(--green);">🌱 Sembrador</span>
+        </div>
+        <div class="wallet-trust-bar">
+          <div class="wallet-trust-progress" id="modal-trust-bar" style="width: 20%;"></div>
+        </div>
+        <div style="font-size: 11px; color: var(--ink-muted);" id="modal-trust-hint">
+          Acumula 100 🪙 para ascender al rango de <b>Mayordomo</b>.
+        </div>
+      </div>
+
+      <button class="btn-primary" style="width: 100%;" onclick="closeWalletModal()">Entendido</button>
+    </div>
+  </div>
+
+  <!-- Submission / Upload Modal -->
+  <div class="capsule-modal-overlay" id="submission-modal">
+    <div class="capsule-window" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeSubmissionModal()">✕</button>
+      <h3 style="color: var(--navy); font-size: 22px; margin-bottom: 8px;" id="sub-modal-title">Subir Reto a Drive</h3>
+      <p style="color: var(--ink-muted); font-size: 13px; margin-bottom: 18px;" id="sub-modal-desc">
+        Sigue las instrucciones oficiales de entrega de Chanak para validar tu evidencia.
+      </p>
+
+      <div style="background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 20px;">
+        <b style="font-size: 12px; text-transform: uppercase; color: var(--navy); display: block; margin-bottom: 8px;">
+          📂 Carpeta de Destino en Google Drive:
+        </b>
+        <code style="background: #fff; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--green); display: block; margin-bottom: 12px;" id="sub-modal-folder">
+          03_LIFE_SKILLS/Q1
+        </code>
+        <ul style="font-size: 12px; color: var(--ink-muted); padding-left: 18px; line-height: 1.6;">
+          <li>Guarda la foto o documento del proceso (debe verse tu trabajo).</li>
+          <li>Nombra el archivo con tu nombre y el número de reto.</li>
+          <li>Tu mentora validará la evidencia para acreditar las monedas en tu SIS.</li>
+        </ul>
+      </div>
+
+      <button class="btn-primary" style="width: 100%;" onclick="confirmSubmission()">
+        ✓ Marcar como Completado (+<span id="sub-modal-reward">30</span> 🪙)
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="border-top: 1px solid var(--line); padding: 32px 24px; text-align: center; font-size: 13px; color: var(--ink-muted);">
+    <b>Chanak International Academy</b> · FLDOE #134620 · MSA-CESS Candidate<br>
+    Dual Diploma & Portal de Apoyo Académico · Florida · Panamá · España
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
