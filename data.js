@@ -974,6 +974,9 @@ export const CAPSULES_DATA = {
         h: T('Identifica tu Esfera de Interés', 'Identify your Sphere'),
         body: T('Escribe en cuál de las 7 esferas sientes mayor inclinación y qué problema te gustaría resolver.', 'Which of the 7 spheres attracts you most and what problem would you like to solve?'),
         prompt: T('• Mi esfera elegida: ___\n• Necesidad o injusticia que veo en esa área: ___\n• Cómo puedo aportar una solución con excelencia: ___', '• My chosen sphere: ___\n• Need or injustice observed: ___\n• How I can bring a solution with excellence: ___')
+      }
+    ]
+  }
 };
 
 /* ---------------- Expediente Universitario · 6 Categorías de Artefactos ---------------- */
