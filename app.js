@@ -215,6 +215,32 @@ function renderJuniorsStage(container) {
       `).join('')}
     </div>
 
+    <!-- Recommended Reading for Juniors (10-13 years) -->
+    <div style="margin: 32px 0 14px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--navy);">
+      📚 ${isEs ? 'Lecturas de Carácter Recomendadas (10 a 13 años):' : 'Recommended Character Readings (Ages 10–13):'}
+    </div>
+    <div class="readings-grid">
+      <div class="reading-card" style="border-top: 3px solid #d45d8b;">
+        <span class="reading-tag" style="background: #fdf0f5; color: #b8336a;">
+          🌸 ${isEs ? 'Especial Niñas (10–13 años)' : 'For Girls (10–13 years)'}
+        </span>
+        <h4>📖 ${BOOKS.mentirasNinas.title[state.lang]}</h4>
+        <div class="author">${BOOKS.mentirasNinas.author}</div>
+        <div class="key-point">${BOOKS.mentirasNinas.key[state.lang]}</div>
+        <div class="quote-box" style="border-left-color: #d45d8b; color: #b8336a;">"${BOOKS.mentirasNinas.quote[state.lang]}"</div>
+      </div>
+
+      <div class="reading-card" style="border-top: 3px solid #2f6ba5;">
+        <span class="reading-tag" style="background: #edf4fb; color: #2461a8;">
+          ⚔️ ${isEs ? 'Especial Niños (10–13 años)' : 'For Boys (10–13 years)'}
+        </span>
+        <h4>📖 ${BOOKS.salvajeCorazon.title[state.lang]}</h4>
+        <div class="author">${BOOKS.salvajeCorazon.author}</div>
+        <div class="key-point">${BOOKS.salvajeCorazon.key[state.lang]}</div>
+        <div class="quote-box" style="border-left-color: #2f6ba5; color: #2461a8;">"${BOOKS.salvajeCorazon.quote[state.lang]}"</div>
+      </div>
+    </div>
+
     <!-- Official PDF Guides Downloads -->
     <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 22px 26px; margin-bottom: 32px;">
       <h4 style="font-size: 16px; color: var(--navy); margin-bottom: 12px;">
@@ -363,7 +389,7 @@ function renderHighSchoolStage(container, stageKey) {
         if (!book) return '';
         return `
           <div class="reading-card">
-            <span class="reading-tag">${isEs ? 'Lectura Recomendada' : 'Recommended Reading'}</span>
+            <span class="reading-tag">${book.audience ? book.audience[state.lang] : (isEs ? 'Lectura Recomendada' : 'Recommended Reading')}</span>
             <h4>⚡ ${book.title[state.lang]}</h4>
             <div class="author">${book.author}</div>
             <div class="key-point">${book.key[state.lang]}</div>

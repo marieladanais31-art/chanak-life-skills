@@ -196,45 +196,71 @@ export const BIBLE_VERSES = {
 
 /* ---------------- Libros Oficiales del Currículum ---------------- */
 export const BOOKS = {
+  // Para Juniors (10–13 años)
+  mentirasNinas: {
+    title: T('Mentiras que las Niñas Creen', 'Lies Girls Believe'),
+    author: 'Nancy DeMoss Wolgemuth & Dannah Gresh',
+    audience: T('Recomendado para niñas de 10 a 13 años', 'Recommended for girls ages 10 to 13'),
+    key: T('Identifica mentiras sobre Dios, la amistad, la belleza y las emociones, sustituyéndolas por la verdad liberadora de la Palabra.', 'Identifies lies about God, friendship, beauty, and emotions, replacing them with the liberating truth of God\'s Word.'),
+    quote: T('La verdad de Dios es el único escudo frente a las presiones que el mundo intenta sembrar en tu corazón.', 'God\'s truth is the only shield against the pressures the world tries to sow in your heart.')
+  },
+  salvajeCorazon: {
+    title: T('Salvaje de Corazón (Edición Jóvenes)', 'Wild at Heart (Young Men Edition)'),
+    author: 'John Eldredge',
+    audience: T('Recomendado para niños/chicos de 10 a 13 años', 'Recommended for boys ages 10 to 13'),
+    key: T('Aventura, valentía y el diseño heroico que Dios puso en el corazón del varón para proteger, servir a su familia y liderar con rectitud.', 'Adventure, courage, and the heroic design God placed in a young man\'s heart to protect, serve, and lead with righteousness.'),
+    quote: T('Dios diseñó tu corazón para una gran aventura de fe, una causa noble y la valentía de defender la verdad.', 'God designed your heart for a great adventure of faith, a noble cause, and the courage to stand for truth.')
+  },
+
+  // Para 14 años (Seedling) - Misionero inspirador
+  contrabandistaDios: {
+    title: T('El Contrabandista de Dios', 'God\'s Smuggler'),
+    author: 'Hermano Andrés (Brother Andrew) & John Sherrill',
+    audience: T('Lectura inspiradora de fe y valentía para 14 años', 'Inspiring missionary story of faith and courage for age 14'),
+    key: T('Biografía misionera real de un joven común que arriesgó su vida llevando Biblias a lugares de persecución, experimentando milagros y providencia divina.', 'Real-life missionary biography of a young man who risked his life smuggling Bibles into closed nations, witnessing divine miracles.'),
+    quote: T('Cuando la causa es el Reino de Dios, el coraje vence al miedo y las puertas cerradas se abren con la oración.', 'When the cause is God\'s Kingdom, courage overcomes fear and closed doors open through prayer.')
+  },
   habitos: {
     title: T('Hábitos Atómicos', 'Atomic Habits'),
     author: 'James Clear',
+    audience: T('Formación de autodisciplina y sistemas diarios', 'Self-discipline and daily systems'),
     key: T('El poder del 1%: Las pequeñas decisiones repetidas a diario multiplican tus resultados. Diseña tu entorno para que el buen hábito sea inevitable.', 'The power of 1%: Small decisions repeated daily compound results. Design your environment so good habits become inevitable.'),
     quote: T('No te elevas al nivel de tus metas, caes al nivel de tus sistemas.', 'You do not rise to the level of your goals, you fall to the level of your systems.')
   },
   temperamento: {
     title: T('El Temperamento Controlado por el Espíritu', 'The Spirit-Controlled Temperament'),
     author: 'Tim LaHaye',
+    audience: T('Autoconocimiento y madurez del carácter', 'Self-awareness and character maturity'),
     key: T('Autoconocimiento y Fruto del Espíritu: Descubre las fortalezas y debilidades de los temperamentos (Sanguíneo, Colérico, Melancólico, Flemático) y cómo el Espíritu Santo transforma el carácter.', 'Self-awareness & the Fruit of the Spirit: Discover the strengths and weaknesses of temperaments and how the Holy Spirit transforms character.'),
     quote: T('El carácter en Cristo supera las inclinaciones naturales de la personalidad.', 'Character in Christ overcomes natural personality inclinations.')
   },
-  mentirasChicas: {
-    title: T('Mentiras que las Niñas/Jóvenes Creen', 'Lies Young Women Believe'),
-    author: 'Nancy DeMoss Wolgemuth & Dannah Gresh',
-    key: T('Verdad vs. Presión Cultural: Identifica mentiras sobre la belleza, el valor propio, las emociones y el futuro, sustituyéndolas por la verdad liberadora de la Palabra de Dios.', 'Truth vs. Cultural Pressure: Identify lies about beauty, self-worth, emotions, and the future, replacing them with God’s liberating Word.'),
-    quote: T('Tu identidad está fundada en quién dice Dios que eres, no en las redes sociales.', 'Your identity is founded on who God says you are, not social media.')
-  },
+
+  // Para 15–17 años
   lenguajes: {
     title: T('Los 5 Lenguajes del Amor', 'The 5 Love Languages'),
     author: 'Gary Chapman',
+    audience: T('Relaciones familiares y empatía', 'Family relationships and empathy'),
     key: T('Palabras de afirmación, tiempo de calidad, regalos, actos de servicio y contacto físico. Aprende a expresar amor de forma que la otra persona realmente lo reciba.', 'Words of affirmation, quality time, receiving gifts, acts of service, physical touch. Learn to communicate love effectively.'),
     quote: T('El amor sincero elige hablar el dialecto emocional de la otra persona.', 'Sincere love chooses to speak the emotional dialect of the other person.')
   },
   padreRico: {
     title: T('Padre Rico, Padre Pobre', 'Rich Dad Poor Dad'),
     author: 'Robert Kiyosaki',
+    audience: T('Inteligencia financiera y mayordomía', 'Financial literacy and stewardship'),
     key: T('Activos vs. Pasivos, educación financiera, mayordomía y generación de valor sostenible para servir a otros con sabiduría.', 'Assets vs. Liabilities, financial literacy, stewardship, and creating sustainable value.'),
     quote: T('Los ricos adquieren activos; los pobres y la clase media adquieren pasivos pensando que son activos.', 'The rich acquire assets; the poor and middle class acquire liabilities they think are assets.')
   },
   ganarAmigos: {
     title: T('Cómo Ganar Amigos e Influir sobre las Personas', 'How to Win Friends and Influence People'),
     author: 'Dale Carnegie',
+    audience: T('Liderazgo interpersonal y servicio', 'Interpersonal leadership and service'),
     key: T('Interés genuino por los demás, escucha activa, respeto y liderazgo empático basado en el servicio.', 'Genuine interest in others, active listening, respect, and empathetic service-based leadership.'),
     quote: T('Puedes hacer más amigos en dos meses interesándote en los demás que en dos años tratando de que se interesen en ti.', 'You can make more friends in two months by becoming interested in other people than in two years trying to get them interested in you.')
   },
   sieteEsferas: {
     title: T('Las 7 Esferas de Influencia Cultural', 'The 7 Mountains of Influence'),
     author: 'Lance Wallnau / Loren Cunningham',
+    audience: T('Vocación e impacto en la sociedad', 'Calling and cultural impact'),
     key: T('Llevar el testimonio de Cristo a: Artes/Entretenimiento, Negocios, Educación, Familia, Gobierno, Medios y Religión.', 'Bringing the testimony of Christ into Arts, Business, Education, Family, Government, Media, and Religion.'),
     quote: T('Tu vocación es tu plataforma ministerial en el mundo real.', 'Your vocation is your ministry platform in the real world.')
   }
@@ -501,7 +527,7 @@ export const HIGH_SCHOOL_LEVELS = {
     title: T('Seedling · Fundamento, Identidad & Hábitos', 'Seedling · Foundation, Identity & Habits'),
     subtitle: T('Identidad en Cristo, Hábitos Atómicos & Primer Servicio', 'Identity in Christ, Atomic Habits & First Service'),
     verseKey: 'seedling',
-    books: ['habitos', 'temperamento', 'mentirasChicas'],
+    books: ['contrabandistaDios', 'habitos', 'temperamento'],
     pdfName: 'life-skills-seedling-14.pdf',
     driveFolder: '03_LIFE_SKILLS (Q1, Q2, Q3)',
     quarters: [
