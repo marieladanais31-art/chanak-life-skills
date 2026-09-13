@@ -3397,7 +3397,9 @@ export const EXTENSION_CAPSULES_DATA = {
   }
 };
 
-module.exports = { EXTENSION_CAPSULES_DATA };
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { EXTENSION_CAPSULES_DATA };
+}
 
 
 if (typeof window !== 'undefined') {
