@@ -1266,7 +1266,8 @@ export const EXPEDIENTE_CATEGORIES = [
 ];
 
 /**
- * EXTENSION_CAPSULES_DATA — Chanak Life Skills (chanak-life-skills / data.js)
+ * EXTENSION_CAPSULES_DATA,
+    RIASEC_TEST_DATA — Chanak Life Skills (chanak-life-skills / data.js)
  * ----------------------------------------------------------------------
  * Transcripción de los 19 módulos temáticos ya desarrollados (guías
  * docentes completas) al formato de datos que usa la app.
@@ -1292,6 +1293,63 @@ export const EXPEDIENTE_CATEGORIES = [
  * Employability Skills (FLDOE Career Readiness Skill Guide) —
  * colegio registrado en Florida (FLDOE #134620).
  */
+
+
+/* ============================================================
+   TEST VOCACIONAL RIASEC & PERFIL DE DONES (EXPLORER Q1)
+   Marco pedagógico: Holland Codes + Servicio Cristiano Chanak
+   Status: draft · Authoring: ai_assisted · FLDOE #134620
+   ============================================================ */
+
+export const RIASEC_TEST_DATA = {
+  dimensions: {
+    R: { name: 'Realista', icon: '🔧', color: '#0284C7', desc: 'Práctico, técnico, orientado a herramientas, naturaleza y acción tangible.' },
+    I: { name: 'Investigador', icon: '🔬', color: '#7C3AED', desc: 'Analítico, curioso, orientado a la ciencia, resolución de problemas y lógica.' },
+    A: { name: 'Artístico', icon: '🎨', color: '#DB2777', desc: 'Creativo, intuitivo, expresivo, orientado al diseño, comunicación y arte.' },
+    S: { name: 'Social', icon: '🤝', color: '#16A34A', desc: 'Empático, servicial, orientador, enfocado en ayudar, enseñar y colaborar.' },
+    E: { name: 'Emprendedor', icon: '📣', color: '#D97706', desc: 'Líder, persuasivo, orientado a iniciativas, proyectos y toma de decisiones.' },
+    C: { name: 'Convencional', icon: '📋', color: '#475569', desc: 'Organizado, metódico, orientado a datos, sistemas, orden y mayordomía.' }
+  },
+  questions: [
+    { id: 'q1', dim: 'R', text: 'Me gusta construir, armar o reparar cosas prácticas con mis manos.' },
+    { id: 'q2', dim: 'I', text: 'Disfruto investigar por qué suceden las cosas y analizar problemas complejos.' },
+    { id: 'q3', dim: 'A', text: 'Me apasiona crear cosas originales (diseño, música, escritura o contenido visual).' },
+    { id: 'q4', dim: 'S', text: 'Me motiva escuchar a otros, enseñarles y ayudarles cuando tienen una necesidad.' },
+    { id: 'q5', dim: 'E', text: 'Tomo la iniciativa para organizar proyectos, liderar grupos o proponer ideas de negocio.' },
+    { id: 'q6', dim: 'C', text: 'Me siento cómodo manteniendo el orden, organizando horarios y siguiendo procesos claros.' },
+    { id: 'q7', dim: 'R', text: 'Prefiero actividades al aire libre, con tecnología aplicada o trabajo tangible.' },
+    { id: 'q8', dim: 'I', text: 'Me entusiasma aprender temas científicos, matemáticos o tecnológicos en profundidad.' },
+    { id: 'q9', dim: 'A', text: 'Valoro la originalidad y expresar ideas mediante relatos, arte o comunicación creativa.' },
+    { id: 'q10', dim: 'S', text: 'Me resulta natural generar confianza en las personas y trabajar en equipo hacia un bien común.' },
+    { id: 'q11', dim: 'E', text: 'Me gusta convencer a otros sobre una buena causa y asumir retos de responsabilidad.' },
+    { id: 'q12', dim: 'C', text: 'Soy minucioso revisando detalles, números, listas o presupuestos.' },
+    { id: 'q13', dim: 'R', text: 'Aprendo mejor experimentando físicamente que solo escuchando teoría.' },
+    { id: 'q14', dim: 'I', text: 'Disfruto resolver acertijos o descubrir patrones lógicos que otros no ven.' },
+    { id: 'q15', dim: 'A', text: 'Me gusta darle un toque estético o visual atractivo a mis trabajos y proyectos.' },
+    { id: 'q16', dim: 'S', text: 'Me preocupa el bienestar de mi comunidad y busco formas concretas de servir.' },
+    { id: 'q17', dim: 'E', text: 'No me asusta hablar en público ni defender una propuesta importante.' },
+    { id: 'q18', dim: 'C', text: 'Prefiero tener un plan estructurado antes de empezar cualquier tarea.' },
+    { id: 'q19', dim: 'I', text: 'Me gusta comprobar la veracidad de los datos antes de aceptar una afirmación.' },
+    { id: 'q20', dim: 'S', text: 'Siento que mi propósito personal se cumple cuando ayudo a que otros crezcan.' }
+  ],
+  profiles: {
+    'RI': { title: 'Técnico Científico', service: 'Apoyo logístico y desarrollo de infraestructura tecnológica para misiones y ONG.', careers: ['Ingeniería', 'Biotecnología', 'Ciencia de Datos', 'Agronomía Sostenible'] },
+    'RA': { title: 'Diseñador Técnico', service: 'Diseño de espacios y recursos visuales para proyectos comunitarios.', careers: ['Arquitectura', 'Diseño Industrial', 'Animación Digital', 'Multimedia'] },
+    'RS': { title: 'Instructor Práctico', service: 'Capacitación en oficios y rescate comunitario.', careers: ['Fisioterapia', 'Kinesiología', 'Educación Técnica', 'Gestión de Emergencias'] },
+    'RE': { title: 'Emprendedor Operativo', service: 'Liderazgo de proyectos comunitarios y logística de ayuda humanitaria.', careers: ['Ingeniería Industrial', 'Gestión de Operaciones', 'Construcción', 'Agronegocios'] },
+    'RC': { title: 'Especialista en Sistemas', service: 'Administración de redes y mayordomía de recursos tecnológicos de iglesias.', careers: ['Ciberseguridad', 'Redes', 'Logística', 'Control de Calidad'] },
+    'IA': { title: 'Investigador Creativo', service: 'Divulgación de la verdad y defensa de la fe (apologética y medios).', careers: ['Filosofía y Letras', 'Bioética', 'Periodismo de Investigación', 'Diseño UX'] },
+    'IS': { title: 'Mentor y Asesor', service: 'Consejería estudiantil, apoyo pedagógico y ministerios de salud.', careers: ['Psicología', 'Medicina', 'Pedagogía', 'Neurociencia'] },
+    'IE': { title: 'Estratega de Innovación', service: 'Diseño de soluciones sustentables para problemas sociales locales.', careers: ['Economía', 'Consultoría Estratégica', 'Gestión Tecnológica', 'Derecho'] },
+    'IC': { title: 'Analista de Datos', service: 'Auditoría, transparencia e investigación de impacto de proyectos solidarios.', careers: ['Estadística', 'Investigación Clínica', 'Finanzas Cuantitativas', 'Auditoría'] },
+    'AS': { title: 'Comunicador Social', service: 'Liderazgo de alabanza, creación de contenido con valores y arte en la iglesia.', careers: ['Comunicaciones', 'Producción Audiovisual', 'Educación Artística', 'Ministerio Creativo'] },
+    'AE': { title: 'Emprendedor Creativo', service: 'Dirección de campañas de concientización y eventos de impacto social.', careers: ['Marketing con Propósito', 'Publicidad Ética', 'Gestión Cultural', 'Dirección de Medios'] },
+    'AC': { title: 'Diseñador Editorial', service: 'Elaboración de materiales educativos y publicaciones de fe y cultura.', careers: ['Diseño Gráfico Editorial', 'Edición de Libros', 'Gestión de Contenidos', 'Archivística'] },
+    'SE': { title: 'Líder Servidor', service: 'Plantación de iglesias, liderazgo pastoral y dirección de organizaciones benéficas.', careers: ['Liderazgo Organizacional', 'Trabajo Social', 'Relaciones Públicas', 'Ministerio Pastoral'] },
+    'SC': { title: 'Administrador de Ayuda', service: 'Coordinación de voluntariados y gestión eficiente de recursos comunitarios.', careers: ['Administración de Salud', 'Gestión de ONGs', 'Recursos Humanos', 'Docencia'] },
+    'EC': { title: 'Gestor Ejecutivo', service: 'Mayordomía financiera, administración fiduciaria y gobernanza ética.', careers: ['Administración de Empresas', 'Finanzas', 'Comercio Internacional', 'Derecho Corporativo'] }
+  }
+};
 
 export const EXTENSION_CAPSULES_DATA = {
   "ls1-1": {

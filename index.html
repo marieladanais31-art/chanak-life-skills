@@ -25,12 +25,24 @@
       </div>
 
       <div class="header-actions">
-        <span class="context-pill" id="context-pill">Modo Portal</span>
+        <!-- Selector Global de Rol: Estudiante vs Mentor -->
+        <div class="role-toggle-bar">
+          <button id="btn-role-student" class="role-btn active" onclick="switchRoleView('student')">
+            🎓 Estudiante
+          </button>
+          <button id="btn-role-mentor" class="role-btn" onclick="switchRoleView('mentor')">
+            🧑‍🏫 Mentor
+          </button>
+        </div>
+
+        <span class="context-pill" id="context-pill">Modo Demo</span>
+
         <div class="lang-toggle">
           <button id="btn-lang-es" class="active" onclick="switchLanguage('es')">ES</button>
           <button id="btn-lang-en" onclick="switchLanguage('en')">EN</button>
         </div>
-        <button class="btn-interactive" onclick="openWalletModal()">
+
+        <button class="btn-interactive" onclick="openWalletModal()" title="Ver balance de ChanakCoins">
           🪙 <b id="header-coin-count">20</b> <span id="ui-coins-lbl">Coins</span>
         </button>
         <span class="badge badge-gold" id="trust-badge">🌱 Sembrador</span>
@@ -43,29 +55,51 @@
     
     <!-- Hero Banner -->
     <section class="hero-banner">
-      <span class="eyebrow-tag" id="ui-motto">Carácter · Propósito · Servicio · Emprendimiento · College Prep</span>
-      <h2 class="hero-title" id="ui-hero-title">Life Skills & Leadership Studio</h2>
-      <p class="hero-lead" id="ui-hero-lead">
-        Desarrollo de carácter, autodisciplina, mayordomía financiera, relaciones sanas y liderazgo de impacto real con cosmovisión bíblica. Selecciona la etapa correspondiente:
-      </p>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span class="eyebrow-tag" id="ui-motto">Carácter · Propósito · Servicio · Emprendimiento · College Prep</span>
+          <h2 class="hero-title" id="ui-hero-title">Life Skills & Leadership Studio</h2>
+          <p class="hero-lead" id="ui-hero-lead">
+            Desarrollo de carácter, autodisciplina, mayordomía financiera, relaciones sanas y liderazgo de impacto real con cosmovisión bíblica.
+          </p>
+        </div>
+      </div>
     </section>
 
-    <!-- Unified Navigation Bar (Dual Diploma LMS + Portal Chanak) -->
-    <nav class="stage-tabs" id="stage-tabs-nav">
-      <button class="stage-tab-btn active" id="tab-niveles" onclick="setViewMode('niveles')">
-        🌱 Programa por Niveles
+    <!-- Mentor Mode Institutional Layer Banner (visible when in Mentor Mode) -->
+    <div id="mentor-global-banner" class="mentor-alert-banner" style="display: none;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 28px;">🧑‍🏫</span>
+        <div>
+          <h4 style="font-size: 15px; font-weight: 700; color: #166534; margin: 0;">
+            Vista Mentor / Docente Activa · Guía Pedagógica FLDOE #134620
+          </h4>
+          <p style="font-size: 12px; color: #14532d; margin: 2px 0 0;">
+            Visualizando preguntas esenciales, minutado de sesión, estándares de Florida y advertencias de errores conceptuales comunes.
+          </p>
+        </div>
+      </div>
+      <button class="btn-interactive" style="font-size: 11px; padding: 4px 10px; background: #fff;" onclick="switchRoleView('student')">
+        ✕ Salir a Vista Estudiante
       </button>
-      <button class="stage-tab-btn" id="tab-herramientas" onclick="setViewMode('herramientas')">
-        🛠️ Herramientas Interactivas
+    </div>
+
+    <!-- Unified 5-Tab Navigation Bar -->
+    <nav class="stage-tabs" id="stage-tabs-nav">
+      <button class="stage-tab-btn active" id="tab-capsulas" onclick="setViewMode('capsulas')">
+        🚀 Cápsulas & Retos
+      </button>
+      <button class="stage-tab-btn" id="tab-cuaderno" onclick="setViewMode('cuaderno')">
+        📓 Cuaderno de Vida
+      </button>
+      <button class="stage-tab-btn" id="tab-test-dones" onclick="setViewMode('test-dones')">
+        🧭 Test "Quién Soy"
+      </button>
+      <button class="stage-tab-btn" id="tab-habitos" onclick="setViewMode('habitos')">
+        🛠️ Hábitos & Carácter
       </button>
       <button class="stage-tab-btn" id="tab-expediente" onclick="setViewMode('expediente')">
-        🎓 Expediente Universitario
-      </button>
-      <button class="stage-tab-btn" id="tab-tracks" onclick="setViewMode('tracks')">
-        🎯 Tracks Vocacionales
-      </button>
-      <button class="stage-tab-btn" id="tab-rubrica" onclick="setViewMode('rubrica')">
-        📋 Rúbrica 40/30/30
+        🎓 Expediente & Rúbrica
       </button>
       <button class="stage-tab-btn" id="tab-juniors" onclick="setViewMode('juniors')">
         🌿 Catálogo Junior (8–13)
@@ -73,12 +107,9 @@
       <button class="stage-tab-btn" id="tab-transversales" onclick="setViewMode('transversales')">
         ✝️ Módulos Transversales
       </button>
-      <button class="stage-tab-btn" id="tab-billetera" onclick="openWalletModal()">
-        🪙 Mi Billetera
-      </button>
     </nav>
 
-    <!-- Sub-navigation for High School Levels (visible when in 'niveles' view) -->
+    <!-- Sub-navigation for High School Levels (visible in relevant tabs) -->
     <div id="sub-levels-bar" style="display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
       <button class="track-filter-btn active" id="subtab-seedling" onclick="selectHighSchoolLevel('seedling')">
         🌱 Seedling · 14 años (8th/9th)
@@ -100,6 +131,33 @@
     </div>
 
   </main>
+
+  <!-- Mentor PIN Access Modal -->
+  <div class="capsule-modal-overlay" id="mentor-pin-modal">
+    <div class="capsule-window" style="max-width: 440px; text-align: center;">
+      <button class="modal-close-btn" onclick="closeMentorPinModal()">✕</button>
+      <div style="font-size: 40px; margin-bottom: 8px;">🧑‍🏫</div>
+      <h3 style="color: var(--navy); font-size: 22px; margin-bottom: 6px;">Acceso a Vista Mentor</h3>
+      <p style="color: var(--ink-muted); font-size: 13px; margin-bottom: 20px;">
+        Esta vista contiene las guías docentes, minutados y criterios de evaluación formativa. Ingresa el PIN institucional para desbloquear.
+      </p>
+
+      <div style="margin-bottom: 20px; text-align: left;">
+        <label style="font-size: 12px; font-weight: 700; color: var(--navy); display: block; margin-bottom: 6px;">
+          PIN de Docente Institucional:
+        </label>
+        <input type="password" id="mentor-pin-input" placeholder="Ingresa el PIN" class="mentor-pin-field" maxlength="20" onkeydown="if(event.key==='Enter') submitMentorPin()">
+        <div id="mentor-pin-error" style="color: #b91c1c; font-size: 12px; margin-top: 6px; display: none;">
+          PIN incorrecto. Verifica con la coordinación académica.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-interactive" style="flex: 1; justify-content: center;" onclick="closeMentorPinModal()">Cancelar</button>
+        <button class="btn-primary" style="flex: 1; justify-content: center;" onclick="submitMentorPin()">Desbloquear →</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Interactive Capsule Modal -->
   <div class="capsule-modal-overlay" id="capsule-modal">
@@ -173,7 +231,7 @@
   </div>
 
   <!-- Footer -->
-  <footer style="border-top: 1px solid var(--line); padding: 32px 24px; text-align: center; font-size: 13px; color: var(--ink-muted);">
+  <footer style="border-top: 1px solid var(--line); padding: 32px 24px; text-align: center; font-size: 13px; color: var(--ink-muted); margin-top: 40px;">
     <b>Chanak International Academy</b> · FLDOE #134620 · MSA-CESS Candidate<br>
     Dual Diploma & Portal de Apoyo Académico · Florida · Panamá · España
   </footer>
