@@ -1260,9 +1260,8 @@ async function awardCoins(amount, reason = 'Actividad Life Skills', refKey = '')
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify({
-          p_student_id: state.studentId,
           p_token: state.token,
-          p_coins: amount,
+          p_amount: amount,
           p_reason: reason,
           p_idempotency_key: idempotencyKey
         })
