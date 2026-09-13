@@ -201,10 +201,10 @@ function initApp() {
     }
   } else {
     if (contextPill) {
-      contextPill.textContent = 'Modo Demo (Solo Lectura)';
-      contextPill.style.background = '#fef3c7';
-      contextPill.style.color = '#92400e';
-      contextPill.style.borderColor = '#fde68a';
+      contextPill.textContent = '✨ Portal Chanak · Life Skills Studio';
+      contextPill.style.background = '#eef2ff';
+      contextPill.style.color = '#3730a3';
+      contextPill.style.borderColor = '#c7d2fe';
     }
     if (params.get('stage') === 'juniors') {
       state.viewMode = 'juniors';
@@ -507,15 +507,72 @@ function renderCapsulesAndChallengesView(container, stageKey) {
       </div>
     ` : ''}
 
-    <!-- CÁPSULAS INTERACTIVAS POR TRIMESTRE (Q1, Q2, Q3) -->
-    <div style="margin-bottom: 32px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 style="font-size: 20px; color: var(--navy); font-family: var(--font-display); margin: 0;">
-          🚀 ${isEs ? 'Cápsulas Interactivas por Trimestre' : 'Interactive Quarterly Capsules'}
-        </h3>
-        <span class="badge" style="background: var(--green-light); color: var(--green); font-weight: 700;">
-          +10 🪙 por cápsula completada
+    <!-- CÁPSULAS INTERACTIVAS DEL NIVEL -->
+    <div style="margin-bottom: 36px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <h3 style="font-size: 22px; color: var(--navy); font-family: var(--font-display); margin: 0 0 4px;">
+            🚀 ${isEs ? 'Cápsulas Interactivas de Aprendizaje' : 'Interactive Learning Capsules'}
+          </h3>
+          <p style="font-size: 13px; color: var(--ink-muted); margin: 0;">
+            ${isEs ? 'Micro-lecciones guiadas en 4 pasos: Apertura, Principio, Quiz interactivo y Reflexión personal.' : 'Guided 4-step micro-lessons with quiz and personal reflection.'}
+          </p>
+        </div>
+        <span class="badge" style="background: var(--green-light); color: var(--green); font-weight: 700; font-size: 12px; padding: 6px 14px;">
+          +10 🪙 ChanakCoins por cápsula
         </span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+        ${Array.from(new Set(levelData.quarters.flatMap(q => q.capsules || []))).map(capKey => {
+          const cap = CAPSULES_DATA[capKey];
+          if (!cap) return '';
+          const isDone = localStorage.getItem(`chanak_cap_${capKey}`) === 'done';
+          const capTitle = cap.title ? (cap.title[state.lang] || cap.title.es || cap.title) : capKey;
+          const capProject = cap.project ? (cap.project[state.lang] || cap.project.es || cap.project) : '';
+          const stepsCount = (cap.steps && cap.steps.length) || 4;
+
+          return `
+            <div class="reading-card" style="padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid ${isDone ? 'var(--green)' : 'var(--navy)'};">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <span class="badge" style="background: var(--paper); border: 1px solid var(--line); font-size: 11px; font-weight: 700; color: var(--navy);">
+                    ${cap.tag ? cap.tag.toUpperCase() : 'CÁPSULA'} · ${stepsCount} PASOS
+                  </span>
+                  <span class="badge" style="background: ${isDone ? 'var(--green-light)' : 'var(--gold-light)'}; color: ${isDone ? 'var(--green)' : 'var(--gold)'}; font-size: 11px; font-weight: 700;">
+                    ${isDone ? '✓ Completada (+10 🪙)' : '+10 🪙 ChanakCoins'}
+                  </span>
+                </div>
+
+                <h4 style="font-size: 18px; color: var(--navy); margin-bottom: 8px; font-family: var(--font-display);">
+                  ${cap.icon || '🚀'} ${capTitle}
+                </h4>
+                
+                ${capProject ? `
+                  <div style="background: var(--paper); border-radius: 6px; padding: 10px 12px; font-size: 12px; color: var(--ink-muted); margin-bottom: 14px; line-height: 1.5;">
+                    📌 <b>Entregable Asociado:</b> ${capProject}
+                  </div>
+                ` : ''}
+              </div>
+
+              <button class="btn-primary" style="width: 100%; justify-content: center; ${isDone ? 'background: var(--green);' : ''}" onclick="openCapsule('${capKey}')">
+                ${isDone ? '✓ Repasar Cápsula (+10 🪙)' : '🚀 Iniciar Cápsula Interactiva →'}
+              </button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- PROYECTOS Y ENTREGABLES POR TRIMESTRE (Q1, Q2, Q3) -->
+    <div style="margin-bottom: 32px;">
+      <div style="margin-bottom: 16px;">
+        <h3 style="font-size: 20px; color: var(--navy); font-family: var(--font-display); margin: 0 0 4px;">
+          📁 ${isEs ? 'Proyectos y Entregables por Trimestre (Drive)' : 'Quarterly Projects & Drive Deliverables'}
+        </h3>
+        <p style="font-size: 13px; color: var(--ink-muted); margin: 0;">
+          ${isEs ? 'Evidencias requeridas para la carpeta Drive institucional y rúbrica 40/30/30.' : 'Required evidences for institutional Drive folder and 40/30/30 rubric.'}
+        </p>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
@@ -542,26 +599,6 @@ function renderCapsulesAndChallengesView(container, stageKey) {
                     ${q.files.map(f => `<li>📄 <code>${f}</code></li>`).join('')}
                   </ul>
                 </div>
-              </div>
-
-              <!-- Botones de Cápsulas asociadas al trimestre -->
-              <div style="border-top: 1px solid var(--line); padding-top: 12px; margin-top: 8px;">
-                <b style="font-size: 11px; text-transform: uppercase; color: var(--green); display: block; margin-bottom: 6px;">
-                  ⚡ Cápsulas Interactivas del Trimestre:
-                </b>
-                ${q.capsules.map(capKey => {
-                  const cap = CAPSULES_DATA[capKey];
-                  if (!cap) return '';
-                  const isDone = localStorage.getItem(`chanak_cap_${capKey}`) === 'done';
-                  return `
-                    <button class="btn-interactive" style="width: 100%; justify-content: space-between; margin-bottom: 6px; padding: 8px 12px; font-size: 13px; ${isDone ? 'background:#f0fdf4; border-color:#86efac;' : ''}" onclick="openCapsule('${capKey}')">
-                      <span>${cap.icon || '🚀'} ${cap.title[state.lang]}</span>
-                      <span style="font-size: 11px; font-weight: 700; color: ${isDone ? 'var(--green)' : 'var(--gold)'};">
-                        ${isDone ? '✓ Hecho (+10 🪙)' : '+10 🪙'}
-                      </span>
-                    </button>
-                  `;
-                }).join('')}
               </div>
             </div>
           `;
@@ -1128,22 +1165,26 @@ function capsulePrevStep() {
   if (body) renderCapsuleModalContent(body);
 }
 
-function checkQuizOpt(selectedOpt, correctOpt) {
-  const isCorrect = selectedOpt === correctOpt;
+function checkQuizStepAnswer(isOk, okMsgEncoded, noMsgEncoded) {
+  const okMsg = decodeURIComponent(okMsgEncoded);
+  const noMsg = decodeURIComponent(noMsgEncoded);
   const feedbackEl = document.getElementById('quiz-feedback');
   if (feedbackEl) {
     feedbackEl.style.display = 'block';
-    if (isCorrect) {
+    if (isOk) {
       feedbackEl.style.background = '#dcfce7';
       feedbackEl.style.color = '#166534';
-      feedbackEl.innerHTML = '✓ ¡Correcto! Has comprendido el principio central.';
+      feedbackEl.style.border = '1px solid #86efac';
+      feedbackEl.innerHTML = `✓ ${okMsg}`;
     } else {
       feedbackEl.style.background = '#fee2e2';
       feedbackEl.style.color = '#991b1b';
-      feedbackEl.innerHTML = '✕ Respuesta incorrecta. Revisa el texto e inténtalo de nuevo.';
+      feedbackEl.style.border = '1px solid #fca5a5';
+      feedbackEl.innerHTML = `✕ ${noMsg}`;
     }
   }
 }
+window.checkQuizStepAnswer = checkQuizStepAnswer;
 
 function finishCapsule(capKey) {
   localStorage.setItem(`chanak_cap_${capKey}`, 'done');
@@ -1157,8 +1198,66 @@ function renderCapsuleModalContent(container) {
   const cap = CAPSULES_DATA[state.activeCapsule];
   if (!cap) return;
 
-  const step = state.capsuleCurrentStep;
-  const stepsTotal = 4; // 0: Objetivo, 1: Lección, 2: Quiz, 3: Reflexión
+  const steps = cap.steps || [];
+  const stepsTotal = steps.length || 4;
+  const step = Math.min(state.capsuleCurrentStep, stepsTotal - 1);
+  const curStep = steps[step];
+
+  let stepHtml = '';
+  if (curStep) {
+    const kicker = curStep.kicker ? (curStep.kicker[state.lang] || curStep.kicker.es || curStep.kicker) : `Paso ${step + 1}`;
+    const h = curStep.h ? (curStep.h[state.lang] || curStep.h.es || curStep.h) : '';
+    const body = curStep.body ? (curStep.body[state.lang] || curStep.body.es || curStep.body) : '';
+    const scenario = curStep.scenario ? (curStep.scenario[state.lang] || curStep.scenario.es || curStep.scenario) : '';
+    const diagram = curStep.diagram ? (curStep.diagram[state.lang] || curStep.diagram.es || curStep.diagram) : '';
+
+    if (curStep.type === 'hook') {
+      stepHtml = `
+        <span class="eyebrow-tag" style="color: var(--gold); margin-bottom: 6px;">${kicker}</span>
+        <h4 style="font-size: 19px; color: var(--navy); margin-bottom: 12px; font-family: var(--font-display);">${h}</h4>
+        ${scenario ? `<div style="background: #fff; border-left: 4px solid var(--gold); padding: 12px 16px; border-radius: 4px; margin-bottom: 14px; font-size: 14px; font-style: italic; color: var(--navy);">${scenario}</div>` : ''}
+        <p style="font-size: 14px; color: var(--ink); line-height: 1.6; margin: 0;">${body}</p>
+      `;
+    } else if (curStep.type === 'theory') {
+      stepHtml = `
+        <span class="eyebrow-tag" style="color: var(--green); margin-bottom: 6px;">${kicker}</span>
+        <h4 style="font-size: 19px; color: var(--navy); margin-bottom: 12px; font-family: var(--font-display);">${h}</h4>
+        <p style="font-size: 14px; color: var(--ink); line-height: 1.6; margin-bottom: 14px;">${body}</p>
+        ${diagram ? `<div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px; font-size: 13px; color: #166534; line-height: 1.6;">${diagram}</div>` : ''}
+      `;
+    } else if (curStep.type === 'quiz') {
+      const qText = curStep.q ? (curStep.q[state.lang] || curStep.q.es || curStep.q) : h;
+      const opts = curStep.opts || [];
+      stepHtml = `
+        <span class="eyebrow-tag" style="color: var(--navy); margin-bottom: 6px;">${kicker}</span>
+        <h4 style="font-size: 19px; color: var(--navy); margin-bottom: 8px; font-family: var(--font-display);">${h}</h4>
+        <p style="font-size: 14px; color: var(--ink); margin-bottom: 14px; font-weight: 600;">${qText}</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          ${opts.map((opt, i) => {
+            const optText = opt.t ? (opt.t[state.lang] || opt.t.es || opt.t) : (opt.text ? (opt.text[state.lang] || opt.text) : opt);
+            const isOk = !!opt.ok;
+            const okMsg = curStep.okMsg ? (curStep.okMsg[state.lang] || curStep.okMsg.es || curStep.okMsg) : '¡Correcto! Has comprendido el principio.';
+            const noMsg = curStep.noMsg ? (curStep.noMsg[state.lang] || curStep.noMsg.es || curStep.noMsg) : 'Inténtalo de nuevo.';
+            return `
+              <button class="btn-interactive" style="justify-content: flex-start; text-align: left; padding: 12px 14px; font-size: 13px;" onclick="checkQuizStepAnswer(${isOk}, '${encodeURIComponent(okMsg)}', '${encodeURIComponent(noMsg)}')">
+                ${optText}
+              </button>
+            `;
+          }).join('')}
+        </div>
+        <div id="quiz-feedback" style="display: none; border-radius: 8px; padding: 12px 16px; margin-top: 14px; font-size: 13px; font-weight: 600;"></div>
+      `;
+    } else if (curStep.type === 'reflect') {
+      const promptText = curStep.prompt ? (curStep.prompt[state.lang] || curStep.prompt.es || curStep.prompt) : '';
+      stepHtml = `
+        <span class="eyebrow-tag" style="color: var(--gold); margin-bottom: 6px;">${kicker}</span>
+        <h4 style="font-size: 19px; color: var(--navy); margin-bottom: 8px; font-family: var(--font-display);">${h}</h4>
+        <p style="font-size: 14px; color: var(--ink); line-height: 1.5; margin-bottom: 12px;">${body}</p>
+        ${promptText ? `<div style="background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; font-size: 12px; color: var(--ink-muted); white-space: pre-line;">${promptText}</div>` : ''}
+        <textarea id="cap-reflect-input" style="width: 100%; height: 90px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; font-family: inherit; font-size: 13px; box-sizing: border-box;" placeholder="Escribe tu reflexión aquí..."></textarea>
+      `;
+    }
+  }
 
   container.innerHTML = `
     <!-- Header Modal -->
@@ -1170,54 +1269,13 @@ function renderCapsuleModalContent(container) {
         </span>
       </div>
       <h3 style="font-size: 22px; color: var(--navy); margin: 4px 0; font-family: var(--font-display);">
-        ${cap.icon || '🚀'} ${cap.title[state.lang]}
+        ${cap.icon || '🚀'} ${cap.title[state.lang] || cap.title.es || cap.title}
       </h3>
     </div>
 
     <!-- Step Content -->
-    <div style="background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 20px; margin-bottom: 20px; min-height: 220px;">
-      ${step === 0 ? `
-        <h4 style="font-size: 16px; color: var(--navy); margin-bottom: 8px;">🎯 Objetivo Pedagógico</h4>
-        <p style="font-size: 14px; color: var(--ink); line-height: 1.6; margin-bottom: 14px;">
-          ${cap.objective ? cap.objective[state.lang] : cap.desc[state.lang]}
-        </p>
-        <div style="background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px; font-size: 13px; color: var(--ink-muted);">
-          💡 <b>Criterio de Evaluación:</b> Al terminar esta cápsula reflexiva, recibirás 10 ChanakCoins formativas en tu cuenta.
-        </div>
-      ` : ''}
-
-      ${step === 1 ? `
-        <h4 style="font-size: 16px; color: var(--navy); margin-bottom: 8px;">📖 Principio & Lección de Fondo</h4>
-        <div style="font-size: 14px; color: var(--ink); line-height: 1.6;">
-          ${cap.lesson ? cap.lesson[state.lang] : cap.desc[state.lang]}
-        </div>
-      ` : ''}
-
-      ${step === 2 ? `
-        <h4 style="font-size: 16px; color: var(--navy); margin-bottom: 8px;">❓ Desafío de Comprensión (Quiz)</h4>
-        <p style="font-size: 14px; color: var(--ink); margin-bottom: 14px;">
-          ${cap.quiz ? cap.quiz.question[state.lang] : '¿Cuál es la aplicación práctica de este principio?'}
-        </p>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          ${(cap.quiz?.options || [
-            { text: { es: 'Aplicarlo con constancia y mayordomía', en: 'Apply with consistency' }, correct: true },
-            { text: { es: 'Ignorarlo y dejarlo al azar', en: 'Ignore it' }, correct: false }
-          ]).map((opt, i) => `
-            <button class="btn-interactive" style="justify-content: flex-start; text-align: left; padding: 10px 14px;" onclick="checkQuizOpt(${i}, ${cap.quiz?.correctIndex || 0})">
-              ${opt.text ? opt.text[state.lang] : opt}
-            </button>
-          `).join('')}
-        </div>
-        <div id="quiz-feedback" style="display: none; border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-size: 13px; font-weight: 600;"></div>
-      ` : ''}
-
-      ${step === 3 ? `
-        <h4 style="font-size: 16px; color: var(--navy); margin-bottom: 8px;">✍️ Mi Reflexión Personal</h4>
-        <p style="font-size: 13px; color: var(--ink-muted); margin-bottom: 10px;">
-          Escribe dos o tres frases sobre cómo aplicarás lo aprendido esta semana:
-        </p>
-        <textarea id="cap-reflect-input" style="width: 100%; height: 90px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; font-family: inherit; font-size: 13px; box-sizing: border-box;" placeholder="Escribe tu reflexión aquí..."></textarea>
-      ` : ''}
+    <div style="background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 22px; margin-bottom: 20px; min-height: 230px;">
+      ${stepHtml}
     </div>
 
     <!-- Navigation buttons inside Modal -->
@@ -1228,7 +1286,7 @@ function renderCapsuleModalContent(container) {
 
       ${step < stepsTotal - 1 ? `
         <button class="btn-primary" onclick="capsuleNextStep()">
-          Siguiente →
+          Siguiente Paso →
         </button>
       ` : `
         <button class="btn-primary" style="background: var(--green);" onclick="finishCapsule('${state.activeCapsule}')">
