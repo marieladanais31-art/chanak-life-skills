@@ -1265,6 +1265,2141 @@ export const EXPEDIENTE_CATEGORIES = [
   }
 ];
 
+/**
+ * EXTENSION_CAPSULES_DATA — Chanak Life Skills (chanak-life-skills / data.js)
+ * ----------------------------------------------------------------------
+ * Transcripción de los 19 módulos temáticos ya desarrollados (guías
+ * docentes completas) al formato de datos que usa la app.
+ *
+ * IMPORTANTE PARA QUIEN INTEGRE ESTO (Elías / Antigravity):
+ * - Los nombres de campo (teacherGuide, sessions, studentNotebook,
+ *   floridaStandards, etc.) son una PROPUESTA. Cotejar contra las
+ *   claves reales de CAPSULES_DATA en el repo antes de fusionar.
+ * - Este objeto EXTIENDE cada cápsula existente — no crea una
+ *   estructura paralela. hook/theory/quiz/reflect ya validados en
+ *   producción se mantienen intactos.
+ * - level: 'seedling'|'explorer'|'builder'|'launch'
+ * - quarter: trimestre ancla del Portal (null = módulo transversal
+ *   o de extensión sin trimestre fijo — ver Plan de Año)
+ * - Módulos marcados con menos de 8 sesiones (ls1-5, ls2-4, ls3-5)
+ *   son las versiones de EXTENSIÓN (6 sesiones) — ver criterio de
+ *   selección en el Plan de Año entregado.
+ * - Todo el contenido: status 'draft', authoring 'ai_assisted'.
+ *   Requiere aprobación de dirección académica antes de publicar.
+ *
+ * Estándares de referencia citados en floridaStandards:
+ * Profile of a Florida Graduate (Durable Skills) y Florida
+ * Employability Skills (FLDOE Career Readiness Skill Guide) —
+ * colegio registrado en Florida (FLDOE #134620).
+ */
+
+export const EXTENSION_CAPSULES_DATA = {
+  "ls1-1": {
+    "id": "ls1-1",
+    "level": "seedling",
+    "quarter": "Q1",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Quién decide quién eres tú?",
+      "floridaStandards": [
+        "Self-Direction",
+        "Communication",
+        "Collaboration",
+        "Executive Function",
+        "Professionalism"
+      ],
+      "verse": {
+        "ref": "Salmo 139:14",
+        "text": "Te alabaré; porque formidables, maravillosas son tus obras."
+      },
+      "closingVerse": {
+        "ref": "1 Timoteo 4:12",
+        "text": "Ninguno tenga en poco tu juventud, sino sé ejemplo de los creyentes."
+      },
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "¿Quién decide quién eres?",
+        "objective": "Formular una primera respuesta y conocer la rúbrica.",
+        "keyActivity": "Gancho con escudo heráldico + discusión + diagnóstico escrito.",
+        "commonError": "El profesor responde la pregunta esencial — sosténgala abierta.",
+        "homework": "Traer una fotografía familiar."
+      },
+      {
+        "number": 2,
+        "title": "Lo que recibiste y lo que construyes",
+        "objective": "Distinguir identidad recibida de construida.",
+        "keyActivity": "Clasificación de 12 elementos propios en dos columnas.",
+        "commonError": "Clasificar todo como \"construido\".",
+        "homework": "3 preguntas para un familiar."
+      },
+      {
+        "number": 3,
+        "title": "Raíces: investigación familiar",
+        "objective": "Construir y ejecutar una entrevista estructurada.",
+        "keyActivity": "Guion de 8 preguntas en 3 bloques + ensayo por parejas.",
+        "homework": "Ejecutar la entrevista."
+      },
+      {
+        "number": 4,
+        "title": "Cómo estoy hecho",
+        "objective": "Identificar 3 rasgos con fortaleza y riesgo.",
+        "keyActivity": "Autoevaluación con evidencia conductual real.",
+        "commonError": "Usar el temperamento como excusa de conducta."
+      },
+      {
+        "number": 5,
+        "title": "Taller: diseño del Escudo",
+        "objective": "Producir boceto de 4 cuadrantes + lema.",
+        "keyActivity": "Producción individual guiada.",
+        "checkpoint": "Checkpoint 1 — en rumbo/necesita ajuste, sin nota."
+      },
+      {
+        "number": 6,
+        "title": "Carta al yo futuro",
+        "objective": "Argumentar con evidencia 3 influencias.",
+        "keyActivity": "Escritura de 4 partes con regla de evidencia obligatoria.",
+        "checkpoint": "Checkpoint 2 — hechos vs. adjetivos."
+      },
+      {
+        "number": 7,
+        "title": "Producción final y validación externa",
+        "objective": "Terminar el Escudo y gestionar referencia.",
+        "keyActivity": "Memoria justificativa + solicitud propia de referencia."
+      },
+      {
+        "number": 8,
+        "title": "Defensa, coevaluación y cierre",
+        "objective": "Defender oralmente el Escudo.",
+        "keyActivity": "Presentaciones 2-3 min + devolución del diagnóstico de S1."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "¿Quién decide quién eres tú? (5-8 líneas)",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Clasifica 12 elementos: recibido / construido.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Guion de entrevista: 8 preguntas en 3 bloques.",
+        "type": "structured_form",
+        "graded": false
+      },
+      {
+        "session": 4,
+        "page": 4,
+        "prompt": "3 rasgos: fortaleza, riesgo, ejemplo real.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 5,
+        "page": 5,
+        "prompt": "Mi Escudo: 4 cuadrantes + memoria + lema.",
+        "type": "escudo_builder",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 6,
+        "page": 6,
+        "prompt": "Carta al yo futuro.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      },
+      {
+        "session": 7,
+        "page": 7,
+        "prompt": "Gestión de mi referencia externa.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 30
+      },
+      {
+        "session": 8,
+        "page": 8,
+        "prompt": "Reflexión final.",
+        "type": "free_text",
+        "graded": false
+      }
+    ]
+  },
+  "ls1-2": {
+    "id": "ls1-2",
+    "level": "seedling",
+    "quarter": "Q2",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Se lidera dando órdenes, o sirviendo primero?",
+      "floridaStandards": [
+        "Leadership",
+        "Collaboration",
+        "Self-Direction",
+        "Communication"
+      ],
+      "verse": {
+        "ref": "Mateo 20:26",
+        "text": "El que quiera ser grande entre vosotros será vuestro servidor."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Servir no es lo mismo que ayudar",
+        "objective": "Distinguir ayudar de liderar el servicio.",
+        "keyActivity": "Observación de 3 necesidades reales de su entorno.",
+        "commonError": "Propuestas abstractas sin concreción real."
+      },
+      {
+        "number": 2,
+        "title": "Elegir la necesidad correcta",
+        "objective": "Diagnosticar una necesidad viable.",
+        "keyActivity": "Selección con criterio de viabilidad en 4-6 semanas."
+      },
+      {
+        "number": 3,
+        "title": "El plan antes que la acción",
+        "objective": "Planificar objetivo, pasos, recursos, fecha.",
+        "keyActivity": "Redacción guiada del plan completo."
+      },
+      {
+        "number": 4,
+        "title": "Revisión del plan",
+        "objective": "Validar viabilidad del plan.",
+        "keyActivity": "Revisión individual de 5 min por estudiante.",
+        "checkpoint": "Checkpoint 1 — plan corregido y viable."
+      },
+      {
+        "number": 5,
+        "title": "Ejecución — semana 1",
+        "objective": "Ejecutar y documentar mientras ocurre.",
+        "keyActivity": "Puesta en común por grupos pequeños.",
+        "commonError": "Dejar la documentación para el final."
+      },
+      {
+        "number": 6,
+        "title": "Ejecución — semana 2",
+        "objective": "Sostener el servicio en el tiempo.",
+        "keyActivity": "Seguimiento breve."
+      },
+      {
+        "number": 7,
+        "title": "Ajuste a mitad de ejecución",
+        "objective": "Corregir el rumbo sin penalización.",
+        "keyActivity": "Puesta en común de obstáculos reales.",
+        "checkpoint": "Checkpoint 2 — ajuste de rumbo."
+      },
+      {
+        "number": 8,
+        "title": "Cierre",
+        "objective": "Reflexionar sobre el liderazgo servicial.",
+        "keyActivity": "Entrega de evidencia + gestión de referencia + reflexión."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "3 necesidades que observé esta semana.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "La necesidad que elijo y por qué.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Mi plan de servicio completo.",
+        "type": "structured_form",
+        "graded": false
+      },
+      {
+        "session": 5,
+        "page": 4,
+        "prompt": "Registro semanal — qué hice, qué funcionó.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 8,
+        "page": 5,
+        "prompt": "Reflexión final + gestión de mi referencia externa.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls1-3": {
+    "id": "ls1-3",
+    "level": "seedling",
+    "quarter": "Q2",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Por qué las metas fallan y los sistemas funcionan?",
+      "floridaStandards": [
+        "Executive Function",
+        "Self-Direction",
+        "Time Management"
+      ],
+      "verse": {
+        "ref": "Efesios 5:15-16",
+        "text": "Mirad, pues, con diligencia cómo andéis... aprovechando bien el tiempo."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Meta vs. sistema",
+        "objective": "Diferenciar meta de sistema.",
+        "keyActivity": "Análisis de una meta abandonada.",
+        "commonError": "Confundir sistema con más disciplina."
+      },
+      {
+        "number": 2,
+        "title": "Auditoría de mi semana real",
+        "objective": "Registrar el uso real del tiempo.",
+        "keyActivity": "Registro en bloques de 30 min durante 2 días."
+      },
+      {
+        "number": 3,
+        "title": "Dónde se va el tiempo",
+        "objective": "Analizar categorías de uso del tiempo.",
+        "keyActivity": "Cálculo de porcentajes por categoría."
+      },
+      {
+        "number": 4,
+        "title": "Diseño del sistema semanal",
+        "objective": "Diseñar bloques fijos realistas.",
+        "keyActivity": "Diseño de 3-4 bloques con día y hora exactos.",
+        "checkpoint": "Checkpoint 1 — validado contra los datos de S2-S3."
+      },
+      {
+        "number": 5,
+        "title": "El hábito de 2 minutos",
+        "objective": "Reducir el hábito a versión mínima.",
+        "keyActivity": "Rediseño del hábito objetivo del Tracker."
+      },
+      {
+        "number": 6,
+        "title": "Ejecución — semana 1 del Tracker",
+        "objective": "Sostener el sistema.",
+        "keyActivity": "Puesta en común de 10 min."
+      },
+      {
+        "number": 7,
+        "title": "Ejecución — semana 2 del Tracker",
+        "objective": "Sostener el sistema.",
+        "keyActivity": "Puesta en común de 10 min."
+      },
+      {
+        "number": 8,
+        "title": "Ajuste tras el primer fallo",
+        "objective": "Rediseñar el sistema con evidencia del fallo.",
+        "keyActivity": "Reflexión guiada de rediseño.",
+        "commonError": "Tratar el fallo como fracaso en vez de material de diseño."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Una meta que he abandonado antes.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Mi registro de horas real.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Mis categorías de uso del tiempo.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 4,
+        "page": 4,
+        "prompt": "Mi sistema semanal — bloques, día, hora.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 6,
+        "page": 5,
+        "prompt": "Registro diario del Tracker (21 casillas).",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 8,
+        "page": 6,
+        "prompt": "El día que fallé y cómo rediseño mi sistema.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls1-4": {
+    "id": "ls1-4",
+    "level": "seedling",
+    "quarter": "Q3",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Qué hace que una historia se recuerde y otra se olvide en el mismo minuto?",
+      "floridaStandards": [
+        "Communication",
+        "Self-Direction",
+        "Creativity"
+      ],
+      "verse": {
+        "ref": "Efesios 4:29",
+        "text": "Ninguna palabra corrompida salga de vuestra boca, sino la que sea buena para la necesaria edificación."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Por qué unas historias se recuerdan",
+        "objective": "Identificar la estructura de una historia memorable.",
+        "keyActivity": "Contraste de dos versiones del mismo hecho.",
+        "commonError": "Elegir el episodio más espectacular en vez del más verdadero."
+      },
+      {
+        "number": 2,
+        "title": "Elegir el episodio correcto",
+        "objective": "Seleccionar el episodio al servicio de una idea.",
+        "keyActivity": "Selección con criterio de idea central."
+      },
+      {
+        "number": 3,
+        "title": "La estructura de 2 minutos",
+        "objective": "Aprender situación-tensión-decisión-cambio.",
+        "keyActivity": "Identificación de las 4 partes en el ejemplo."
+      },
+      {
+        "number": 4,
+        "title": "Primer borrador completo",
+        "objective": "Redactar el guion completo.",
+        "keyActivity": "Escritura guiada de 4 párrafos."
+      },
+      {
+        "number": 5,
+        "title": "Ensayo por parejas",
+        "objective": "Recibir feedback específico.",
+        "keyActivity": "Presentación y feedback estructurado.",
+        "checkpoint": "Checkpoint — guion ajustado."
+      },
+      {
+        "number": 6,
+        "title": "Voz, ritmo y cuerpo",
+        "objective": "Ensayar con atención a la entrega oral.",
+        "keyActivity": "Ensayo grabado para autoescucha."
+      },
+      {
+        "number": 7,
+        "title": "Conexión con el Proyecto BOLD",
+        "objective": "Enlazar la historia con el BOLD Project.",
+        "keyActivity": "Reflexión sobre el enlace narrativo."
+      },
+      {
+        "number": 8,
+        "title": "Presentación final",
+        "objective": "Defender la historia ante el grupo.",
+        "keyActivity": "Presentación de 2 min «My Story in 2 Minutes».",
+        "commonError": "Calificar la producción audiovisual por encima de la estructura."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mis 3 episodios candidatos.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "El que elijo y la idea central.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 4,
+        "prompt": "Mi guion — 4 partes.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 5,
+        "page": 5,
+        "prompt": "Feedback de mi compañero.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 8,
+        "page": 6,
+        "prompt": "Reflexión final.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls1-5": {
+    "id": "ls1-5",
+    "level": "seedling",
+    "quarter": null,
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿A dónde se va mi dinero si no le digo a dónde ir?",
+      "floridaStandards": [
+        "Personal Financial Literacy",
+        "Self-Direction"
+      ],
+      "verse": {
+        "ref": "Proverbios 21:20",
+        "text": "Tesoro precioso y aceite hay en la casa del sabio; pero el hombre insensato todo lo disipa."
+      },
+      "closingVerse": null,
+      "sessionCount": 6,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "¿A dónde se va mi dinero? (semana 1)",
+        "objective": "Registrar ingresos y gastos reales.",
+        "keyActivity": "Registro diario de dos semanas.",
+        "commonError": "Clasificar todo como \"necesidad\"."
+      },
+      {
+        "number": 2,
+        "title": "¿A dónde se va mi dinero? (semana 2)",
+        "objective": "Continuar el registro real.",
+        "keyActivity": "Registro diario."
+      },
+      {
+        "number": 3,
+        "title": "Diseño de mi presupuesto",
+        "objective": "Diseñar presupuesto de 3 categorías sobre datos reales.",
+        "keyActivity": "Presupuesto necesidad/deseo/ahorro."
+      },
+      {
+        "number": 4,
+        "title": "Segunda quincena de registro",
+        "objective": "Comparar presupuesto con realidad.",
+        "keyActivity": "Registro comparado."
+      },
+      {
+        "number": 5,
+        "title": "Ajuste del presupuesto",
+        "objective": "Corregir el presupuesto con evidencia real.",
+        "keyActivity": "Checkpoint de ajuste.",
+        "checkpoint": "Checkpoint — presupuesto corregido."
+      },
+      {
+        "number": 6,
+        "title": "Cierre y reflexión",
+        "objective": "Argumentar una decisión de gasto/ahorro.",
+        "keyActivity": "Reflexión + validación de un adulto."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Registro semana 1.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 2,
+        "prompt": "Mi presupuesto de 3 categorías.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 6,
+        "page": 3,
+        "prompt": "Reflexión final + validación.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls2-1": {
+    "id": "ls2-1",
+    "level": "explorer",
+    "quarter": "Q1",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿El carácter se tiene, o se construye?",
+      "floridaStandards": [
+        "Self-Direction",
+        "Resilience",
+        "Communication"
+      ],
+      "verse": {
+        "ref": "Gálatas 5:22-23",
+        "text": "El fruto del Espíritu es amor, gozo, paz, paciencia, benignidad, bondad, fe, mansedumbre, templanza."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Personalidad vs. carácter",
+        "objective": "Diferenciar tendencia de decisión sostenida.",
+        "keyActivity": "Análisis de una decisión propia reciente.",
+        "commonError": "Confundir \"buen carácter\" con temperamento agradable."
+      },
+      {
+        "number": 2,
+        "title": "Un caso de carácter puesto a prueba",
+        "objective": "Analizar un caso ajeno bajo presión.",
+        "keyActivity": "Discusión guiada de un caso real."
+      },
+      {
+        "number": 3,
+        "title": "Mi fortaleza y mi área de crecimiento",
+        "objective": "Autoevaluar con evidencia concreta.",
+        "keyActivity": "Ficha de autoevaluación."
+      },
+      {
+        "number": 4,
+        "title": "Contraste con la mirada de otros",
+        "objective": "Contrastar autopercepción con percepción ajena.",
+        "keyActivity": "Feedback de 2 personas cercanas."
+      },
+      {
+        "number": 5,
+        "title": "Diseño del plan",
+        "objective": "Diseñar práctica de 6 semanas medible.",
+        "keyActivity": "Plan con indicador de medición.",
+        "checkpoint": "Checkpoint 1."
+      },
+      {
+        "number": 6,
+        "title": "Ejecución — semana 1-2",
+        "objective": "Sostener la práctica.",
+        "keyActivity": "Puesta en común quincenal."
+      },
+      {
+        "number": 7,
+        "title": "Ejecución — semana 3-4",
+        "objective": "Sostener la práctica.",
+        "keyActivity": "Puesta en común quincenal."
+      },
+      {
+        "number": 8,
+        "title": "Evaluación con evidencia",
+        "objective": "Evaluar el avance con datos, no impresión.",
+        "keyActivity": "Presentación de evidencia incluidos los fallos."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mi decisión reciente que revela carácter.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 2,
+        "prompt": "Mi fortaleza y área de crecimiento, con evidencia.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 4,
+        "page": 3,
+        "prompt": "Lo que dos personas ven en mí.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 5,
+        "page": 4,
+        "prompt": "Mi plan de 6 semanas.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 8,
+        "page": 5,
+        "prompt": "Evaluación final con evidencia.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls2-2": {
+    "id": "ls2-2",
+    "level": "explorer",
+    "quarter": "Q3",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿El conflicto es el problema, o es cómo se maneja?",
+      "floridaStandards": [
+        "Collaboration",
+        "Problem Solving",
+        "Communication"
+      ],
+      "verse": {
+        "ref": "Mateo 18:15",
+        "text": "Si tu hermano pecare contra ti, ve y repréndele estando tú y él solos."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Posición vs. interés",
+        "objective": "Diferenciar posición de interés.",
+        "keyActivity": "Ejemplo de la naranja + análisis de conflicto propio.",
+        "commonError": "Solo analizar el propio interés, no el ajeno."
+      },
+      {
+        "number": 2,
+        "title": "Los estilos ante el conflicto",
+        "objective": "Identificar el propio estilo habitual.",
+        "keyActivity": "Autodiagnóstico de estilo."
+      },
+      {
+        "number": 3,
+        "title": "El guion de la conversación difícil",
+        "objective": "Aprender el guion de 4 pasos.",
+        "keyActivity": "Redacción del guion para un caso real."
+      },
+      {
+        "number": 4,
+        "title": "Juego de roles",
+        "objective": "Practicar el guion en simulación.",
+        "keyActivity": "Práctica cruzada con feedback."
+      },
+      {
+        "number": 5,
+        "title": "Elección del conflicto real",
+        "objective": "Elegir un conflicto real y manejable.",
+        "keyActivity": "Validación del profesor.",
+        "checkpoint": "Checkpoint — conflicto validado."
+      },
+      {
+        "number": 6,
+        "title": "Intento de resolución — parte 1",
+        "objective": "Ejecutar el guion en la vida real.",
+        "keyActivity": "Registro del proceso."
+      },
+      {
+        "number": 7,
+        "title": "Intento de resolución — parte 2",
+        "objective": "Continuar el proceso real.",
+        "keyActivity": "Registro del proceso."
+      },
+      {
+        "number": 8,
+        "title": "Evaluación y cierre",
+        "objective": "Evaluar qué funcionó del guion.",
+        "keyActivity": "Documento final + reflexión honesta."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mi conflicto — posición e interés de cada parte.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Mi estilo habitual.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Mi guion de conversación.",
+        "type": "structured_form",
+        "graded": false
+      },
+      {
+        "session": 5,
+        "page": 4,
+        "prompt": "El conflicto real que elijo resolver.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 8,
+        "page": 5,
+        "prompt": "Registro del proceso + evaluación final.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls2-3": {
+    "id": "ls2-3",
+    "level": "explorer",
+    "quarter": "Q2",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Cómo sé si lo que estoy viendo es verdad, opinión o manipulación?",
+      "floridaStandards": [
+        "Critical Thinking",
+        "Digital Literacy",
+        "Communication"
+      ],
+      "verse": {
+        "ref": "Proverbios 18:17",
+        "text": "El primero que aboga por su causa parece justo; pero viene su adversario y le descubre."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Hecho, opinión, manipulación",
+        "objective": "Clasificar tipos de afirmación.",
+        "keyActivity": "Clasificación de 5 frases en grupo.",
+        "commonError": "Etiquetar como \"manipulación\" solo lo que no se comparte."
+      },
+      {
+        "number": 2,
+        "title": "Rastrear el origen",
+        "objective": "Investigar quién está detrás de una fuente.",
+        "keyActivity": "Ficha de origen de una fuente propia."
+      },
+      {
+        "number": 3,
+        "title": "Las técnicas de manipulación",
+        "objective": "Identificar 3 técnicas comunes.",
+        "keyActivity": "Catálogo con ejemplo propio de cada una."
+      },
+      {
+        "number": 4,
+        "title": "Las tres preguntas de verificación",
+        "objective": "Aplicar el criterio de verificación.",
+        "keyActivity": "Práctica guiada con un caso."
+      },
+      {
+        "number": 5,
+        "title": "Elección del contenido",
+        "objective": "Elegir una pieza real para analizar.",
+        "keyActivity": "Validación del profesor.",
+        "checkpoint": "Checkpoint — contenido validado."
+      },
+      {
+        "number": 6,
+        "title": "Análisis en profundidad",
+        "objective": "Aplicar las 3 preguntas por escrito.",
+        "keyActivity": "Redacción del análisis."
+      },
+      {
+        "number": 7,
+        "title": "Aplicación al Proyecto Científico I",
+        "objective": "Verificar las fuentes de su propia investigación.",
+        "keyActivity": "Aplicación directa al proyecto ancla de Q2."
+      },
+      {
+        "number": 8,
+        "title": "Presentación y cierre",
+        "objective": "Defender el análisis.",
+        "keyActivity": "Defensa de 3-4 min."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Clasificación de las 5 frases.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Origen de una fuente que consumo.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 4,
+        "page": 3,
+        "prompt": "Práctica de las 3 preguntas.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 6,
+        "page": 4,
+        "prompt": "Mi análisis completo.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 7,
+        "page": 5,
+        "prompt": "Verificación de las fuentes de mi Proyecto Científico I.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls2-5": {
+    "id": "ls2-5",
+    "level": "explorer",
+    "quarter": "Q1-Q2",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "Si todo lo que tengo me fue confiado, ¿lo estoy administrando o solo consumiendo?",
+      "floridaStandards": [
+        "Personal Financial Literacy",
+        "Self-Direction",
+        "Professionalism"
+      ],
+      "verse": {
+        "ref": "1 Corintios 4:2",
+        "text": "Ahora bien, se requiere de los administradores, que cada uno sea hallado fiel."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Poseer vs. administrar",
+        "objective": "Diferenciar posesión de administración.",
+        "keyActivity": "Identificación de algo tratado como propiedad absoluta."
+      },
+      {
+        "number": 2,
+        "title": "Auditoría de mis 4 recursos",
+        "objective": "Auditar tiempo, dinero, talento, posesiones.",
+        "keyActivity": "Ficha de estado actual de cada recurso."
+      },
+      {
+        "number": 3,
+        "title": "El mejor y el peor administrado",
+        "objective": "Seleccionar con evidencia.",
+        "keyActivity": "Selección justificada.",
+        "commonError": "Elegir un recurso sin margen real de decisión propia."
+      },
+      {
+        "number": 4,
+        "title": "Principios de mayordomía fiel",
+        "objective": "Aplicar el concepto de fidelidad al caso propio.",
+        "keyActivity": "Discusión + aplicación escrita."
+      },
+      {
+        "number": 5,
+        "title": "Diseño del plan",
+        "objective": "Diseñar plan de 6 semanas medible.",
+        "keyActivity": "Plan con indicador numérico.",
+        "checkpoint": "Checkpoint — plan validado."
+      },
+      {
+        "number": 6,
+        "title": "Ejecución — semana 1-2",
+        "objective": "Sostener el plan.",
+        "keyActivity": "Seguimiento quincenal."
+      },
+      {
+        "number": 7,
+        "title": "Ejecución — semana 3-4",
+        "objective": "Sostener el plan.",
+        "keyActivity": "Seguimiento quincenal."
+      },
+      {
+        "number": 8,
+        "title": "Evaluación con datos",
+        "objective": "Evaluar el cambio con datos reales.",
+        "keyActivity": "Presentación de evidencia cuantificable."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Algo que trato como mío absoluto.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Auditoría de mis 4 recursos.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "El mejor y el peor administrado, con evidencia.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 5,
+        "page": 4,
+        "prompt": "Mi plan de 6 semanas.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 8,
+        "page": 5,
+        "prompt": "Evaluación final con datos.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls2-4": {
+    "id": "ls2-4",
+    "level": "explorer",
+    "quarter": null,
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Estoy cuidando mi cuerpo como un templo, o como una máquina que exijo sin mantenimiento?",
+      "floridaStandards": [
+        "Self-Direction",
+        "Resilience"
+      ],
+      "verse": {
+        "ref": "1 Corintios 6:19-20",
+        "text": "¿O ignoráis que vuestro cuerpo es templo del Espíritu Santo...?"
+      },
+      "closingVerse": null,
+      "sessionCount": 6,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Auditoría de la semana",
+        "objective": "Registrar sueño, comida, movimiento, pantallas.",
+        "keyActivity": "Registro de 7 días."
+      },
+      {
+        "number": 2,
+        "title": "El eje que más me afecta",
+        "objective": "Seleccionar un eje con evidencia.",
+        "keyActivity": "Selección justificada del registro."
+      },
+      {
+        "number": 3,
+        "title": "Diseño del plan de 4 semanas",
+        "objective": "Diseñar plan centrado en un solo eje.",
+        "keyActivity": "Plan con acción concreta."
+      },
+      {
+        "number": 4,
+        "title": "Primera semana de ejecución",
+        "objective": "Ajustar tempranamente si es inviable.",
+        "keyActivity": "Checkpoint temprano.",
+        "checkpoint": "Checkpoint — ajuste temprano."
+      },
+      {
+        "number": 5,
+        "title": "Ejecución con seguimiento",
+        "objective": "Sostener el plan.",
+        "keyActivity": "Registro semanal."
+      },
+      {
+        "number": 6,
+        "title": "Evaluación y cierre",
+        "objective": "Evaluar con datos concretos.",
+        "keyActivity": "Reflexión + validación de un adulto.",
+        "commonError": "Dar cifras de peso o comparaciones entre estudiantes — nunca."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mi registro de 7 días.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "El eje que elijo y por qué.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Mi plan de 4 semanas.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 6,
+        "page": 4,
+        "prompt": "Evaluación final.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls3-1": {
+    "id": "ls3-1",
+    "level": "builder",
+    "quarter": "Q3",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Un buen líder hace el trabajo mejor que nadie, o hace que el equipo lo haga bien sin él?",
+      "floridaStandards": [
+        "Leadership",
+        "Communication",
+        "Collaboration"
+      ],
+      "verse": {
+        "ref": "1 Pedro 5:2-3",
+        "text": "Apacentad la grey de Dios... siendo ejemplos."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Dirigir no es hacer todo uno mismo",
+        "objective": "Diferenciar dirigir de ejecutar solo.",
+        "keyActivity": "Análisis de un episodio de liderazgo (propio o ajeno).",
+        "commonError": "Diseñar el taller como exposición propia sin participación activa."
+      },
+      {
+        "number": 2,
+        "title": "A quién voy a dirigir",
+        "objective": "Perfilar al grupo destinatario.",
+        "keyActivity": "Ficha de perfil del grupo."
+      },
+      {
+        "number": 3,
+        "title": "Diseño del plan de sesión",
+        "objective": "Diseñar objetivo, apertura, cuerpo, cierre.",
+        "keyActivity": "Guion de sesión."
+      },
+      {
+        "number": 4,
+        "title": "Qué puede salir mal",
+        "objective": "Anticipar escenarios de fallo.",
+        "keyActivity": "Plan B para 2 escenarios."
+      },
+      {
+        "number": 5,
+        "title": "Ensayo del plan",
+        "objective": "Simular ante compañeros difíciles.",
+        "keyActivity": "Simulación de 10-15 min.",
+        "checkpoint": "Checkpoint — plan ajustado."
+      },
+      {
+        "number": 6,
+        "title": "Dirección real — sesión 1",
+        "objective": "Ejecutar el taller/mentoría real.",
+        "keyActivity": "Ejecución + registro."
+      },
+      {
+        "number": 7,
+        "title": "Dirección real — sesión 2",
+        "objective": "Continuar la ejecución real.",
+        "keyActivity": "Ejecución + registro."
+      },
+      {
+        "number": 8,
+        "title": "Feedback de los participantes",
+        "objective": "Analizar el propio liderazgo con evidencia.",
+        "keyActivity": "Análisis del feedback recibido."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mi episodio de liderazgo (o falta de él).",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Perfil de mi grupo.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Mi guion de sesión.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 4,
+        "page": 4,
+        "prompt": "Mis planes B.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 8,
+        "page": 5,
+        "prompt": "Análisis del feedback y reflexión final.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls3-2": {
+    "id": "ls3-2",
+    "level": "builder",
+    "quarter": "Q1",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Qué necesidad real puedo resolver, y quién pagaría (o agradecería) que la resolviera?",
+      "floridaStandards": [
+        "Critical Thinking",
+        "Creativity",
+        "Communication"
+      ],
+      "verse": {
+        "ref": "Proverbios 24:3-4",
+        "text": "Con sabiduría se edificará la casa, y con prudencia se afirmará."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Necesidad real, no idea abstracta",
+        "objective": "Observar necesidades reales del entorno.",
+        "keyActivity": "Observación de 3 necesidades.",
+        "commonError": "Proponer ideas ya hechas por otros sin observación propia."
+      },
+      {
+        "number": 2,
+        "title": "De la necesidad a la idea",
+        "objective": "Generar 3 ideas de solución.",
+        "keyActivity": "Generación de ideas antes de aferrarse a la primera."
+      },
+      {
+        "number": 3,
+        "title": "Validar antes de construir",
+        "objective": "Diseñar guion de entrevista.",
+        "keyActivity": "Guion de 3 preguntas abiertas."
+      },
+      {
+        "number": 4,
+        "title": "Resultados de la validación",
+        "objective": "Sintetizar lo que dijeron 3 personas.",
+        "keyActivity": "Puesta en común."
+      },
+      {
+        "number": 5,
+        "title": "Decisión final",
+        "objective": "Confirmar o ajustar la idea con evidencia.",
+        "keyActivity": "Validación por el profesor.",
+        "checkpoint": "Checkpoint — idea confirmada."
+      },
+      {
+        "number": 6,
+        "title": "El plan de 1-2 páginas",
+        "objective": "Redactar el plan completo.",
+        "keyActivity": "Estructura problema-solución-sostenibilidad-pasos."
+      },
+      {
+        "number": 7,
+        "title": "Primeros pasos",
+        "objective": "Ejecutar al menos una acción real.",
+        "keyActivity": "Documentación en tiempo real."
+      },
+      {
+        "number": 8,
+        "title": "Presentación y cierre",
+        "objective": "Defender el plan y la evidencia.",
+        "keyActivity": "Defensa breve."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mis 3 necesidades observadas.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 2,
+        "prompt": "Mi guion de entrevista.",
+        "type": "structured_form",
+        "graded": false
+      },
+      {
+        "session": 4,
+        "page": 3,
+        "prompt": "Lo que dijeron las 3 personas.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 6,
+        "page": 4,
+        "prompt": "Mi plan de 1-2 páginas.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 8,
+        "page": 5,
+        "prompt": "Reflexión final.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls3-3": {
+    "id": "ls3-3",
+    "level": "builder",
+    "quarter": "Q2",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "Cuando dos cosas buenas entran en conflicto, ¿cómo decido?",
+      "floridaStandards": [
+        "Critical Thinking",
+        "Problem Solving",
+        "Communication"
+      ],
+      "verse": {
+        "ref": "Santiago 1:5",
+        "text": "Y si alguno de vosotros tiene falta de sabiduría, pídala a Dios."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Dilema real vs. decisión obvia",
+        "objective": "Distinguir dilemas genuinos.",
+        "keyActivity": "Clasificación de 4 casos.",
+        "commonError": "Buscar la respuesta correcta del profesor en vez de razonar."
+      },
+      {
+        "number": 2,
+        "title": "El marco de tres pasos",
+        "objective": "Aprender hechos-principios-consecuencias.",
+        "keyActivity": "Aplicación guiada a un caso modelo."
+      },
+      {
+        "number": 3,
+        "title": "Práctica con un segundo caso",
+        "objective": "Aplicar el marco de forma autónoma.",
+        "keyActivity": "Análisis por parejas."
+      },
+      {
+        "number": 4,
+        "title": "El coste de la opción no elegida",
+        "objective": "Reconocer el coste de decidir.",
+        "keyActivity": "Argumentación escrita."
+      },
+      {
+        "number": 5,
+        "title": "Elección del dilema propio",
+        "objective": "Elegir un dilema real y actual.",
+        "keyActivity": "Validación del profesor.",
+        "checkpoint": "Checkpoint — dilema validado."
+      },
+      {
+        "number": 6,
+        "title": "Análisis en profundidad",
+        "objective": "Aplicar el marco completo.",
+        "keyActivity": "Redacción del análisis."
+      },
+      {
+        "number": 7,
+        "title": "Aplicación al Proyecto Científico II",
+        "objective": "Identificar una decisión ética real de su investigación.",
+        "keyActivity": "Aplicación directa al proyecto ancla de Q2."
+      },
+      {
+        "number": 8,
+        "title": "Presentación y cierre",
+        "objective": "Defender el análisis.",
+        "keyActivity": "Defensa breve."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Clasificación de los 4 casos.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 4,
+        "page": 3,
+        "prompt": "Argumentación con el coste reconocido.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 6,
+        "page": 4,
+        "prompt": "Mi análisis completo.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 7,
+        "page": 5,
+        "prompt": "La decisión ética de mi Proyecto Científico II.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls3-4": {
+    "id": "ls3-4",
+    "level": "builder",
+    "quarter": "Q3",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Acompañar a alguien es resolverle el problema, o ayudarle a resolverlo él mismo?",
+      "floridaStandards": [
+        "Leadership",
+        "Collaboration",
+        "Communication",
+        "Self-Direction"
+      ],
+      "verse": {
+        "ref": "2 Timoteo 2:2",
+        "text": "Esto encarga a hombres fieles que sean idóneos para enseñar también a otros."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Mentoría vs. resolver el problema",
+        "objective": "Diferenciar acompañar de resolver.",
+        "keyActivity": "Diagnóstico comparativo.",
+        "commonError": "Dar la respuesta en vez de la pregunta que ayuda a encontrarla."
+      },
+      {
+        "number": 2,
+        "title": "A quién voy a acompañar",
+        "objective": "Seleccionar mentorizado y área.",
+        "keyActivity": "Selección con consentimiento adulto si aplica."
+      },
+      {
+        "number": 3,
+        "title": "Escucha antes de aconsejar",
+        "objective": "Practicar escucha activa.",
+        "keyActivity": "Práctica por parejas sin aconsejar."
+      },
+      {
+        "number": 4,
+        "title": "Diseño del plan de encuentros",
+        "objective": "Diseñar 4-6 encuentros con objetivo.",
+        "keyActivity": "Estructura de encuentros."
+      },
+      {
+        "number": 5,
+        "title": "Primer encuentro real",
+        "objective": "Ejecutar y ajustar.",
+        "keyActivity": "Registro del primer encuentro.",
+        "checkpoint": "Checkpoint — ¿escuchó más de lo que habló?"
+      },
+      {
+        "number": 6,
+        "title": "Encuentro 2",
+        "objective": "Continuar el acompañamiento.",
+        "keyActivity": "Registro de avance."
+      },
+      {
+        "number": 7,
+        "title": "Encuentro 3",
+        "objective": "Continuar el acompañamiento.",
+        "keyActivity": "Registro de avance."
+      },
+      {
+        "number": 8,
+        "title": "Evaluación y cierre",
+        "objective": "Evaluar el avance del mentorizado.",
+        "keyActivity": "Evidencia + reflexión sobre el propio rol."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mi episodio de \"me resolvieron\" vs. \"me acompañaron\".",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "A quién voy a acompañar y en qué.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 4,
+        "page": 4,
+        "prompt": "Mi plan de encuentros.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 8,
+        "page": 8,
+        "prompt": "Evaluación final.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls3-5": {
+    "id": "ls3-5",
+    "level": "builder",
+    "quarter": null,
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Cómo se ve un día real trabajando en lo que creo que quiero hacer?",
+      "floridaStandards": [
+        "Career Exploration and Planning"
+      ],
+      "verse": {
+        "ref": "Proverbios 3:5-6",
+        "text": "Fíate de Jehová de todo tu corazón... y él enderezará tus veredas."
+      },
+      "closingVerse": null,
+      "sessionCount": 6,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Mi vocación de interés",
+        "objective": "Diagnosticar lo que cree saber, sin investigar aún.",
+        "keyActivity": "Diagnóstico inicial."
+      },
+      {
+        "number": 2,
+        "title": "Investigación con fuentes reales",
+        "objective": "Investigar formación, tareas y retos reales.",
+        "keyActivity": "Ficha de investigación."
+      },
+      {
+        "number": 3,
+        "title": "Preparar la entrevista",
+        "objective": "Diseñar guion de entrevista a un profesional.",
+        "keyActivity": "Guion de entrevista."
+      },
+      {
+        "number": 4,
+        "title": "Ensayo de la entrevista",
+        "objective": "Ensayar antes de la entrevista real.",
+        "keyActivity": "Ensayo con un compañero.",
+        "checkpoint": "Checkpoint — guion ajustado."
+      },
+      {
+        "number": 5,
+        "title": "Ejecución de la entrevista real",
+        "objective": "Realizar la entrevista.",
+        "keyActivity": "Entrevista registrada."
+      },
+      {
+        "number": 6,
+        "title": "Contraste y conclusión",
+        "objective": "Contrastar imagen previa con lo descubierto.",
+        "keyActivity": "Reflexión final honesta.",
+        "commonError": "Forzar una conclusión positiva cuando la investigación reveló lo contrario."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Lo que creo saber.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Mi investigación.",
+        "type": "structured_form",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Mi guion de entrevista.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 6,
+        "page": 6,
+        "prompt": "Mi conclusión honesta.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls4-1": {
+    "id": "ls4-1",
+    "level": "launch",
+    "quarter": "Q1",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "Si pudieras leer hoy lo que se dirá de ti dentro de 20 años, ¿qué querrías que dijera?",
+      "floridaStandards": [
+        "Self-Direction",
+        "Communication",
+        "Critical Thinking"
+      ],
+      "verse": {
+        "ref": "Filipenses 1:6",
+        "text": "El que comenzó en vosotros la buena obra, la perfeccionará."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Repaso de cuatro años",
+        "objective": "Construir línea de tiempo con hitos reales.",
+        "keyActivity": "Revisión de la carpeta LIFE SKILLS de 3 años previos."
+      },
+      {
+        "number": 2,
+        "title": "Legado vs. lista de metas",
+        "objective": "Articular visión de legado a 20 años.",
+        "keyActivity": "Contraste meta/legado con ejemplos."
+      },
+      {
+        "number": 3,
+        "title": "Los hitos que sostienen mi visión",
+        "objective": "Seleccionar 3-4 hitos reveladores.",
+        "keyActivity": "Selección justificada de la línea de tiempo."
+      },
+      {
+        "number": 4,
+        "title": "De la síntesis al Personal Statement",
+        "objective": "Estructurar el ensayo.",
+        "keyActivity": "Estructura de apertura-desarrollo-cierre."
+      },
+      {
+        "number": 5,
+        "title": "Borrador completo",
+        "objective": "Redactar 500-650 palabras.",
+        "keyActivity": "Redacción del primer borrador.",
+        "checkpoint": "Checkpoint — hechos concretos, no generalidades."
+      },
+      {
+        "number": 6,
+        "title": "Feedback estructurado",
+        "objective": "Recibir feedback de un adulto.",
+        "keyActivity": "Sesión de feedback con plantilla."
+      },
+      {
+        "number": 7,
+        "title": "Revisión",
+        "objective": "Incorporar el feedback.",
+        "keyActivity": "Segundo borrador."
+      },
+      {
+        "number": 8,
+        "title": "Cierre y resumen curricular",
+        "objective": "Entregar Personal Statement + resumen.",
+        "keyActivity": "Entrega final formato Common App."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mi línea de tiempo de 4 años.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Mi visión de legado a 20 años.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Los 3-4 hitos que la sostienen.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 5,
+        "page": 5,
+        "prompt": "Mi primer borrador.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 8,
+        "page": 8,
+        "prompt": "Mi resumen curricular de actividades.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls4-2": {
+    "id": "ls4-2",
+    "level": "launch",
+    "quarter": "Q2",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Qué problema real puedo dejar mejor de lo que lo encontré, con lo que ya sé hacer?",
+      "floridaStandards": [
+        "Leadership",
+        "Executive Function",
+        "Collaboration",
+        "Communication"
+      ],
+      "verse": {
+        "ref": "Josué 1:9",
+        "text": "Esfuérzate y sé valiente... porque Jehová tu Dios estará contigo."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "De proyectos pequeños a impacto institucional",
+        "objective": "Reconocer el límite de escala previo.",
+        "keyActivity": "Repaso del mayor proyecto hasta ahora."
+      },
+      {
+        "number": 2,
+        "title": "Selección del problema",
+        "objective": "Elegir un problema real con evidencia.",
+        "keyActivity": "2-3 problemas candidatos.",
+        "commonError": "Elegir un problema demasiado amplio para un trimestre."
+      },
+      {
+        "number": 3,
+        "title": "Metodología y alcance",
+        "objective": "Definir qué sí y qué no se logrará.",
+        "keyActivity": "Definición explícita de alcance."
+      },
+      {
+        "number": 4,
+        "title": "Cronograma de hitos",
+        "objective": "Planificar fechas y entregas parciales.",
+        "keyActivity": "Cronograma con hitos."
+      },
+      {
+        "number": 5,
+        "title": "Validación del diseño",
+        "objective": "Validar el plan antes de ejecutar.",
+        "keyActivity": "Revisión con mentor/coordinador.",
+        "checkpoint": "Checkpoint 1."
+      },
+      {
+        "number": 6,
+        "title": "Ejecución — primera mitad",
+        "objective": "Avanzar el proyecto real.",
+        "keyActivity": "Registro de avance y obstáculos."
+      },
+      {
+        "number": 7,
+        "title": "Ajuste a mitad de proyecto",
+        "objective": "Replanificar formalmente si hace falta.",
+        "keyActivity": "Sesión de ajuste normalizado.",
+        "checkpoint": "Checkpoint 2."
+      },
+      {
+        "number": 8,
+        "title": "Cierre de ejecución",
+        "objective": "Gestionar la carta de impacto.",
+        "keyActivity": "Evidencias completas + gestión activa de la carta."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mi mayor proyecto hasta ahora y su límite.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Mis 2-3 problemas candidatos.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 4,
+        "page": 4,
+        "prompt": "Mi cronograma de hitos.",
+        "type": "structured_form",
+        "graded": false
+      },
+      {
+        "session": 6,
+        "page": 6,
+        "prompt": "Registro de la primera mitad.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 8,
+        "page": 8,
+        "prompt": "Cierre y gestión de la carta de impacto.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 40
+      }
+    ]
+  },
+  "ls4-3": {
+    "id": "ls4-3",
+    "level": "launch",
+    "quarter": "Q3",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "¿Qué ruta después de Chanak es realista para mí, no solo la que suena mejor?",
+      "floridaStandards": [
+        "Personal Financial Literacy",
+        "Digital Literacy",
+        "Critical Thinking"
+      ],
+      "verse": {
+        "ref": "Lucas 14:28",
+        "text": "¿Quién de vosotros, queriendo edificar una torre, no se sienta primero y calcula los gastos?"
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "Tres rutas reales",
+        "objective": "Investigar 3 rutas con datos verificables.",
+        "keyActivity": "Investigación de universidad, FP y entrada laboral.",
+        "commonError": "Investigar solo la opción de prestigio."
+      },
+      {
+        "number": 2,
+        "title": "El coste real de cada ruta",
+        "objective": "Recoger cifras reales de coste.",
+        "keyActivity": "Investigación de cifras oficiales."
+      },
+      {
+        "number": 3,
+        "title": "Presupuesto a 4 años",
+        "objective": "Construir presupuesto realista.",
+        "keyActivity": "Presupuesto_Universitario.pdf."
+      },
+      {
+        "number": 4,
+        "title": "Compilando el portafolio",
+        "objective": "Inventariar documentos de 4 años.",
+        "keyActivity": "Inventario del expediente."
+      },
+      {
+        "number": 5,
+        "title": "Huecos del portafolio",
+        "objective": "Identificar qué falta.",
+        "keyActivity": "Plan para cerrar huecos.",
+        "checkpoint": "Checkpoint."
+      },
+      {
+        "number": 6,
+        "title": "Plazos y pasos administrativos",
+        "objective": "Planificar fechas límite reales.",
+        "keyActivity": "Calendario con responsables."
+      },
+      {
+        "number": 7,
+        "title": "Cierre del portafolio",
+        "objective": "Completar toda la documentación.",
+        "keyActivity": "Portafolio cerrado."
+      },
+      {
+        "number": 8,
+        "title": "Defensa de la decisión",
+        "objective": "Argumentar la ruta elegida con evidencia propia.",
+        "keyActivity": "Argumentación escrita final."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mis 3 rutas investigadas.",
+        "type": "table",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Mi presupuesto a 4 años.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 5,
+        "page": 5,
+        "prompt": "Huecos y plan para cerrarlos.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 8,
+        "page": 8,
+        "prompt": "Mi argumentación final.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      }
+    ]
+  },
+  "ls4-4": {
+    "id": "ls4-4",
+    "level": "launch",
+    "quarter": "Q3",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "teacherGuide": {
+      "essentialQuestion": "Si tuvieras diez minutos delante de las personas que más han influido en tu formación, ¿qué les mostrarías de quién te has convertido?",
+      "floridaStandards": [
+        "Communication",
+        "Self-Direction",
+        "Critical Thinking"
+      ],
+      "verse": {
+        "ref": "Lucas 16:10",
+        "text": "El que es fiel en lo muy poco, también en lo más grande es fiel."
+      },
+      "closingVerse": null,
+      "sessionCount": 8,
+      "sessionLengthMin": 60
+    },
+    "sessions": [
+      {
+        "number": 1,
+        "title": "El hilo conductor de 4 años",
+        "objective": "Seleccionar un hilo narrativo único.",
+        "keyActivity": "Repaso apoyado en el trabajo de ls4-1."
+      },
+      {
+        "number": 2,
+        "title": "Evidencia representativa",
+        "objective": "Seleccionar 1-2 piezas por nivel.",
+        "keyActivity": "Selección de evidencia, no exhaustiva."
+      },
+      {
+        "number": 3,
+        "title": "Estructura de la defensa",
+        "objective": "Redactar guion de 8-10 minutos.",
+        "keyActivity": "Guion con apertura-desarrollo-cierre."
+      },
+      {
+        "number": 4,
+        "title": "Gestión de cartas de recomendación",
+        "objective": "Solicitar 2 cartas por iniciativa propia.",
+        "keyActivity": "Redacción y envío de solicitudes."
+      },
+      {
+        "number": 5,
+        "title": "Ensayo ante un compañero",
+        "objective": "Recibir feedback sobre el hilo narrativo.",
+        "keyActivity": "Ensayo completo con feedback.",
+        "checkpoint": "Checkpoint — guion ajustado."
+      },
+      {
+        "number": 6,
+        "title": "Preguntas del panel",
+        "objective": "Anticipar preguntas difíciles.",
+        "keyActivity": "Preparación de 5 respuestas."
+      },
+      {
+        "number": 7,
+        "title": "Ensayo general",
+        "objective": "Ensayar con apoyo visual si aplica.",
+        "keyActivity": "Ensayo cronometrado completo."
+      },
+      {
+        "number": 8,
+        "title": "Defensa final ante el panel",
+        "objective": "Defender el proyecto ante el panel institucional.",
+        "keyActivity": "Presentación real + entrega del dossier consolidado."
+      }
+    ],
+    "studentNotebook": [
+      {
+        "session": 1,
+        "page": 1,
+        "prompt": "Mi hilo conductor de 4 años.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 2,
+        "page": 2,
+        "prompt": "Mi evidencia seleccionada por nivel.",
+        "type": "free_text",
+        "graded": false
+      },
+      {
+        "session": 3,
+        "page": 3,
+        "prompt": "Mi guion de 8-10 minutos.",
+        "type": "structured_form",
+        "graded": true,
+        "rubricWeight": 40
+      },
+      {
+        "session": 4,
+        "page": 4,
+        "prompt": "Mis solicitudes de cartas de recomendación.",
+        "type": "free_text",
+        "graded": true,
+        "rubricWeight": 30
+      },
+      {
+        "session": 8,
+        "page": 8,
+        "prompt": "Reflexión tras la defensa real.",
+        "type": "free_text",
+        "graded": false
+      }
+    ]
+  }
+};
+
+module.exports = { EXTENSION_CAPSULES_DATA };
+
+
 if (typeof window !== 'undefined') {
   window.CHANAK_DATA = {
     BIBLE_VERSES,
@@ -1272,6 +3407,7 @@ if (typeof window !== 'undefined') {
     JUNIORS_RETOS,
     HIGH_SCHOOL_LEVELS,
     CAPSULES_DATA,
-    EXPEDIENTE_CATEGORIES
+    EXPEDIENTE_CATEGORIES,
+    EXTENSION_CAPSULES_DATA
   };
 }

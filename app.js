@@ -9,7 +9,8 @@ import {
   JUNIORS_RETOS,
   HIGH_SCHOOL_LEVELS,
   CAPSULES_DATA,
-  EXPEDIENTE_CATEGORIES
+  EXPEDIENTE_CATEGORIES,
+  EXTENSION_CAPSULES_DATA
 } from './data.js';
 
 // ---------------- Application State ----------------
@@ -24,6 +25,19 @@ const state = {
   activeCapsule: null,
   capsuleCurrentStep: 0,
   activeSubmittingReto: null,
+
+  // Student and SIS Integration State
+  token: null,
+  studentId: null,
+  studentName: null,
+  schoolYear: null,
+  isSis: false,
+
+  // Active Curriculum Module & Session State
+  activeModuleId: null,
+  activeSessionNum: 1,
+  mentorMode: false,
+  userAgeTier: 'standard', // 'standard' or 'lower'
 
   // Interactive Tools State
   trackerHabitName: localStorage.getItem('chanak_habit_name') || 'Lectura bíblica diaria 10 min',
@@ -60,10 +74,29 @@ window.toggleTrackerDay = toggleTrackerDay;
 window.updateTrackerHabit = updateTrackerHabit;
 window.updateCoatOfArms = updateCoatOfArms;
 
+// Curriculum Modules & Sessions Handlers
+window.openCurriculumModule = openCurriculumModule;
+window.setModuleMentorMode = setModuleMentorMode;
+window.setModuleAgeTier = setModuleAgeTier;
+window.selectModuleSession = selectModuleSession;
+window.saveNotebookResponse = saveNotebookResponse;
+window.completeModuleSession = completeModuleSession;
+window.finishCurriculumModule = finishCurriculumModule;
+window.showCoinToast = showCoinToast;
+
 // ---------------- Initialization ----------------
 function initApp() {
   const params = new URLSearchParams(window.location.search);
   
+  if (params.get('token')) {
+    state.token = params.get('token');
+    state.studentId = params.get('student_id');
+    state.studentName = params.get('student_name');
+    state.schoolYear = params.get('school_year');
+    state.isSis = true;
+    state.mode = 'portal';
+  }
+
   if (params.get('mode') === 'dual' || window.location.pathname.includes('dualdiploma')) {
     state.mode = 'dual';
   }
@@ -98,6 +131,13 @@ function initApp() {
       contextPill.style.borderColor = '#bcdcc7';
     }
     if (state.viewMode === 'juniors') state.viewMode = 'niveles';
+  } else if (state.isSis && state.studentName) {
+    if (contextPill) {
+      contextPill.textContent = `🎓 Estudiante: ${decodeURIComponent(state.studentName)}`;
+      contextPill.style.background = '#dbeafe';
+      contextPill.style.color = '#1e40af';
+      contextPill.style.borderColor = '#93c5fd';
+    }
   } else {
     if (contextPill) contextPill.textContent = 'Modo Portal SIS';
     if (params.get('stage') === 'juniors') {
@@ -825,6 +865,56 @@ function renderHighSchoolStage(container, stageKey) {
       }).join('')}
     </div>
 
+    <!-- 19 MÓDULOS CURRICULARES CON SESIONES, CUADERNO Y GUÍA DOCENTE -->
+    <div style="margin: 32px 0 14px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--navy); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <span>📓 ${isEs ? 'Mis Sesiones y Cuaderno de Trabajo (Módulos Curriculares):' : 'My Sessions & Student Notebook (Curriculum Modules):'}</span>
+      <span class="badge" style="background: var(--paper); border: 1px solid var(--line); color: var(--ink-muted); font-size: 11px;">
+        FLDOE #134620 · Florida Standards
+      </span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-bottom: 28px;">
+      ${Object.entries(EXTENSION_CAPSULES_DATA)
+        .filter(([id, m]) => m.level === stageKey)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([modId, modData]) => {
+          const isDone = localStorage.getItem(`chanak_mod_${modId}`) === 'done';
+          const sessionCount = (modData.sessions && modData.sessions.length) || 8;
+          const firstTitle = (modData.sessions && modData.sessions[0] && modData.sessions[0].title) || modId;
+          const qTag = modData.quarter || 'Módulo';
+          const eq = (modData.teacherGuide && modData.teacherGuide.essentialQuestion) || '';
+          
+          return `
+            <div class="reading-card" style="padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid var(--green);">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span class="badge" style="background: var(--green-light); color: var(--green); font-size: 11px; font-weight: 700;">
+                    ${modId.toUpperCase()} · ${qTag}
+                  </span>
+                  ${isDone ? `
+                    <span class="badge" style="background: var(--navy); color: #fff; font-size: 11px;">
+                      ✓ ${isEs ? 'Completado' : 'Completed'}
+                    </span>
+                  ` : `
+                    <span class="badge" style="background: var(--gold-light); color: var(--gold); font-size: 11px;">
+                      ${sessionCount} ${isEs ? 'Sesiones' : 'Sessions'}
+                    </span>
+                  `}
+                </div>
+                <h4 style="font-size: 17px; color: var(--navy); margin-bottom: 6px;">
+                  ${firstTitle}
+                </h4>
+                <p style="font-size: 13px; color: var(--ink-muted); line-height: 1.5; margin-bottom: 12px;">
+                  ${eq ? `<b>${isEs ? 'Pregunta Esencial' : 'Essential Question'}:</b> "${eq}"` : (isEs ? 'Sesiones estructuradas con cuaderno de trabajo y guía docente.' : 'Structured sessions with student notebook.')}
+                </p>
+              </div>
+              <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="openCurriculumModule('${modId}')">
+                📓 ${isEs ? 'Abrir Módulo y Cuaderno →' : 'Open Module & Notebook →'}
+              </button>
+            </div>
+          `;
+        }).join('')}
+    </div>
+
     <!-- Quarterly Projects & Deliverables Grid (Q1, Q2, Q3) -->
     <div style="margin: 28px 0 12px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--navy);">
       🗓️ ${isEs ? 'Ruta Anual de Entregables (Drive & SIS):' : 'Annual Deliverable Pathway (Drive & SIS):'}
@@ -1137,4 +1227,298 @@ Comentario: Excelente trabajo y testimonio en la ejecución práctica y mayordom
   }).catch(() => {
     alert('Copia el texto:\n\n' + text);
   });
+}
+
+// ---------------- Toast & Coin Synchronization System ----------------
+function showCoinToast(msg) {
+  const toast = document.getElementById('coin-toast');
+  const toastMsg = document.getElementById('coin-toast-msg');
+  if (toast && toastMsg) {
+    toastMsg.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3500);
+  }
+}
+
+async function awardCoins(amount, reason = 'Actividad Life Skills', refKey = '') {
+  addCoins(amount);
+  showCoinToast(`+${amount} ChanakCoins · ${reason}`);
+
+  if (state.token && state.studentId) {
+    try {
+      const SUPABASE_URL = 'https://gepsbesbhsxfyxymemim.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlcHNiZXNiaHN4Znl4eW1lbWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjg1MjgsImV4cCI6MjA4Mzc0NDUyOH0.VQ6q4ex-tWp2Nr2YK-Sd7PPGCZgcQvQUmTGNNjZtp5Q';
+      
+      const idempotencyKey = refKey || `ls_${state.studentId}_${Date.now()}`;
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/award_life_skills_coins`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          p_student_id: state.studentId,
+          p_token: state.token,
+          p_coins: amount,
+          p_reason: reason,
+          p_idempotency_key: idempotencyKey
+        })
+      });
+      const data = await res.json();
+      console.log('ChanakCoins sync with SIS RPC:', data);
+    } catch (err) {
+      console.warn('Could not sync coins with SIS RPC:', err);
+    }
+  }
+
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({
+      type: 'CHANAK_COINS_AWARDED',
+      amount,
+      reason,
+      studentId: state.studentId,
+      timestamp: new Date().toISOString()
+    }, '*');
+  }
+}
+
+// ---------------- Curriculum Module & Student Notebook Modal Controller ----------------
+function openCurriculumModule(modId) {
+  const modData = EXTENSION_CAPSULES_DATA[modId];
+  if (!modData) return;
+
+  state.activeModuleId = modId;
+  state.activeSessionNum = 1;
+  state.mentorMode = false;
+  state.userAgeTier = 'standard';
+
+  const modal = document.getElementById('capsule-modal');
+  const body = document.getElementById('capsule-modal-body');
+  if (!modal || !body) return;
+
+  renderCurriculumModuleModal(body);
+  modal.classList.add('open');
+}
+
+function setModuleMentorMode(isMentor) {
+  state.mentorMode = isMentor;
+  const body = document.getElementById('capsule-modal-body');
+  if (body) renderCurriculumModuleModal(body);
+}
+
+function setModuleAgeTier(tier) {
+  state.userAgeTier = tier;
+  const body = document.getElementById('capsule-modal-body');
+  if (body) renderCurriculumModuleModal(body);
+}
+
+function selectModuleSession(sessionNum) {
+  state.activeSessionNum = sessionNum;
+  const body = document.getElementById('capsule-modal-body');
+  if (body) renderCurriculumModuleModal(body);
+}
+
+function saveNotebookResponse(modId, sessionNum, promptIdx) {
+  const inputKey = `nb_input_${modId}_s${sessionNum}_p${promptIdx}`;
+  const val = document.getElementById(inputKey)?.value || '';
+  const storageKey = `chanak_nb_${modId}_s${sessionNum}_p${promptIdx}`;
+  
+  localStorage.setItem(storageKey, val);
+  awardCoins(10, `Guardado en Cuaderno (${modId.toUpperCase()} S${sessionNum})`, storageKey);
+}
+
+function completeModuleSession(modId, sessionNum) {
+  const modData = EXTENSION_CAPSULES_DATA[modId];
+  if (!modData) return;
+
+  localStorage.setItem(`chanak_done_${modId}_s${sessionNum}`, 'done');
+  awardCoins(10, `Sesión ${sessionNum} completada (${modId.toUpperCase()})`, `done_${modId}_s${sessionNum}`);
+
+  if (sessionNum < (modData.sessions?.length || 1)) {
+    selectModuleSession(sessionNum + 1);
+  } else {
+    finishCurriculumModule(modId);
+  }
+}
+
+function finishCurriculumModule(modId) {
+  localStorage.setItem(`chanak_mod_${modId}`, 'done');
+  awardCoins(25, `Módulo ${modId.toUpperCase()} Completado`, `mod_${modId}`);
+  closeCapsuleModal();
+  renderCurrentView();
+}
+
+function renderCurriculumModuleModal(container) {
+  const isEs = state.lang === 'es';
+  const modId = state.activeModuleId;
+  const modData = EXTENSION_CAPSULES_DATA[modId];
+  if (!modData) return;
+
+  const tg = modData.teacherGuide || {};
+  const sessions = modData.sessions || [];
+  const currentSession = sessions.find(s => s.number === state.activeSessionNum) || sessions[0] || { number: 1, title: 'Sesión 1', objective: '', keyActivity: '' };
+  const isSeedling = (modData.level === 'seedling');
+  const notebookEntries = (modData.studentNotebook || []).filter(n => n.session === currentSession.number);
+
+  container.innerHTML = `
+    <!-- Module Header -->
+    <div style="margin-bottom: 14px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <span class="eyebrow-tag" style="color: var(--green); margin: 0;">
+          ${modData.level.toUpperCase()} · ${modData.quarter || 'MÓDULO'} · FLDOE #134620
+        </span>
+        <span class="badge" style="background: var(--paper); border: 1px solid var(--line); font-size: 11px;">
+          ${sessions.length} ${isEs ? 'Sesiones de 60 min' : '60-min Sessions'}
+        </span>
+      </div>
+      <h3 style="font-size: 24px; color: var(--navy); margin-top: 6px;">
+        ${modId.toUpperCase()}: ${(sessions[0] && sessions[0].title) || modId}
+      </h3>
+      ${tg.essentialQuestion ? `
+        <div style="font-size: 14px; color: var(--ink-muted); margin-top: 4px;">
+          <b>${isEs ? 'Pregunta Esencial' : 'Essential Question'}:</b> "${tg.essentialQuestion}"
+        </div>
+      ` : ''}
+    </div>
+
+    <!-- View Mode & Age Tier Bar -->
+    <div class="view-mode-bar">
+      <div class="mode-toggle-group">
+        <button class="mode-toggle-btn ${!state.mentorMode ? 'active' : ''}" onclick="setModuleMentorMode(false)">
+          🎓 ${isEs ? 'Vista Estudiante' : 'Student View'}
+        </button>
+        <button class="mode-toggle-btn ${state.mentorMode ? 'active' : ''}" onclick="setModuleMentorMode(true)">
+          🧑‍🏫 ${isEs ? 'Guía Mentor / Docente' : 'Faculty / Mentor Guide'}
+        </button>
+      </div>
+
+      ${isSeedling ? `
+        <div class="mode-toggle-group">
+          <button class="mode-toggle-btn ${state.userAgeTier === 'standard' ? 'active' : ''}" onclick="setModuleAgeTier('standard')">
+            ${isEs ? 'Estándar (14 años)' : 'Standard (14 yrs)'}
+          </button>
+          <button class="mode-toggle-btn ${state.userAgeTier === 'lower' ? 'active' : ''}" onclick="setModuleAgeTier('lower')">
+            🐣 ${isEs ? 'Nivelación (12-13 años)' : 'Leveling (12-13 yrs)'}
+          </button>
+        </div>
+      ` : ''}
+    </div>
+
+    <!-- Teacher Guide Institutional Box (Mentor Mode Only) -->
+    ${state.mentorMode ? `
+      <div class="teacher-guide-box">
+        <h4>📋 ${isEs ? 'Guía Pedagógica Institucional Chanak' : 'Chanak Institutional Faculty Guide'}</h4>
+        <div class="teacher-guide-meta">
+          <div><strong>${isEs ? 'Estándares de Florida (Career Readiness)' : 'Florida Standards'}:</strong> ${(tg.floridaStandards || []).join(', ')}</div>
+          <div><strong>${isEs ? 'Criterio de Evaluación' : 'Evaluation Rubric'}:</strong> Rúbrica Chanak 40/30/30 (Mínimo 80% de dominio requerido)</div>
+        </div>
+        ${tg.verse ? `
+          <div class="teacher-guide-verse">
+            📖 <b>${tg.verse.ref}:</b> "${tg.verse.text}"
+          </div>
+        ` : ''}
+      </div>
+    ` : ''}
+
+    <!-- Horizontal Session Tabs -->
+    <div class="session-tabs">
+      ${sessions.map(s => {
+        const isDone = localStorage.getItem(`chanak_done_${modId}_s${s.number}`) === 'done';
+        const isActive = s.number === currentSession.number;
+        return `
+          <button class="session-tab ${isActive ? 'active' : ''} ${isDone ? 'done' : ''}" onclick="selectModuleSession(${s.number})">
+            <span>S${s.number}</span>
+            <small>${isDone ? '✓' : ''}</small>
+          </button>
+        `;
+      }).join('')}
+    </div>
+
+    <!-- Current Session Content Card -->
+    <div style="background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 20px; margin-bottom: 20px;">
+      <div style="font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+        ${isEs ? 'Sesión' : 'Session'} ${currentSession.number} ${isEs ? 'de' : 'of'} ${sessions.length} · ${(currentSession.timeMin || 60)} min
+      </div>
+      <h4 style="font-size: 19px; color: var(--navy); margin-bottom: 12px;">
+        ${currentSession.title}
+      </h4>
+
+      ${currentSession.objective ? `
+        <div style="background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;">
+          <b style="font-size: 12px; color: var(--green); text-transform: uppercase; display: block; margin-bottom: 2px;">🎯 ${isEs ? 'Objetivo de la Sesión' : 'Session Objective'}:</b>
+          <p style="font-size: 13px; color: var(--ink); margin: 0;">${currentSession.objective}</p>
+        </div>
+      ` : ''}
+
+      ${currentSession.keyActivity ? `
+        <div style="background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;">
+          <b style="font-size: 12px; color: var(--navy); text-transform: uppercase; display: block; margin-bottom: 2px;">⚡ ${isEs ? 'Actividad Clave' : 'Key Activity'}:</b>
+          <p style="font-size: 13px; color: var(--ink); margin: 0;">${currentSession.keyActivity}</p>
+        </div>
+      ` : ''}
+
+      <!-- Mentor Callouts in Mentor Mode -->
+      ${state.mentorMode ? `
+        <div class="mentor-callout error">
+          <strong>⚠️ ${isEs ? 'Error Frecuente a Observar' : 'Common Error'}:</strong> ${currentSession.commonError || (isEs ? 'Asegurarse de que el estudiante no copie respuestas genéricas y reflexione con honestidad.' : 'Ensure authentic reflection.')}
+        </div>
+        <div class="mentor-callout checkpoint">
+          <strong>✅ ${isEs ? 'Punto de Control / Checkpoint' : 'Mentor Checkpoint'}:</strong> ${currentSession.checkpoint || (isEs ? 'Comprobar que el estudiante guarde su cuaderno antes de pasar a la siguiente sesión.' : 'Verify notebook response is saved.')}
+        </div>
+      ` : ''}
+
+      <!-- Student Notebook Pages for this session -->
+      ${notebookEntries.length > 0 ? `
+        <div class="notebook-section">
+          <h5 style="font-size: 15px; color: var(--navy); margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
+            📓 ${isEs ? 'Cuaderno de Trabajo del Estudiante' : 'Student Notebook Reflection'}
+          </h5>
+          ${notebookEntries.map((entry, idx) => {
+            const inputKey = `nb_input_${modId}_s${currentSession.number}_p${idx}`;
+            const storageKey = `chanak_nb_${modId}_s${currentSession.number}_p${idx}`;
+            const savedText = localStorage.getItem(storageKey) || '';
+            const promptText = (state.userAgeTier === 'lower' && entry.prompt)
+              ? entry.prompt + (isEs ? ' (Nivel 12-13 años: responde en 2 a 3 frases claras).' : ' (Ages 12-13: answer in 2-3 sentences).')
+              : entry.prompt;
+
+            return `
+              <div class="notebook-card">
+                <div class="notebook-header">
+                  <strong style="font-size: 13px; color: var(--navy);">${entry.pageTitle || (`Página ${idx + 1}`)}</strong>
+                  ${entry.graded ? `<span class="rubric-tag">⭐ Rúbrica 40/30/30 (${entry.rubricWeight || 'Formativo'})</span>` : ''}
+                </div>
+                <div class="notebook-prompt">${promptText || ''}</div>
+                <textarea id="${inputKey}" class="notebook-textarea" placeholder="${isEs ? 'Escribe tu reflexión o trabajo aquí...' : 'Write your reflection here...'}">${savedText}</textarea>
+                <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+                  <button class="btn-interactive" onclick="saveNotebookResponse('${modId}', ${currentSession.number}, ${idx})">
+                    💾 ${isEs ? 'Guardar en Cuaderno (+10 Coins)' : 'Save to Notebook (+10 Coins)'}
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      ` : ''}
+    </div>
+
+    <!-- Navigation between sessions -->
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+      <button class="btn-secondary" onclick="selectModuleSession(${Math.max(1, currentSession.number - 1)})" ${currentSession.number === 1 ? 'style="visibility:hidden"' : ''}>
+        ← ${isEs ? 'Anterior' : 'Previous'}
+      </button>
+
+      ${currentSession.number === sessions.length ? `
+        <button class="btn-primary" onclick="finishCurriculumModule('${modId}')">
+          🎉 ${isEs ? 'Completar Módulo (+25 Coins)' : 'Complete Module (+25 Coins)'}
+        </button>
+      ` : `
+        <button class="btn-primary" onclick="completeModuleSession('${modId}', ${currentSession.number})">
+          ${isEs ? 'Completar Sesión y Continuar (+10 Coins)' : 'Complete Session & Continue (+10 Coins)'} →
+        </button>
+      `}
+    </div>
+  `;
 }
