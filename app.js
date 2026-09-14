@@ -453,38 +453,45 @@ function renderCapsulesAndChallengesView(container, stageKey) {
   }
 
   const levelData = HIGH_SCHOOL_LEVELS[stageKey] || HIGH_SCHOOL_LEVELS.seedling;
-  const verse = BIBLE_VERSES[levelData.verseKey];
+  const verse = (levelData && levelData.verseKey && BIBLE_VERSES[levelData.verseKey]) || BIBLE_VERSES.seedling || { ref: '', text: {}, context: {} };
+  const verseText = verse.text ? (verse.text[state.lang] || verse.text.es || verse.text) : '';
+  const verseCtx = verse.context ? (verse.context[state.lang] || verse.context.es || verse.context) : '';
+
+  const levelTitle = levelData.title ? (levelData.title[state.lang] || levelData.title.es || levelData.title) : stageKey;
+  const levelSub = levelData.subtitle ? (levelData.subtitle[state.lang] || levelData.subtitle.es || levelData.subtitle) : '';
 
   container.innerHTML = `
     <!-- Level Hero Card -->
     <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
         <span class="eyebrow-tag" style="color: var(--green); margin: 0;">
-          ${isEs ? `NIVEL ${levelData.num} · ${stageKey.toUpperCase()} · ${levelData.age} · ${levelData.gradeUS}` : `LEVEL ${levelData.num} · ${stageKey.toUpperCase()} · ${levelData.gradeUS}`}
+          ${isEs ? `NIVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.age || ''} · ${levelData.gradeUS || ''}` : `LEVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.gradeUS || ''}`}
         </span>
         <a href="https://drive.google.com/file/d/1tuB-OX7-mwLIpHNHXPS0lSKaSRponaAk/view" target="_blank" class="btn-interactive" style="font-size: 12px;">
           📄 ${isEs ? 'Guía PDF Oficial' : 'Official PDF Guide'} ↗
         </a>
       </div>
       <h3 style="font-size: 26px; color: var(--navy); margin-bottom: 6px; font-family: var(--font-display);">
-        ${levelData.title[state.lang]}
+        ${levelTitle}
       </h3>
       <p style="font-size: 15px; color: var(--ink-muted); margin: 0;">
-        ${levelData.subtitle[state.lang]}
+        ${levelSub}
       </p>
     </div>
 
     <!-- Biblical Devotional Card -->
     <div class="devotional-card" style="margin-bottom: 28px;">
       <div class="devotional-ref">
-        📖 <span>${verse.ref}</span> · ${isEs ? 'Texto Bíblico del Nivel' : 'Key Scripture'}
+        📖 <span>${verse.ref || 'Cita Bíblica'}</span> · ${isEs ? 'Texto Bíblico del Nivel' : 'Key Scripture'}
       </div>
       <div class="devotional-text">
-        "${verse.text[state.lang]}"
+        "${verseText}"
       </div>
-      <div class="devotional-applied">
-        💡 <b>${isEs ? 'Devocional Aplicado:' : 'Applied Devotional:'}</b> ${verse.context[state.lang]}
-      </div>
+      ${verseCtx ? `
+        <div class="devotional-applied">
+          💡 <b>${isEs ? 'Devocional Aplicado:' : 'Applied Devotional:'}</b> ${verseCtx}
+        </div>
+      ` : ''}
     </div>
 
     <!-- Special Highlight for Explorer Q1: Test "Quién Soy" -->
@@ -524,7 +531,7 @@ function renderCapsulesAndChallengesView(container, stageKey) {
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-        ${Array.from(new Set(levelData.quarters.flatMap(q => q.capsules || []))).map(capKey => {
+        ${Array.from(new Set((levelData.quarters || []).flatMap(q => q.capsules || []))).map(capKey => {
           const cap = CAPSULES_DATA[capKey];
           if (!cap) return '';
           const isDone = localStorage.getItem(`chanak_cap_${capKey}`) === 'done';
@@ -576,7 +583,10 @@ function renderCapsulesAndChallengesView(container, stageKey) {
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-        ${levelData.quarters.map(q => {
+        ${(levelData.quarters || []).map(q => {
+          const qTitle = q.title ? (q.title[state.lang] || q.title.es || q.title) : q.id;
+          const qProject = q.project ? (q.project[state.lang] || q.project.es || q.project) : '';
+          const qFiles = q.files || [];
           return `
             <div class="quarter-card" style="display: flex; flex-direction: column; justify-content: space-between;">
               <div>
@@ -586,17 +596,17 @@ function renderCapsulesAndChallengesView(container, stageKey) {
                     📁 Entregables Drive
                   </span>
                 </div>
-                <h4 style="font-size: 17px; color: var(--navy); margin-bottom: 6px;">${q.title[state.lang]}</h4>
+                <h4 style="font-size: 17px; color: var(--navy); margin-bottom: 6px;">${qTitle}</h4>
                 <p style="font-size: 13px; color: var(--ink-muted); margin-bottom: 14px; line-height: 1.5;">
-                  ${q.project[state.lang]}
+                  ${qProject}
                 </p>
 
                 <div class="deliverable-box" style="margin-bottom: 14px;">
                   <b style="font-size: 11px; text-transform: uppercase; color: var(--navy); display: block; margin-bottom: 4px;">
-                    📂 Carpeta Drive: <code>${q.folder}</code>
+                    📂 Carpeta Drive: <code>${q.folder || ''}</code>
                   </b>
                   <ul class="deliverable-files">
-                    ${q.files.map(f => `<li>📄 <code>${f}</code></li>`).join('')}
+                    ${qFiles.map(f => `<li>📄 <code>${f}</code></li>`).join('')}
                   </ul>
                 </div>
               </div>
@@ -611,16 +621,21 @@ function renderCapsulesAndChallengesView(container, stageKey) {
       📚 ${isEs ? 'Lecturas Clave del Nivel:' : 'Key Level Readings:'}
     </div>
     <div class="readings-grid">
-      ${levelData.books.map(bKey => {
+      ${(levelData.books || []).map(bKey => {
         const book = BOOKS[bKey];
         if (!book) return '';
+        const bAudience = book.audience ? (book.audience[state.lang] || book.audience.es || book.audience) : (isEs ? 'Lectura Recomendada' : 'Recommended Reading');
+        const bTitle = book.title ? (book.title[state.lang] || book.title.es || book.title) : bKey;
+        const bAuthor = book.author || '';
+        const bKeyPoint = book.key ? (book.key[state.lang] || book.key.es || book.key) : '';
+        const bQuote = book.quote ? (book.quote[state.lang] || book.quote.es || book.quote) : '';
         return `
           <div class="reading-card">
-            <span class="reading-tag">${book.audience ? book.audience[state.lang] : (isEs ? 'Lectura Recomendada' : 'Recommended Reading')}</span>
-            <h4>⚡ ${book.title[state.lang]}</h4>
-            <div class="author">${book.author}</div>
-            <div class="key-point">${book.key[state.lang]}</div>
-            <div class="quote-box">"${book.quote[state.lang]}"</div>
+            <span class="reading-tag">${bAudience}</span>
+            <h4>⚡ ${bTitle}</h4>
+            <div class="author">${bAuthor}</div>
+            <div class="key-point">${bKeyPoint}</div>
+            <div class="quote-box">"${bQuote}"</div>
           </div>
         `;
       }).join('')}
