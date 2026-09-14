@@ -15,6 +15,13 @@ import {
   RIASEC_TEST_DATA
 } from './data.js';
 
+// ---------------- Backend ----------------
+// La anon key de Supabase es una clave publicable: está pensada para vivir en el
+// cliente. La autoridad real está en el servidor (firma HMAC del token, PIN en
+// Vault, montos de ChanakCoins decididos por la RPC).
+const SUPABASE_URL = 'https://gepsbesbhsxfyxymemim.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlcHNiZXNiaHN4Znl4eW1lbWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjg1MjgsImV4cCI6MjA4Mzc0NDUyOH0.VQ6q4ex-tWp2Nr2YK-Sd7PPGCZgcQvQUmTGNNjZtp5Q';
+
 // ---------------- Application State ----------------
 const state = {
   lang: 'es',
@@ -26,6 +33,8 @@ const state = {
   roleView: 'student', // 'student' or 'mentor'
   isMentorUnlocked: false,
   userRole: 'student',
+  // Se rellena solo tras validación en servidor; vacío en Vista Estudiante.
+  mentorContent: {},
 
   juniorsFilter: 'all',
   coins: parseInt(localStorage.getItem('chanak_coins') || '20', 10),
@@ -128,13 +137,10 @@ function initApp() {
       state.currentLevel = 'seedling';
     }
 
-    if (params.get('role')) {
-      state.userRole = params.get('role');
-      if (['tutor', 'mentor', 'coordinator', 'admin', 'super_admin'].includes(state.userRole)) {
-        state.isMentorUnlocked = true;
-        state.roleView = 'mentor';
-      }
-    }
+    // El rol NO se toma de la URL. `?role=admin` solía conceder Vista Mentor a
+    // cualquiera que escribiera el parámetro. El desbloqueo ocurre ahora contra
+    // el servidor, en unlockMentorView().
+    state.userRole = 'student';
   } else {
     state.isSis = false;
     state.assignedLevel = null;
@@ -224,22 +230,43 @@ if (document.readyState === 'loading') {
 }
 
 // ---------------- Role Switching (Student vs Mentor) ----------------
+// El modal de módulo se dibuja en su propio contenedor y renderCurrentView() no
+// lo alcanza. Sin esto, el recuadro de mentor seguiría en pantalla tras volver a
+// Vista Estudiante en un equipo compartido del aula.
+function refreshOpenModuleModal() {
+  const modal = document.getElementById('capsule-modal');
+  const body = document.getElementById('capsule-modal-body');
+  if (modal?.classList.contains('open') && body && state.activeModuleId) {
+    renderCurriculumModuleModal(body);
+  }
+}
+
 function switchRoleView(role) {
   if (role === 'student') {
     state.roleView = 'student';
     updateRoleUI();
     renderCurrentView();
+    refreshOpenModuleModal();
     return;
   }
 
   if (role === 'mentor') {
-    if (state.isMentorUnlocked || ['tutor', 'mentor', 'coordinator', 'admin', 'super_admin'].includes(state.userRole)) {
+    if (state.isMentorUnlocked) {
       state.roleView = 'mentor';
       updateRoleUI();
       renderCurrentView();
-    } else {
-      openMentorPinModal();
+      refreshOpenModuleModal();
+      return;
     }
+
+    // El token del SIS solo se emite para estudiantes: la Vista Mentor no se
+    // ofrece en esa sesión.
+    if (state.isSis) {
+      showCoinToast('🔒 Vista pedagógica restringida a tutores y coordinadores');
+      return;
+    }
+
+    openMentorPinModal();
   }
 }
 
@@ -258,21 +285,60 @@ function closeMentorPinModal() {
   if (modal) modal.classList.remove('open');
 }
 
-function submitMentorPin() {
+async function submitMentorPin() {
   const input = document.getElementById('mentor-pin-input');
   const errorEl = document.getElementById('mentor-pin-error');
   const pinVal = (input?.value || '').trim();
 
-  if (pinVal === 'CHANAK2026') {
+  if (!pinVal) {
+    if (errorEl) { errorEl.textContent = 'Introduce el PIN docente.'; errorEl.style.display = 'block'; }
+    return;
+  }
+
+  if (errorEl) errorEl.style.display = 'none';
+  if (input) input.disabled = true;
+
+  try {
+    // El PIN se valida en servidor. Si es correcto, la respuesta trae el
+    // contenido de mentor, que no forma parte del bundle del estudiante.
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/life-skills-mentor-content`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+      body: JSON.stringify({ pin: pinVal })
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      if (errorEl) {
+        errorEl.textContent = data.error || 'PIN incorrecto.';
+        errorEl.style.display = 'block';
+      }
+      return;
+    }
+
+    state.mentorContent = data.content || {};
     state.isMentorUnlocked = true;
     state.roleView = 'mentor';
     closeMentorPinModal();
     updateRoleUI();
     renderCurrentView();
+    refreshOpenModuleModal();
     showCoinToast('🧑‍🏫 Vista Mentor Desbloqueada con Éxito');
-  } else {
-    if (errorEl) errorEl.style.display = 'block';
+  } catch (err) {
+    if (errorEl) {
+      errorEl.textContent = 'No se pudo verificar el PIN. Revisa tu conexión.';
+      errorEl.style.display = 'block';
+    }
+  } finally {
+    if (input) input.disabled = false;
   }
+}
+
+// Contenido de mentor para una sesión concreta. En Vista Estudiante devuelve
+// siempre un objeto vacío: los datos ni siquiera están descargados.
+function mentorNotes(modId, sessionNumber) {
+  if (state.roleView !== 'mentor') return {};
+  return (state.mentorContent?.[modId]?.[String(sessionNumber)]) || {};
 }
 
 function updateRoleUI() {
@@ -341,12 +407,22 @@ function selectHighSchoolLevel(levelKey) {
   renderCurrentView();
 }
 
+// El Test "Quién Soy" está anclado a Explorer Q1. En una sesión del SIS de otro
+// nivel no se ofrece; sin token (demo/mentor) queda visible.
+function isRiasecAvailable() {
+  if (!state.isSis) return true;
+  return state.assignedLevel === 'explorer';
+}
+
 function updateNavigationUI() {
   const tabs = ['capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'juniors', 'transversales'];
   tabs.forEach(tab => {
     const el = document.getElementById(`tab-${tab}`);
     if (el) el.classList.toggle('active', state.viewMode === tab);
   });
+
+  const testTab = document.getElementById('tab-test-dones');
+  if (testTab) testTab.hidden = !isRiasecAvailable();
 
   const subLevelsBar = document.getElementById('sub-levels-bar');
   if (subLevelsBar) {
@@ -540,32 +616,31 @@ function renderCapsulesAndChallengesView(container, stageKey) {
           const stepsCount = (cap.steps && cap.steps.length) || 4;
 
           return `
-            <div class="reading-card" style="padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid ${isDone ? 'var(--green)' : 'var(--navy)'};">
-              <div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                  <span class="badge" style="background: var(--paper); border: 1px solid var(--line); font-size: 11px; font-weight: 700; color: var(--navy);">
-                    ${cap.tag ? cap.tag.toUpperCase() : 'CÁPSULA'} · ${stepsCount} PASOS
-                  </span>
-                  <span class="badge" style="background: ${isDone ? 'var(--green-light)' : 'var(--gold-light)'}; color: ${isDone ? 'var(--green)' : 'var(--gold)'}; font-size: 11px; font-weight: 700;">
-                    ${isDone ? '✓ Completada (+10 🪙)' : '+10 🪙 ChanakCoins'}
-                  </span>
-                </div>
+            <article class="module-card is-${isDone ? 'completado' : 'pendiente'}">
+              <header class="module-card__top">
+                <span class="module-card__id">
+                  ${cap.tag ? cap.tag.toUpperCase() : 'CÁPSULA'} · ${stepsCount} ${isEs ? 'PASOS' : 'STEPS'}
+                </span>
+                <span class="module-card__state">
+                  ${isDone ? (isEs ? '✓ Completada' : '✓ Completed') : '+10 🪙'}
+                </span>
+              </header>
 
-                <h4 style="font-size: 18px; color: var(--navy); margin-bottom: 8px; font-family: var(--font-display);">
-                  ${cap.icon || '🚀'} ${capTitle}
-                </h4>
-                
-                ${capProject ? `
-                  <div style="background: var(--paper); border-radius: 6px; padding: 10px 12px; font-size: 12px; color: var(--ink-muted); margin-bottom: 14px; line-height: 1.5;">
-                    📌 <b>Entregable Asociado:</b> ${capProject}
-                  </div>
-                ` : ''}
-              </div>
+              <h4 class="module-card__title">${cap.icon || '🚀'} ${capTitle}</h4>
 
-              <button class="btn-primary" style="width: 100%; justify-content: center; ${isDone ? 'background: var(--green);' : ''}" onclick="openCapsule('${capKey}')">
-                ${isDone ? '✓ Repasar Cápsula (+10 🪙)' : '🚀 Iniciar Cápsula Interactiva →'}
+              ${capProject ? `
+                <p class="module-card__eq">
+                  <span>${isEs ? 'Entregable asociado' : 'Linked deliverable'}</span>
+                  ${capProject}
+                </p>
+              ` : ''}
+
+              <button class="btn-primary module-card__cta" style="margin-top: auto;" onclick="openCapsule('${capKey}')">
+                ${isDone
+                  ? (isEs ? 'Repasar cápsula →' : 'Review capsule →')
+                  : (isEs ? 'Iniciar cápsula →' : 'Start capsule →')}
               </button>
-            </div>
+            </article>
           `;
         }).join('')}
       </div>
@@ -609,6 +684,13 @@ function renderCapsulesAndChallengesView(container, stageKey) {
                     ${qFiles.map(f => `<li>📄 <code>${f}</code></li>`).join('')}
                   </ul>
                 </div>
+
+                ${/khan|sat/i.test(`${qTitle} ${qProject} ${qFiles.join(' ')}`) ? `
+                  <a href="https://www.khanacademy.org/digital-sat" target="_blank" rel="noopener noreferrer"
+                     class="resource-link">
+                    🎓 ${isEs ? 'Abrir Khan Academy · Digital SAT Prep (gratuito)' : 'Open Khan Academy · Digital SAT Prep (free)'}
+                  </a>
+                ` : ''}
               </div>
             </div>
           `;
@@ -646,6 +728,23 @@ function renderCapsulesAndChallengesView(container, stageKey) {
 // ============================================================================
 // 2. VISTA: CUADERNO DE VIDA (19 Módulos Curriculares)
 // ============================================================================
+// Progreso real del alumno en un módulo, leído de las sesiones ya completadas.
+function moduleProgress(modId, total) {
+  let done = 0;
+  for (let n = 1; n <= total; n++) {
+    if (localStorage.getItem(`chanak_done_${modId}_s${n}`) === 'done') done++;
+  }
+  const finished = localStorage.getItem(`chanak_mod_${modId}`) === 'done';
+  return {
+    done,
+    total,
+    finished,
+    nextSession: Math.min(done + 1, total),
+    pct: total ? Math.round((done / total) * 100) : 0,
+    status: finished ? 'completado' : done > 0 ? 'en-curso' : 'pendiente',
+  };
+}
+
 function renderCuadernoDeVidaView(container) {
   const isEs = state.lang === 'es';
   const isMentor = state.roleView === 'mentor';
@@ -680,51 +779,63 @@ function renderCuadernoDeVidaView(container) {
     <!-- Grid de los 19 Módulos Curriculares -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 32px;">
       ${modulesForLevel.map(([modId, modData]) => {
-        const isDone = localStorage.getItem(`chanak_mod_${modId}`) === 'done';
         const sessionCount = (modData.sessions && modData.sessions.length) || 8;
+        const p = moduleProgress(modId, sessionCount);
         const firstTitle = (modData.sessions && modData.sessions[0] && modData.sessions[0].title) || modId;
         const qTag = modData.quarter || 'Módulo';
         const eq = (modData.teacherGuide && modData.teacherGuide.essentialQuestion) || '';
         const standards = (modData.teacherGuide && modData.teacherGuide.floridaStandards) || [];
 
+        const stateLabel = {
+          completado: isEs ? '✓ Completado' : '✓ Completed',
+          'en-curso': isEs ? `En curso · ${p.done}/${p.total}` : `In progress · ${p.done}/${p.total}`,
+          pendiente: isEs ? `${sessionCount} sesiones` : `${sessionCount} sessions`,
+        }[p.status];
+
+        const cta = {
+          completado: isEs ? 'Repasar módulo' : 'Review module',
+          'en-curso': isEs ? `Continuar · Sesión ${p.nextSession}` : `Continue · Session ${p.nextSession}`,
+          pendiente: isEs ? 'Empezar módulo' : 'Start module',
+        }[p.status];
+
         return `
-          <div class="reading-card" style="padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid var(--green);">
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span class="badge" style="background: var(--green-light); color: var(--green); font-size: 11px; font-weight: 700;">
-                  ${modId.toUpperCase()} · ${qTag}
-                </span>
-                ${isDone ? `
-                  <span class="badge" style="background: var(--navy); color: #fff; font-size: 11px;">
-                    ✓ ${isEs ? 'Completado' : 'Completed'}
-                  </span>
-                ` : `
-                  <span class="badge" style="background: var(--gold-light); color: var(--gold); font-size: 11px;">
-                    ${sessionCount} ${isEs ? 'Sesiones' : 'Sessions'}
-                  </span>
-                `}
-              </div>
+          <article class="module-card is-${p.status}">
+            <header class="module-card__top">
+              <span class="module-card__id">${modId.toUpperCase()} · ${qTag}</span>
+              <span class="module-card__state">${stateLabel}</span>
+            </header>
 
-              <h4 style="font-size: 17px; color: var(--navy); margin-bottom: 6px; font-family: var(--font-display);">
-                ${firstTitle}
-              </h4>
-              <p style="font-size: 13px; color: var(--ink-muted); line-height: 1.5; margin-bottom: 12px;">
-                ${eq ? `<b>${isEs ? 'Pregunta Esencial' : 'Essential Question'}:</b> "${eq}"` : (isEs ? 'Sesiones estructuradas con cuaderno de trabajo y guía docente.' : 'Structured sessions with student notebook.')}
+            <h4 class="module-card__title">${firstTitle}</h4>
+
+            ${eq ? `
+              <p class="module-card__eq">
+                <span>${isEs ? 'Pregunta esencial' : 'Essential question'}</span>
+                “${eq}”
               </p>
+            ` : ''}
 
-              <!-- Capa exclusiva de Vista Mentor -->
-              ${isMentor ? `
-                <div style="background: #f0fdf4; border: 1px dashed #86efac; border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 12px; color: #166534;">
-                  <b>🧑‍🏫 FLDOE Durable Skills:</b> ${standards.join(', ')}<br>
-                  <b>⏱️ Minutado:</b> 8 sesiones × 60 min
-                </div>
-              ` : ''}
+            <div class="module-card__progress">
+              <div class="progress-track"><div class="progress-fill" style="width: ${p.pct}%;"></div></div>
+              <ol class="session-dots" aria-label="${isEs ? 'Sesiones completadas' : 'Completed sessions'}">
+                ${Array.from({ length: sessionCount }, (_, i) => {
+                  const n = i + 1;
+                  const cls = n <= p.done ? 'is-done' : n === p.nextSession && !p.finished ? 'is-next' : '';
+                  return `<li class="${cls}">${n}</li>`;
+                }).join('')}
+              </ol>
             </div>
 
-            <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="openCurriculumModule('${modId}')">
-              📓 ${isEs ? 'Abrir Módulo y Cuaderno →' : 'Open Module & Notebook →'}
+            ${isMentor ? `
+              <div class="module-card__mentor">
+                <b>🧑‍🏫 FLDOE Durable Skills:</b> ${standards.join(', ')}<br>
+                <b>⏱️ Minutado:</b> ${sessionCount} sesiones × 60 min
+              </div>
+            ` : ''}
+
+            <button class="btn-primary module-card__cta" onclick="openCurriculumModule('${modId}')">
+              ${cta} →
             </button>
-          </div>
+          </article>
         `;
       }).join('')}
     </div>
@@ -736,6 +847,24 @@ function renderCuadernoDeVidaView(container) {
 // ============================================================================
 function renderRiasecTestView(container) {
   const isEs = state.lang === 'es';
+
+  if (!isRiasecAvailable()) {
+    container.innerHTML = `
+      <div class="locked-notice">
+        <div style="font-size: 30px; margin-bottom: 10px;">🔒</div>
+        <h3 style="color: var(--navy); margin-bottom: 8px;">
+          ${isEs ? 'Test "Quién Soy" · Explorer Q1' : 'Who Am I Test · Explorer Q1'}
+        </h3>
+        <p style="color: var(--ink-muted); font-size: 14px; max-width: 460px; margin: 0 auto;">
+          ${isEs
+            ? `Este test forma parte del primer trimestre de Explorer. Tu nivel activo en el SIS es <b>${(state.assignedLevel || '').toUpperCase()}</b>. Estará disponible cuando avances a esa etapa — habla con tu mentora.`
+            : `This test belongs to Explorer Q1. Your active level in the SIS is <b>${(state.assignedLevel || '').toUpperCase()}</b>. It will unlock when you reach that stage — talk to your mentor.`}
+        </p>
+      </div>
+    `;
+    return;
+  }
+
   const questions = RIASEC_TEST_DATA.questions;
   const dimensions = RIASEC_TEST_DATA.dimensions;
   const answers = state.riasecAnswers;
@@ -848,11 +977,10 @@ function calculateRiasecProfile() {
   state.riasecResult = finalResult;
   localStorage.setItem('chanak_riasec_result', JSON.stringify(finalResult));
 
-  // Acreditar 50 ChanakCoins vía RPC con clave de idempotencia determinista
-  const studentId = state.studentId || 'anon';
-  const schoolYear = state.schoolYear || '2026-2027';
-  const idempotencyKey = `ls:test-vocacional:${studentId}:${schoolYear}:explorer:q1`;
-  awardCoins(50, 'Test de Dones y Vocación (Explorer Q1)', idempotencyKey);
+  // El servidor compone la clave de idempotencia a partir del student_id y el
+  // curso que vienen firmados dentro del token, y comprueba que el nivel sea
+  // Explorer antes de acreditar.
+  awardCoins('riasec_test', 'explorer:q1', 'Test de Dones y Vocación (Explorer Q1)');
 
   renderCurrentView();
   setTimeout(() => {
@@ -1123,23 +1251,44 @@ function renderExpedienteUniversitario(container) {
 
     <!-- Categorías del Dossier -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px;">
-      ${Object.entries(EXPEDIENTE_CATEGORIES).map(([catKey, catData]) => `
-        <div class="reading-card" style="padding: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span class="badge" style="background: var(--navy-light); color: #fff; font-size: 11px;">
-              ${catData.icon} ${catKey.toUpperCase()}
-            </span>
-            <span style="font-size: 11px; color: var(--ink-muted);">${catData.items.length} Entregables</span>
-          </div>
-          <h4 style="font-size: 16px; color: var(--navy); margin-bottom: 6px;">${catData.title[state.lang]}</h4>
-          <p style="font-size: 12px; color: var(--ink-muted); line-height: 1.5; margin-bottom: 12px;">
-            ${catData.desc[state.lang]}
-          </p>
-          <ul style="font-size: 12px; color: var(--ink); padding-left: 18px; line-height: 1.6;">
-            ${catData.items.map(item => `<li>${item[state.lang]}</li>`).join('')}
-          </ul>
-        </div>
-      `).join('')}
+      ${EXPEDIENTE_CATEGORIES.map(cat => {
+        const catTitle = cat.title?.[state.lang] || cat.title?.es || cat.id;
+        const items = cat.items || [];
+        const mine = items.filter(it => it.level === state.currentLevel).length;
+
+        return `
+          <article class="dossier-card">
+            <header class="dossier-card__top">
+              <span class="dossier-card__icon">${cat.icon || '🗂️'}</span>
+              <div>
+                <h4 class="dossier-card__title">${catTitle}</h4>
+                <span class="dossier-card__count">
+                  ${items.length} ${isEs ? 'entregables' : 'artifacts'}${mine ? ` · ${mine} ${isEs ? 'en tu nivel' : 'at your level'}` : ''}
+                </span>
+              </div>
+            </header>
+
+            <ul class="dossier-items">
+              ${items.map(it => {
+                const itTitle = it.title?.[state.lang] || it.title?.es || '';
+                const itDesc = it.desc?.[state.lang] || it.desc?.es || '';
+                const isMine = it.level === state.currentLevel;
+                return `
+                  <li class="${isMine ? 'is-mine' : ''}">
+                    <div class="dossier-items__head">
+                      <span class="dossier-items__level">${it.levelLabel || it.level || ''}${it.quarter ? ` · ${it.quarter}` : ''}</span>
+                      ${isMine ? `<span class="dossier-items__you">${isEs ? 'Tu nivel' : 'Your level'}</span>` : ''}
+                    </div>
+                    <b>${itTitle}</b>
+                    ${itDesc ? `<p>${itDesc}</p>` : ''}
+                    ${it.file ? `<code>${it.file}</code>` : ''}
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </article>
+        `;
+      }).join('')}
     </div>
   `;
 }
@@ -1203,7 +1352,7 @@ window.checkQuizStepAnswer = checkQuizStepAnswer;
 
 function finishCapsule(capKey) {
   localStorage.setItem(`chanak_cap_${capKey}`, 'done');
-  awardCoins(10, `Cápsula Completada (${capKey})`, `cap_${capKey}`);
+  awardCoins('capsule_complete', `cap:${capKey}`, `Cápsula Completada (${capKey})`);
   closeCapsuleModal();
   renderCurrentView();
 }
@@ -1352,7 +1501,7 @@ function saveNotebookResponse(modId, sessionNum, promptIdx) {
   const storageKey = `chanak_nb_${modId}_s${sessionNum}_p${promptIdx}`;
   
   localStorage.setItem(storageKey, val);
-  awardCoins(10, `Guardado en Cuaderno (${modId.toUpperCase()} S${sessionNum})`, storageKey);
+  awardCoins('notebook_save', `nb:${modId}:s${sessionNum}`, `Guardado en Cuaderno (${modId.toUpperCase()} S${sessionNum})`);
 }
 
 function completeModuleSession(modId, sessionNum) {
@@ -1360,7 +1509,7 @@ function completeModuleSession(modId, sessionNum) {
   if (!modData) return;
 
   localStorage.setItem(`chanak_done_${modId}_s${sessionNum}`, 'done');
-  awardCoins(10, `Sesión ${sessionNum} completada (${modId.toUpperCase()})`, `done_${modId}_s${sessionNum}`);
+  awardCoins('session_complete', `done:${modId}:s${sessionNum}`, `Sesión ${sessionNum} completada (${modId.toUpperCase()})`);
 
   if (sessionNum < (modData.sessions?.length || 1)) {
     selectModuleSession(sessionNum + 1);
@@ -1371,7 +1520,7 @@ function completeModuleSession(modId, sessionNum) {
 
 function finishCurriculumModule(modId) {
   localStorage.setItem(`chanak_mod_${modId}`, 'done');
-  awardCoins(25, `Módulo ${modId.toUpperCase()} Completado`, `mod_${modId}`);
+  awardCoins('module_complete', `mod:${modId}`, `Módulo ${modId.toUpperCase()} Completado`);
   closeCapsuleModal();
   renderCurrentView();
 }
@@ -1416,7 +1565,13 @@ function renderCurriculumModuleModal(container) {
         <div style="font-size: 12px; color: #14532d; line-height: 1.5;">
           <div><strong>Estándares Florida:</strong> ${(tg.floridaStandards || []).join(', ')}</div>
           <div><strong>Criterio de Evaluación:</strong> Rúbrica Chanak 40/30/30 (80% mínimo requerido)</div>
-          ${currentSession.commonError ? `<div><strong>⚠️ Error Común Docente:</strong> ${currentSession.commonError}</div>` : ''}
+          ${(() => {
+            const notes = mentorNotes(modId, currentSession.number);
+            return `
+              ${notes.commonError ? `<div><strong>⚠️ Error Común Docente:</strong> ${notes.commonError}</div>` : ''}
+              ${notes.checkpoint ? `<div><strong>🎯 Checkpoint:</strong> ${notes.checkpoint}</div>` : ''}
+            `;
+          })()}
         </div>
       </div>
     ` : ''}
@@ -1517,45 +1672,71 @@ function showCoinToast(msg) {
   }
 }
 
-async function awardCoins(amount, reason = 'Actividad Life Skills', refKey = '') {
-  addCoins(amount);
-  showCoinToast(`+${amount} ChanakCoins · ${reason}`);
+// Montos canónicos. Esta tabla es un ESPEJO de la que aplica la RPC del SIS,
+// usada solo para el número que se muestra en pantalla. La cifra que se
+// contabiliza de verdad es siempre la que devuelve el servidor.
+const COIN_AMOUNTS = {
+  session_reflection: 10,
+  session_complete: 10,
+  notebook_save: 10,
+  capsule_complete: 10,
+  module_complete: 25,
+  reto_submitted: 25,
+  quarterly_project: 50,
+  riasec_test: 50,
+};
 
-  if (state.token && state.studentId) {
-    try {
-      const SUPABASE_URL = 'https://gepsbesbhsxfyxymemim.supabase.co';
-      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlcHNiZXNiaHN4Znl4eW1lbWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjg1MjgsImV4cCI6MjA4Mzc0NDUyOH0.VQ6q4ex-tWp2Nr2YK-Sd7PPGCZgcQvQUmTGNNjZtp5Q';
-      
-      const idempotencyKey = refKey || `ls_${state.studentId}_${Date.now()}`;
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/award_life_skills_coins`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-        },
-        body: JSON.stringify({
-          p_token: state.token,
-          p_amount: amount,
-          p_reason: reason,
-          p_idempotency_key: idempotencyKey
-        })
-      });
-      const data = await res.json();
-      console.log('ChanakCoins sync with SIS RPC:', data);
-    } catch (err) {
-      console.warn('Could not sync coins with SIS RPC:', err);
-    }
+async function awardCoins(event, label = '', reasonText = '') {
+  const optimistic = COIN_AMOUNTS[event];
+  if (optimistic === undefined) {
+    console.warn('Evento de ChanakCoins desconocido:', event);
+    return;
   }
 
-  if (window.parent && window.parent !== window) {
-    window.parent.postMessage({
-      type: 'CHANAK_COINS_AWARDED',
-      amount,
-      reason,
-      studentId: state.studentId,
-      timestamp: new Date().toISOString()
-    }, '*');
+  // Sin sesión del SIS (modo demo) las monedas son locales y no se contabilizan.
+  if (!state.token) {
+    addCoins(optimistic);
+    showCoinToast(`+${optimistic} ChanakCoins · ${reasonText || label}`);
+    return;
+  }
+
+  try {
+    // El cliente solo declara QUÉ ocurrió. El servidor verifica la firma del
+    // token, decide el monto y resuelve la idempotencia.
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/award_life_skills_coins`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+      },
+      body: JSON.stringify({ p_token: state.token, p_event: event, p_ref: label })
+    });
+    const data = await res.json();
+
+    if (!data || data.success !== true) {
+      showCoinToast('⚠️ No se pudo registrar tus ChanakCoins. Habla con tu mentora.');
+      return;
+    }
+
+    if (data.duplicate) {
+      showCoinToast('✓ Ya registrado anteriormente — sin monedas duplicadas');
+      return;
+    }
+
+    addCoins(data.amount);
+    showCoinToast(`+${data.amount} ChanakCoins · ${reasonText || label}`);
+
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'CHANAK_COINS_AWARDED',
+        amount: data.amount,
+        event,
+        timestamp: new Date().toISOString()
+      }, '*');
+    }
+  } catch (err) {
+    showCoinToast('⚠️ Sin conexión con el SIS — tus ChanakCoins no se registraron.');
   }
 }
 
@@ -1569,7 +1750,7 @@ function closeWalletModal() {
   if (modal) modal.classList.remove('open');
 }
 
-function openSubmissionModal(retoId, reward = 30) {
+function openSubmissionModal(retoId, reward = COIN_AMOUNTS.reto_submitted) {
   state.activeSubmittingReto = retoId;
   const modal = document.getElementById('submission-modal');
   const rewardEl = document.getElementById('sub-modal-reward');
@@ -1584,7 +1765,7 @@ function closeSubmissionModal() {
 
 function confirmSubmission() {
   if (state.activeSubmittingReto) {
-    awardCoins(30, `Reto Enviado (${state.activeSubmittingReto})`, `sub_${state.activeSubmittingReto}`);
+    awardCoins('reto_submitted', `sub:${state.activeSubmittingReto}`, `Reto Enviado (${state.activeSubmittingReto})`);
     closeSubmissionModal();
   }
 }
@@ -1600,18 +1781,24 @@ function filterJuniors(cat) {
 function renderJuniorsStage(container) {
   const isEs = state.lang === 'es';
   const filter = state.juniorsFilter;
+  // Los filtros se derivan de los propios retos. Antes estaban escritos a mano
+  // con claves que no existían en los datos, así que todos devolvían cero.
+  const tracks = new Map();
+  JUNIORS_RETOS.forEach(r => {
+    if (r.track && !tracks.has(r.track)) tracks.set(r.track, r.trackLabel);
+  });
+
   const categories = [
-    { key: 'all', label: isEs ? 'Todos los Retos' : 'All Challenges' },
-    { key: 'caracter', label: isEs ? '🌱 Carácter & Fe' : 'Character & Faith' },
-    { key: 'habitos', label: isEs ? '⏱️ Hábitos & Orden' : 'Habits & Order' },
-    { key: 'creatividad', label: isEs ? '🎨 Creatividad & Arte' : 'Creativity & Art' },
-    { key: 'servicio', label: isEs ? '🤝 Servicio Familiar' : 'Family Service' },
-    { key: 'finanzas', label: isEs ? '🪙 Emprendimiento' : 'Entrepreneurship' }
+    { key: 'all', label: isEs ? 'Todos los retos' : 'All challenges' },
+    ...Array.from(tracks, ([key, label]) => ({
+      key,
+      label: label?.[state.lang] || label?.es || key,
+    })),
   ];
 
-  const filteredRetos = filter === 'all' 
-    ? JUNIORS_RETOS 
-    : JUNIORS_RETOS.filter(r => r.category === filter);
+  const filteredRetos = filter === 'all'
+    ? JUNIORS_RETOS
+    : JUNIORS_RETOS.filter(r => r.track === filter);
 
   container.innerHTML = `
     <!-- Header Juniors -->
@@ -1621,7 +1808,9 @@ function renderJuniorsStage(container) {
         🌿 Catálogo de Retos Junior (8–13 Años)
       </h3>
       <p style="font-size: 14px; color: var(--ink-muted); margin: 0;">
-        80 mini-proyectos de carácter, mayordomía, arte y servicio organizados para estudiantes en etapa elemental e intermedia.
+        ${JUNIORS_RETOS.length} ${isEs
+          ? 'mini-proyectos de carácter, mayordomía, ciencia y servicio para estudiantes en etapa elemental e intermedia.'
+          : 'mini-projects in character, stewardship, science and service for elementary and middle school students.'}
       </p>
     </div>
 
@@ -1638,28 +1827,32 @@ function renderJuniorsStage(container) {
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 32px;">
       ${filteredRetos.map(r => {
         const isDone = localStorage.getItem(`chanak_jreto_${r.id}`) === 'done';
+        const trackLabel = r.trackLabel?.[state.lang] || r.trackLabel?.es || r.track || '';
+        const title = r.title?.[state.lang] || r.title?.es || r.id;
+        const desc = r.desc?.[state.lang] || r.desc?.es || '';
+        const coins = r.coins || COIN_AMOUNTS.reto_submitted;
+
         return `
-          <div class="reading-card" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span class="badge" style="background: var(--paper); border: 1px solid var(--line); font-size: 11px;">
-                  ${r.stage.toUpperCase()} · ${r.category.toUpperCase()}
-                </span>
-                <span style="font-size: 11px; font-weight: 700; color: var(--gold);">
-                  +${r.coins || 15} 🪙
-                </span>
-              </div>
-              <h4 style="font-size: 16px; color: var(--navy); margin-bottom: 6px;">
-                #${r.id}: ${r.title[state.lang]}
-              </h4>
-              <p style="font-size: 13px; color: var(--ink-muted); line-height: 1.5; margin-bottom: 12px;">
-                ${r.desc[state.lang]}
-              </p>
-            </div>
-            <button class="btn-interactive" style="width: 100%; justify-content: center; ${isDone ? 'background:#f0fdf4; border-color:#86efac; color:var(--green);' : ''}" onclick="openSubmissionModal('${r.id}', ${r.coins || 15})">
-              ${isDone ? '✓ Reto Enviado (+🪙)' : '🚀 Subir Evidencia →'}
+          <article class="module-card is-${isDone ? 'completado' : 'pendiente'}">
+            <header class="module-card__top">
+              <span class="module-card__id">
+                ${r.icon || '🌿'} ${trackLabel}${r.retoNum ? ` · ${isEs ? 'Reto' : 'Challenge'} ${r.retoNum}` : ''}
+              </span>
+              <span class="module-card__state">
+                ${isDone ? (isEs ? '✓ Enviado' : '✓ Submitted') : `+${coins} 🪙`}
+              </span>
+            </header>
+
+            <h4 class="module-card__title">${title}</h4>
+            ${desc ? `<p class="module-card__eq">${desc}</p>` : ''}
+
+            <button class="btn-primary module-card__cta" style="margin-top: auto;"
+                    onclick="openSubmissionModal('${r.id}', ${coins})">
+              ${isDone
+                ? (isEs ? 'Ver mi entrega →' : 'View my submission →')
+                : (isEs ? 'Subir evidencia →' : 'Upload evidence →')}
             </button>
-          </div>
+          </article>
         `;
       }).join('')}
     </div>

@@ -278,7 +278,7 @@ export const JUNIORS_RETOS = [
     title: T('El Huerto de la Paciencia (Germinación)', 'The Patience Garden (Germination)'),
     desc: T('Siembra legumbres en un frasco transparente con algodón húmedo. Registra su crecimiento diario durante 7 días y reflexiona en Gálatas 6:9.', 'Plant legumes in a transparent jar with moist cotton. Record daily growth for 7 days and reflect on Galatians 6:9.'),
     materials: T('Frasco de vidrio, algodón/tierra, semillas de frijol/lenteja, regla, libreta.', 'Glass jar, cotton/soil, bean/lentil seeds, ruler, notebook.'),
-    coins: 30,
+    coins: 25,
     verse: 'Gálatas 6:9',
     verseText: T('No nos cansemos, pues, de hacer bien; porque a su tiempo segaremos, si no desmayamos.', 'And let us not grow weary of doing good, for in due season we will reap, if we do not give up.')
   },
@@ -291,7 +291,7 @@ export const JUNIORS_RETOS = [
     title: T('Diario de Campo: Observación de la Creación', 'Field Journal: Creation Observation'),
     desc: T('Elige un árbol, tipo de ave o fase lunar de tu localidad y dibuja/describe su comportamiento durante 5 días seguidos.', 'Pick a tree, bird species, or moon phase in your area and sketch/describe its behavior for 5 consecutive days.'),
     materials: T('Cuaderno de notas, lápices de colores, lupa o binoculares.', 'Notebook, colored pencils, magnifying glass or binoculars.'),
-    coins: 30,
+    coins: 25,
     verse: 'Salmo 19:1',
     verseText: T('Los cielos cuentan la gloria de Dios, y el firmamento anuncia la obra de sus manos.', 'The heavens declare the glory of God, and the sky above proclaims his handiwork.')
   },
@@ -304,7 +304,7 @@ export const JUNIORS_RETOS = [
     title: T('Adopción de una Planta o Rincón Verde', 'Adopting a Plant or Green Corner'),
     desc: T('Asume la responsabilidad total del riego, luz solar y limpieza de una planta durante 3 semanas consecutivas con ficha de seguimiento.', 'Take full responsibility for watering, sunlight, and caring for a plant for 3 consecutive weeks with a log sheet.'),
     materials: T('Maceta, regadera pequeña, ficha de seguimiento semanal.', 'Pot, small watering can, weekly tracking sheet.'),
-    coins: 35,
+    coins: 25,
     verse: 'Génesis 2:15',
     verseText: T('Tomó, pues, Jehová Dios al hombre, y lo puso en el huerto de Edén, para que lo labrara y lo guardase.', 'The Lord God took the man and put him in the garden of Eden to work it and keep it.')
   },
@@ -332,7 +332,7 @@ export const JUNIORS_RETOS = [
     title: T('El Frasco de Bendiciones Familiares', 'Family Blessing Jar'),
     desc: T('Construye un frasco decorado donde cada miembro de la familia deposita un agradecimiento al final de cada día durante 2 semanas.', 'Craft a decorated jar where family members deposit one thankful note every evening for 2 weeks.'),
     materials: T('Frasco de vidrio, tiras de papel, rotuladores, lazo.', 'Glass jar, paper strips, markers, ribbon.'),
-    coins: 30,
+    coins: 25,
     verse: 'Salmo 103:2',
     verseText: T('Bendice, alma mía, a Jehová, y no olvides ninguno de sus beneficios.', 'Bless the Lord, O my soul, and forget not all his benefits.')
   },
@@ -345,7 +345,7 @@ export const JUNIORS_RETOS = [
     title: T('Operación Siervo Silencioso', 'Operation Silent Servant'),
     desc: T('Realiza 3 actos de ayuda desinteresada en tu hogar o vecindario sin que nadie te lo pida y sin buscar reconocimiento público.', 'Carry out 3 selfless acts of service at home or in your neighborhood without being asked or seeking recognition.'),
     materials: T('Disposición de servicio, reporte reflexivo final.', 'Heart to serve, final reflection report.'),
-    coins: 40,
+    coins: 25,
     verse: 'Mateo 6:3-4',
     verseText: T('Mas cuando tú des limosna, no sepa tu izquierda lo que hace tu derecha, para que sea tu limosna en secreto; y tu Padre que ve en lo secreto te recompensará en público.', 'But when you give to the needy, do not let your left hand know what your right hand is doing, so that your giving may be in secret.')
   },
@@ -360,7 +360,7 @@ export const JUNIORS_RETOS = [
     title: T('Mayordomía en la Cocina: Pan o Galletas', 'Kitchen Stewardship: Bread or Cookies'),
     desc: T('Elabora una receta casera calculando el costo unitario de los ingredientes y comparte el resultado con tu familia.', 'Bake a homemade recipe calculating the unit cost of each ingredient and share the batch with your family.'),
     materials: T('Harina, levadura/azúcar, receta familiar, libreta de costos.', 'Flour, yeast/sugar, family recipe, cost notepad.'),
-    coins: 30,
+    coins: 25,
     verse: 'Juan 6:35',
     verseText: T('Jesús les dijo: Yo soy el pan de vida; el que a mí viene, nunca tendrá hambre.', 'Jesus said to them, "I am the bread of life; whoever comes to me shall not hunger."')
   },
@@ -373,7 +373,7 @@ export const JUNIORS_RETOS = [
     title: T('El Menú del Templo del Espíritu', 'The Temple of the Spirit Menu'),
     desc: T('Diseña y prepara un almuerzo o merienda saludable balanceando proteínas, vegetales y frutas frescas con supervisión adulta.', 'Design and prepare a healthy meal balancing proteins, fresh vegetables, and fruits under adult supervision.'),
     materials: T('Ingredientes frescos, tabla de cortar, supervisión de mamá/papá.', 'Fresh ingredients, cutting board, parent supervision.'),
-    coins: 30,
+    coins: 25,
     verse: '1 Corintios 6:19-20',
     verseText: T('¿O ignoráis que vuestro cuerpo es templo del Espíritu Santo... Glorificad, pues, a Dios en vuestro cuerpo.', 'Or do you not know that your body is a temple of the Holy Spirit... So glorify God in your body.')
   },
@@ -401,7 +401,7 @@ export const JUNIORS_RETOS = [
     title: T('Misión Espacio de Excelencia', 'Mission Room of Excellence'),
     desc: T('Transforma tu área de estudio y habitación aplicando el principio de orden y diligencia. Toma foto de "Antes" y "Después".', 'Transform your study area and bedroom applying diligence and order. Take "Before" and "After" photos.'),
     materials: T('Cajas organizadoras, etiquetas, paño de limpieza, cámara/móvil.', 'Storage boxes, labels, cleaning cloth, camera/phone.'),
-    coins: 30,
+    coins: 25,
     verse: 'Proverbios 10:4',
     verseText: T('La mano negligente empobrece; mas la mano de los diligentes enriquece.', 'A slack hand causes poverty, but the hand of the diligent makes rich.')
   },
@@ -414,7 +414,7 @@ export const JUNIORS_RETOS = [
     title: T('La Rutina Nocturna de 5 Minutos (7 Días)', '5-Minute Nightly Routine (7 Days)'),
     desc: T('Prepara tu ropa, mochila y plan de PACEs antes de acostarte durante 7 días seguidos sin recordatorios de tus padres.', 'Prepare your outfit, backpack, and PACE plan before bed for 7 consecutive days without reminders.'),
     materials: T('Checklist de 7 días, reloj o alarma.', '7-day checklist, alarm clock.'),
-    coins: 35,
+    coins: 25,
     verse: 'Proverbios 6:6-8',
     verseText: T('Ve a la hormiga, oh perezoso, mira sus caminos, y sé sabio; la cual no teniendo capitán... prepara en el verano su comida.', 'Go to the ant, O sluggard; consider her ways, and be wise. Without having any chief... she prepares her bread in summer.')
   },
@@ -442,7 +442,7 @@ export const JUNIORS_RETOS = [
     title: T('Mi Alcancía de 3 Frascos', 'My 3-Jar Piggy Bank'),
     desc: T('Organiza tus monedas en 3 categorías: Diezmo/Ofrenda (10%), Ahorro de metas (40%) y Gastos sabios (50%).', 'Organize your allowance into 3 jars: Tithe/Giving (10%), Goal Savings (40%), and Wise Spending (50%).'),
     materials: T('3 frascos o sobres decorados con etiquetas claras.', '3 jars or envelopes decorated with clear labels.'),
-    coins: 30,
+    coins: 25,
     verse: 'Malaquías 3:10',
     verseText: T('Traed todos los diezmos al alfolí y haya alimento en mi casa; y probadme ahora en esto...', 'Bring the full tithe into the storehouse, that there may be food in my house. And thereby put me to the test...')
   },
@@ -455,7 +455,7 @@ export const JUNIORS_RETOS = [
     title: T('Mi Primera Meta de Ahorro y Presupuesto', 'My First Savings Goal & Budget'),
     desc: T('Define un libro o proyecto que deseas adquirir. Calcula cuántas semanas te llevará ahorrar y lleva el registro gráfico.', 'Pick a book or educational tool you wish to acquire. Calculate weeks needed to save and track your progress visually.'),
     materials: T('Termómetro de ahorro dibujado en papel, alcancía.', 'Savings thermometer drawn on paper, coin bank.'),
-    coins: 30,
+    coins: 25,
     verse: 'Proverbios 13:11',
     verseText: T('Las riquezas de vanidad disminuirán; pero el que recoge con mano laboriosa las aumentará.', 'Wealth gained hastily will dwindle, but whoever gathers little by little will increase it.')
   },
@@ -483,7 +483,7 @@ export const JUNIORS_RETOS = [
     title: T('La Tensión Superficial y el Orden Natural', 'Surface Tension & Natural Order'),
     desc: T('Realiza el experimento de la gota de agua sobre monedas y observa cómo las leyes físicas revelan un Creador de orden.', 'Conduct the water drop experiment on coins and observe how physical laws reveal an orderly Creator.'),
     materials: T('Monedas, gotero, agua, detergente, libreta de registro.', 'Coins, dropper, water, dish soap, lab notes.'),
-    coins: 30,
+    coins: 25,
     verse: 'Hebreos 11:3',
     verseText: T('Por la fe entendemos haber sido constituido el universo por la palabra de Dios, de modo que lo que se ve fue hecho de lo que no se veía.', 'By faith we understand that the universe was created by the word of God, so that what is seen was not made out of things that are visible.')
   },
@@ -496,7 +496,7 @@ export const JUNIORS_RETOS = [
     title: T('La Luz Blanca y el Prisma', 'White Light & The Prism'),
     desc: T('Descompón la luz solar en los 7 colores del arcoíris usando un vaso con agua o un CD y reflexiona en el pacto de Dios.', 'Break white sunlight into the 7 rainbow colors using a glass of water or CD and reflect on God’s covenant.'),
     materials: T('Vaso de agua, linterna o sol directo, espejo plano, hoja blanca.', 'Glass of water, sunlight/torch, small flat mirror, white paper.'),
-    coins: 30,
+    coins: 25,
     verse: 'Génesis 9:13',
     verseText: T('Mi arco he puesto en las nubes, el cual será por señal del pacto entre mí y la tierra.', 'I have set my bow in the cloud, and it shall be a sign of the covenant between me and the earth.')
   },
@@ -509,7 +509,7 @@ export const JUNIORS_RETOS = [
     title: T('Reacciones Químicas en la Cocina (Bicarbonato y Vinagre)', 'Kitchen Chemistry (Baking Soda & Vinegar)'),
     desc: T('Aplica el método científico formulando una hipótesis antes de mezclar reactivos caseros, midiendo volumen y temperatura.', 'Apply the scientific method by stating a hypothesis before mixing kitchen reagents, observing volume and temperature.'),
     materials: T('Bicarbonato, vinagre, botella plástica, globo, regla.', 'Baking soda, vinegar, plastic bottle, balloon, ruler.'),
-    coins: 35,
+    coins: 25,
     verse: 'Salmo 111:2',
     verseText: T('Grandes son las obras de Jehová, buscadas de todos los que las quieren.', 'Great are the works of the Lord, studied by all who delight in them.')
   }
@@ -1384,7 +1384,6 @@ export const EXTENSION_CAPSULES_DATA = {
         "title": "¿Quién decide quién eres?",
         "objective": "Formular una primera respuesta y conocer la rúbrica.",
         "keyActivity": "Gancho con escudo heráldico + discusión + diagnóstico escrito.",
-        "commonError": "El profesor responde la pregunta esencial — sosténgala abierta.",
         "homework": "Traer una fotografía familiar."
       },
       {
@@ -1392,7 +1391,6 @@ export const EXTENSION_CAPSULES_DATA = {
         "title": "Lo que recibiste y lo que construyes",
         "objective": "Distinguir identidad recibida de construida.",
         "keyActivity": "Clasificación de 12 elementos propios en dos columnas.",
-        "commonError": "Clasificar todo como \"construido\".",
         "homework": "3 preguntas para un familiar."
       },
       {
@@ -1406,22 +1404,19 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 4,
         "title": "Cómo estoy hecho",
         "objective": "Identificar 3 rasgos con fortaleza y riesgo.",
-        "keyActivity": "Autoevaluación con evidencia conductual real.",
-        "commonError": "Usar el temperamento como excusa de conducta."
+        "keyActivity": "Autoevaluación con evidencia conductual real."
       },
       {
         "number": 5,
         "title": "Taller: diseño del Escudo",
         "objective": "Producir boceto de 4 cuadrantes + lema.",
-        "keyActivity": "Producción individual guiada.",
-        "checkpoint": "Checkpoint 1 — en rumbo/necesita ajuste, sin nota."
+        "keyActivity": "Producción individual guiada."
       },
       {
         "number": 6,
         "title": "Carta al yo futuro",
         "objective": "Argumentar con evidencia 3 influencias.",
-        "keyActivity": "Escritura de 4 partes con regla de evidencia obligatoria.",
-        "checkpoint": "Checkpoint 2 — hechos vs. adjetivos."
+        "keyActivity": "Escritura de 4 partes con regla de evidencia obligatoria."
       },
       {
         "number": 7,
@@ -1525,8 +1520,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Servir no es lo mismo que ayudar",
         "objective": "Distinguir ayudar de liderar el servicio.",
-        "keyActivity": "Observación de 3 necesidades reales de su entorno.",
-        "commonError": "Propuestas abstractas sin concreción real."
+        "keyActivity": "Observación de 3 necesidades reales de su entorno."
       },
       {
         "number": 2,
@@ -1544,15 +1538,13 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 4,
         "title": "Revisión del plan",
         "objective": "Validar viabilidad del plan.",
-        "keyActivity": "Revisión individual de 5 min por estudiante.",
-        "checkpoint": "Checkpoint 1 — plan corregido y viable."
+        "keyActivity": "Revisión individual de 5 min por estudiante."
       },
       {
         "number": 5,
         "title": "Ejecución — semana 1",
         "objective": "Ejecutar y documentar mientras ocurre.",
-        "keyActivity": "Puesta en común por grupos pequeños.",
-        "commonError": "Dejar la documentación para el final."
+        "keyActivity": "Puesta en común por grupos pequeños."
       },
       {
         "number": 6,
@@ -1564,8 +1556,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 7,
         "title": "Ajuste a mitad de ejecución",
         "objective": "Corregir el rumbo sin penalización.",
-        "keyActivity": "Puesta en común de obstáculos reales.",
-        "checkpoint": "Checkpoint 2 — ajuste de rumbo."
+        "keyActivity": "Puesta en común de obstáculos reales."
       },
       {
         "number": 8,
@@ -1639,8 +1630,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Meta vs. sistema",
         "objective": "Diferenciar meta de sistema.",
-        "keyActivity": "Análisis de una meta abandonada.",
-        "commonError": "Confundir sistema con más disciplina."
+        "keyActivity": "Análisis de una meta abandonada."
       },
       {
         "number": 2,
@@ -1658,8 +1648,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 4,
         "title": "Diseño del sistema semanal",
         "objective": "Diseñar bloques fijos realistas.",
-        "keyActivity": "Diseño de 3-4 bloques con día y hora exactos.",
-        "checkpoint": "Checkpoint 1 — validado contra los datos de S2-S3."
+        "keyActivity": "Diseño de 3-4 bloques con día y hora exactos."
       },
       {
         "number": 5,
@@ -1683,8 +1672,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 8,
         "title": "Ajuste tras el primer fallo",
         "objective": "Rediseñar el sistema con evidencia del fallo.",
-        "keyActivity": "Reflexión guiada de rediseño.",
-        "commonError": "Tratar el fallo como fracaso en vez de material de diseño."
+        "keyActivity": "Reflexión guiada de rediseño."
       }
     ],
     "studentNotebook": [
@@ -1760,8 +1748,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Por qué unas historias se recuerdan",
         "objective": "Identificar la estructura de una historia memorable.",
-        "keyActivity": "Contraste de dos versiones del mismo hecho.",
-        "commonError": "Elegir el episodio más espectacular en vez del más verdadero."
+        "keyActivity": "Contraste de dos versiones del mismo hecho."
       },
       {
         "number": 2,
@@ -1785,8 +1772,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Ensayo por parejas",
         "objective": "Recibir feedback específico.",
-        "keyActivity": "Presentación y feedback estructurado.",
-        "checkpoint": "Checkpoint — guion ajustado."
+        "keyActivity": "Presentación y feedback estructurado."
       },
       {
         "number": 6,
@@ -1804,8 +1790,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 8,
         "title": "Presentación final",
         "objective": "Defender la historia ante el grupo.",
-        "keyActivity": "Presentación de 2 min «My Story in 2 Minutes».",
-        "commonError": "Calificar la producción audiovisual por encima de la estructura."
+        "keyActivity": "Presentación de 2 min «My Story in 2 Minutes»."
       }
     ],
     "studentNotebook": [
@@ -1873,8 +1858,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "¿A dónde se va mi dinero? (semana 1)",
         "objective": "Registrar ingresos y gastos reales.",
-        "keyActivity": "Registro diario de dos semanas.",
-        "commonError": "Clasificar todo como \"necesidad\"."
+        "keyActivity": "Registro diario de dos semanas."
       },
       {
         "number": 2,
@@ -1898,8 +1882,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Ajuste del presupuesto",
         "objective": "Corregir el presupuesto con evidencia real.",
-        "keyActivity": "Checkpoint de ajuste.",
-        "checkpoint": "Checkpoint — presupuesto corregido."
+        "keyActivity": "Checkpoint de ajuste."
       },
       {
         "number": 6,
@@ -1960,8 +1943,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Personalidad vs. carácter",
         "objective": "Diferenciar tendencia de decisión sostenida.",
-        "keyActivity": "Análisis de una decisión propia reciente.",
-        "commonError": "Confundir \"buen carácter\" con temperamento agradable."
+        "keyActivity": "Análisis de una decisión propia reciente."
       },
       {
         "number": 2,
@@ -1985,8 +1967,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Diseño del plan",
         "objective": "Diseñar práctica de 6 semanas medible.",
-        "keyActivity": "Plan con indicador de medición.",
-        "checkpoint": "Checkpoint 1."
+        "keyActivity": "Plan con indicador de medición."
       },
       {
         "number": 6,
@@ -2073,8 +2054,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Posición vs. interés",
         "objective": "Diferenciar posición de interés.",
-        "keyActivity": "Ejemplo de la naranja + análisis de conflicto propio.",
-        "commonError": "Solo analizar el propio interés, no el ajeno."
+        "keyActivity": "Ejemplo de la naranja + análisis de conflicto propio."
       },
       {
         "number": 2,
@@ -2098,8 +2078,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Elección del conflicto real",
         "objective": "Elegir un conflicto real y manejable.",
-        "keyActivity": "Validación del profesor.",
-        "checkpoint": "Checkpoint — conflicto validado."
+        "keyActivity": "Validación del profesor."
       },
       {
         "number": 6,
@@ -2185,8 +2164,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Hecho, opinión, manipulación",
         "objective": "Clasificar tipos de afirmación.",
-        "keyActivity": "Clasificación de 5 frases en grupo.",
-        "commonError": "Etiquetar como \"manipulación\" solo lo que no se comparte."
+        "keyActivity": "Clasificación de 5 frases en grupo."
       },
       {
         "number": 2,
@@ -2210,8 +2188,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Elección del contenido",
         "objective": "Elegir una pieza real para analizar.",
-        "keyActivity": "Validación del profesor.",
-        "checkpoint": "Checkpoint — contenido validado."
+        "keyActivity": "Validación del profesor."
       },
       {
         "number": 6,
@@ -2310,8 +2287,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 3,
         "title": "El mejor y el peor administrado",
         "objective": "Seleccionar con evidencia.",
-        "keyActivity": "Selección justificada.",
-        "commonError": "Elegir un recurso sin margen real de decisión propia."
+        "keyActivity": "Selección justificada."
       },
       {
         "number": 4,
@@ -2323,8 +2299,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Diseño del plan",
         "objective": "Diseñar plan de 6 semanas medible.",
-        "keyActivity": "Plan con indicador numérico.",
-        "checkpoint": "Checkpoint — plan validado."
+        "keyActivity": "Plan con indicador numérico."
       },
       {
         "number": 6,
@@ -2428,8 +2403,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 4,
         "title": "Primera semana de ejecución",
         "objective": "Ajustar tempranamente si es inviable.",
-        "keyActivity": "Checkpoint temprano.",
-        "checkpoint": "Checkpoint — ajuste temprano."
+        "keyActivity": "Checkpoint temprano."
       },
       {
         "number": 5,
@@ -2441,8 +2415,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 6,
         "title": "Evaluación y cierre",
         "objective": "Evaluar con datos concretos.",
-        "keyActivity": "Reflexión + validación de un adulto.",
-        "commonError": "Dar cifras de peso o comparaciones entre estudiantes — nunca."
+        "keyActivity": "Reflexión + validación de un adulto."
       }
     ],
     "studentNotebook": [
@@ -2504,8 +2477,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Dirigir no es hacer todo uno mismo",
         "objective": "Diferenciar dirigir de ejecutar solo.",
-        "keyActivity": "Análisis de un episodio de liderazgo (propio o ajeno).",
-        "commonError": "Diseñar el taller como exposición propia sin participación activa."
+        "keyActivity": "Análisis de un episodio de liderazgo (propio o ajeno)."
       },
       {
         "number": 2,
@@ -2529,8 +2501,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Ensayo del plan",
         "objective": "Simular ante compañeros difíciles.",
-        "keyActivity": "Simulación de 10-15 min.",
-        "checkpoint": "Checkpoint — plan ajustado."
+        "keyActivity": "Simulación de 10-15 min."
       },
       {
         "number": 6,
@@ -2617,8 +2588,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Necesidad real, no idea abstracta",
         "objective": "Observar necesidades reales del entorno.",
-        "keyActivity": "Observación de 3 necesidades.",
-        "commonError": "Proponer ideas ya hechas por otros sin observación propia."
+        "keyActivity": "Observación de 3 necesidades."
       },
       {
         "number": 2,
@@ -2642,8 +2612,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Decisión final",
         "objective": "Confirmar o ajustar la idea con evidencia.",
-        "keyActivity": "Validación por el profesor.",
-        "checkpoint": "Checkpoint — idea confirmada."
+        "keyActivity": "Validación por el profesor."
       },
       {
         "number": 6,
@@ -2730,8 +2699,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Dilema real vs. decisión obvia",
         "objective": "Distinguir dilemas genuinos.",
-        "keyActivity": "Clasificación de 4 casos.",
-        "commonError": "Buscar la respuesta correcta del profesor en vez de razonar."
+        "keyActivity": "Clasificación de 4 casos."
       },
       {
         "number": 2,
@@ -2755,8 +2723,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Elección del dilema propio",
         "objective": "Elegir un dilema real y actual.",
-        "keyActivity": "Validación del profesor.",
-        "checkpoint": "Checkpoint — dilema validado."
+        "keyActivity": "Validación del profesor."
       },
       {
         "number": 6,
@@ -2837,8 +2804,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Mentoría vs. resolver el problema",
         "objective": "Diferenciar acompañar de resolver.",
-        "keyActivity": "Diagnóstico comparativo.",
-        "commonError": "Dar la respuesta en vez de la pregunta que ayuda a encontrarla."
+        "keyActivity": "Diagnóstico comparativo."
       },
       {
         "number": 2,
@@ -2862,8 +2828,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Primer encuentro real",
         "objective": "Ejecutar y ajustar.",
-        "keyActivity": "Registro del primer encuentro.",
-        "checkpoint": "Checkpoint — ¿escuchó más de lo que habló?"
+        "keyActivity": "Registro del primer encuentro."
       },
       {
         "number": 6,
@@ -2959,8 +2924,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 4,
         "title": "Ensayo de la entrevista",
         "objective": "Ensayar antes de la entrevista real.",
-        "keyActivity": "Ensayo con un compañero.",
-        "checkpoint": "Checkpoint — guion ajustado."
+        "keyActivity": "Ensayo con un compañero."
       },
       {
         "number": 5,
@@ -2972,8 +2936,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 6,
         "title": "Contraste y conclusión",
         "objective": "Contrastar imagen previa con lo descubierto.",
-        "keyActivity": "Reflexión final honesta.",
-        "commonError": "Forzar una conclusión positiva cuando la investigación reveló lo contrario."
+        "keyActivity": "Reflexión final honesta."
       }
     ],
     "studentNotebook": [
@@ -3059,8 +3022,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Borrador completo",
         "objective": "Redactar 500-650 palabras.",
-        "keyActivity": "Redacción del primer borrador.",
-        "checkpoint": "Checkpoint — hechos concretos, no generalidades."
+        "keyActivity": "Redacción del primer borrador."
       },
       {
         "number": 6,
@@ -3154,8 +3116,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 2,
         "title": "Selección del problema",
         "objective": "Elegir un problema real con evidencia.",
-        "keyActivity": "2-3 problemas candidatos.",
-        "commonError": "Elegir un problema demasiado amplio para un trimestre."
+        "keyActivity": "2-3 problemas candidatos."
       },
       {
         "number": 3,
@@ -3173,8 +3134,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Validación del diseño",
         "objective": "Validar el plan antes de ejecutar.",
-        "keyActivity": "Revisión con mentor/coordinador.",
-        "checkpoint": "Checkpoint 1."
+        "keyActivity": "Revisión con mentor/coordinador."
       },
       {
         "number": 6,
@@ -3186,8 +3146,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 7,
         "title": "Ajuste a mitad de proyecto",
         "objective": "Replanificar formalmente si hace falta.",
-        "keyActivity": "Sesión de ajuste normalizado.",
-        "checkpoint": "Checkpoint 2."
+        "keyActivity": "Sesión de ajuste normalizado."
       },
       {
         "number": 8,
@@ -3261,8 +3220,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 1,
         "title": "Tres rutas reales",
         "objective": "Investigar 3 rutas con datos verificables.",
-        "keyActivity": "Investigación de universidad, FP y entrada laboral.",
-        "commonError": "Investigar solo la opción de prestigio."
+        "keyActivity": "Investigación de universidad, FP y entrada laboral."
       },
       {
         "number": 2,
@@ -3286,8 +3244,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Huecos del portafolio",
         "objective": "Identificar qué falta.",
-        "keyActivity": "Plan para cerrar huecos.",
-        "checkpoint": "Checkpoint."
+        "keyActivity": "Plan para cerrar huecos."
       },
       {
         "number": 6,
@@ -3391,8 +3348,7 @@ export const EXTENSION_CAPSULES_DATA = {
         "number": 5,
         "title": "Ensayo ante un compañero",
         "objective": "Recibir feedback sobre el hilo narrativo.",
-        "keyActivity": "Ensayo completo con feedback.",
-        "checkpoint": "Checkpoint — guion ajustado."
+        "keyActivity": "Ensayo completo con feedback."
       },
       {
         "number": 6,
