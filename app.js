@@ -75,7 +75,7 @@ window.openCapsule = openCapsule;
 window.closeCapsuleModal = closeCapsuleModal;
 window.capsuleNextStep = capsuleNextStep;
 window.capsulePrevStep = capsulePrevStep;
-window.checkQuizOpt = checkQuizOpt;
+window.checkQuizStepAnswer = checkQuizStepAnswer;
 window.finishCapsule = finishCapsule;
 
 window.openWalletModal = openWalletModal;
