@@ -378,9 +378,17 @@ students que coinciden con mi uid  : 0
 ```
 
 Ningún dato de la cuenta fue alterado, y la función no podía devolver ese nombre
-(cero coincidencias). Reverté el despliegue igualmente mientras se aclaraba. Resultó
-ser la vista previa de estudiante, una función legítima del SIS. La función se
+(cero coincidencias). Reverté el despliegue igualmente mientras se aclaraba.
+
+**Causa confirmada después:** el commit `dd6255e` en `chanak-sis`
+(*"feat(student): add staff preview switcher and direct Admin Panel navigation
+button"*), hecho en paralelo durante esta misma sesión, añadía precisamente el
+selector de vista previa de estudiante para personal. El nombre que aparecía era esa
+función legítima trabajando, no un efecto de mi despliegue. La Edge Function se
 restauró a `ACTIVE v3`.
+
+Ese mismo commit recogió también mis cambios en las dos Edge Functions, así que el
+repo `chanak-sis` ya está limpio y contiene el código desplegado.
 
 **Riesgo real detectado de paso:** de 15 alumnos, **13 tienen `user_id` NULL** y 2
 tienen `profile_id` NULL. La búsqueda de la Edge Function usa
