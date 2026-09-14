@@ -26,6 +26,12 @@
   --radius-lg: 24px;
 }
 
+/* `display` de los componentes gana sobre el atributo hidden si no se fuerza.
+   La navegacion se oculta por audiencia con el.hidden = true. */
+[hidden] {
+  display: none !important;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -1749,4 +1755,109 @@ body.embed-mode .main-wrap {
   padding: 2px 7px;
   border-radius: 5px;
   word-break: break-all;
+}
+
+/* =====================================================================
+   Puerta de entrada por audiencia — se elige el itinerario antes de ver
+   nada, en lugar de mostrar todo a todos.
+   ===================================================================== */
+.audience-gate {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 20px 24px;
+  text-align: center;
+}
+
+.audience-gate h2 {
+  font-size: clamp(26px, 4vw, 36px);
+  color: var(--navy);
+  margin: 8px 0 10px;
+}
+
+.audience-gate__lead {
+  font-size: 15px;
+  color: var(--ink-muted);
+  max-width: 520px;
+  margin: 0 auto 28px;
+  line-height: 1.6;
+}
+
+.audience-gate__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.audience-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  text-align: left;
+  padding: 24px 22px;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--green);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  font: inherit;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.audience-option:hover,
+.audience-option:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--green);
+}
+
+.audience-option:last-child { border-top-color: var(--navy); }
+.audience-option:last-child:hover { border-color: var(--navy); }
+
+.audience-option__icon { font-size: 30px; line-height: 1; }
+
+.audience-option b {
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 20px;
+  color: var(--navy);
+}
+
+.audience-option__age {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+}
+
+.audience-option__desc {
+  font-size: 13px;
+  color: var(--ink-muted);
+  line-height: 1.55;
+  margin-top: 4px;
+}
+
+.audience-gate__note {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+/* Cápsula anunciada por un nivel pero aún sin contenido. */
+.module-card.is-preparacion {
+  border-top-color: var(--line);
+  opacity: 0.75;
+}
+
+.is-preparacion .module-card__state {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audience-option { transition: none; }
+  .audience-option:hover { transform: none; }
 }

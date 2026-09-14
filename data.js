@@ -696,284 +696,2560 @@ export const HIGH_SCHOOL_LEVELS = {
 
 /* ---------------- Cápsulas Interactivas Enriquecidas con Biblia ---------------- */
 export const CAPSULES_DATA = {
-  identidad: {
-    id: 'identidad',
-    tag: 'core',
-    level: 'seedling',
-    verseKey: 'identidad',
-    title: T('¿Quién soy? Identidad y Raíces', 'Who am I? Identity and Roots'),
-    bookKey: 'temperamento',
-    project: T('Tu <b>Escudo de Armas Personal</b> terminado (4 cuadrantes: Fe · Raíces · Talento · Sueño) con tu lema de vida.', 'Your finished <b>Personal Coat of Arms</b> with 4 quarters and personal motto.'),
-    steps: [
+  "identidad": {
+    "id": "identidad",
+    "tag": "core",
+    "level": "seedling",
+    "verseKey": "identidad",
+    "title": {
+      "es": "¿Quién soy? Identidad y Raíces",
+      "en": "Who am I? Identity and Roots"
+    },
+    "bookKey": "temperamento",
+    "project": {
+      "es": "Tu <b>Escudo de Armas Personal</b> terminado (4 cuadrantes: Fe · Raíces · Talento · Sueño) con tu lema de vida.",
+      "en": "Your finished <b>Personal Coat of Arms</b> with 4 quarters and personal motto."
+    },
+    "steps": [
       {
-        type: 'hook',
-        kicker: T('Paso 1 · Apertura', 'Step 1 · Hook'),
-        h: T('Un escudo dice más que un nombre', 'A shield says more than a name'),
-        scenario: T('Los caballeros y líderes históricos portaban un escudo que contaba su historia: de dónde venían, qué defendían y qué soñaban. Si diseñaras el tuyo hoy…', 'Knights and historic leaders carried shields telling their story: roots, values, and dreams. If you designed yours today…'),
-        body: T('Crearás tu <b>Escudo de Armas Personal</b> con cuatro cuadrantes: Fe · Raíces · Talento · Sueño.', 'You will create your <b>Personal Coat of Arms</b> with four quadrants: Faith · Roots · Talent · Dream.')
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Un escudo dice más que un nombre",
+          "en": "A shield says more than a name"
+        },
+        "scenario": {
+          "es": "Los caballeros y líderes históricos portaban un escudo que contaba su historia: de dónde venían, qué defendían y qué soñaban. Si diseñaras el tuyo hoy…",
+          "en": "Knights and historic leaders carried shields telling their story: roots, values, and dreams. If you designed yours today…"
+        },
+        "body": {
+          "es": "Crearás tu <b>Escudo de Armas Personal</b> con cuatro cuadrantes: Fe · Raíces · Talento · Sueño.",
+          "en": "You will create your <b>Personal Coat of Arms</b> with four quadrants: Faith · Roots · Talent · Dream."
+        }
       },
       {
-        type: 'theory',
-        kicker: T('Paso 2 · Fundamento', 'Step 2 · Theory'),
-        h: T('Identidad antes que estrategia', 'Identity before strategy'),
-        body: T('No puedes liderar hacia dónde vas si no sabes quién eres. La identidad es la unión de tus raíces familiares, tus dones espirituales y tu propósito en Cristo.', 'You cannot lead where you are going if you do not know who you are. Identity is the union of roots, gifts, and purpose in Christ.'),
-        diagram: T('<b>Fórmula del Escudo</b><br>Fe + Raíces + Talento + Sueño = Identidad con dirección.', '<b>Shield Formula</b><br>Faith + Roots + Talent + Dream = Directed Identity.')
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Identidad antes que estrategia",
+          "en": "Identity before strategy"
+        },
+        "body": {
+          "es": "No puedes liderar hacia dónde vas si no sabes quién eres. La identidad es la unión de tus raíces familiares, tus dones espirituales y tu propósito en Cristo.",
+          "en": "You cannot lead where you are going if you do not know who you are. Identity is the union of roots, gifts, and purpose in Christ."
+        },
+        "diagram": {
+          "es": "<b>Fórmula del Escudo</b><br>Fe + Raíces + Talento + Sueño = Identidad con dirección.",
+          "en": "<b>Shield Formula</b><br>Faith + Roots + Talent + Dream = Directed Identity."
+        }
       },
       {
-        type: 'quiz',
-        kicker: T('Paso 3 · Comprobación', 'Step 3 · Quiz'),
-        h: T('¿Qué NO define tu identidad?', 'What does NOT define your identity?'),
-        q: T('¿Cuál de estos elementos NO es una base sólida y eterna de tu identidad?', 'Which of these is NOT a solid eternal foundation for your identity?'),
-        opts: [
-          { t: T('Mis raíces familiares y principios aprendidos', 'My family roots and learned principles'), ok: false },
-          { t: T('El número de seguidores o "likes" en redes sociales', 'Number of followers or likes on social media'), ok: true },
-          { t: T('Los dones y talentos que Dios me otorgó', 'Gifts and talents God gave me'), ok: false },
-          { t: T('La fe y las convicciones en mi corazón', 'Faith and convictions in my heart'), ok: false }
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Qué NO define tu identidad?",
+          "en": "What does NOT define your identity?"
+        },
+        "q": {
+          "es": "¿Cuál de estos elementos NO es una base sólida y eterna de tu identidad?",
+          "en": "Which of these is NOT a solid eternal foundation for your identity?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Mis raíces familiares y principios aprendidos",
+              "en": "My family roots and learned principles"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "El número de seguidores o \"likes\" en redes sociales",
+              "en": "Number of followers or likes on social media"
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Los dones y talentos que Dios me otorgó",
+              "en": "Gifts and talents God gave me"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "La fe y las convicciones en mi corazón",
+              "en": "Faith and convictions in my heart"
+            },
+            "ok": false
+          }
         ],
-        okMsg: T('¡Exacto! La aprobación externa cambia constantemente; tu identidad en Cristo es inamovible.', 'Exactly! External approval changes constantly; your identity in Christ is unshakeable.'),
-        noMsg: T('Piénsalo otra vez: eso es interno y estable.', 'Think again: that is internal and stable.')
+        "okMsg": {
+          "es": "¡Exacto! La aprobación externa cambia constantemente; tu identidad en Cristo es inamovible.",
+          "en": "Exactly! External approval changes constantly; your identity in Christ is unshakeable."
+        },
+        "noMsg": {
+          "es": "Piénsalo otra vez: eso es interno y estable.",
+          "en": "Think again: that is internal and stable."
+        }
       },
       {
-        type: 'reflect',
-        kicker: T('Paso 4 · Aplicación', 'Step 4 · Reflection'),
-        h: T('Los 4 Cuadrantes de tu Escudo', 'The 4 Quadrants of your Shield'),
-        body: T('Escribe una frase clave para cada uno de los 4 cuadrantes. Será la base de tu entregable de Q1.', 'Write a key sentence for each quadrant to build your Q1 deliverable.'),
-        prompt: T('1. Fe: ___\n2. Raíces: ___\n3. Talento: ___\n4. Sueño: ___', '1. Faith: ___\n2. Roots: ___\n3. Talent: ___\n4. Dream: ___')
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Los 4 Cuadrantes de tu Escudo",
+          "en": "The 4 Quadrants of your Shield"
+        },
+        "body": {
+          "es": "Escribe una frase clave para cada uno de los 4 cuadrantes. Será la base de tu entregable de Q1.",
+          "en": "Write a key sentence for each quadrant to build your Q1 deliverable."
+        },
+        "prompt": {
+          "es": "1. Fe: ___\n2. Raíces: ___\n3. Talento: ___\n4. Sueño: ___",
+          "en": "1. Faith: ___\n2. Roots: ___\n3. Talent: ___\n4. Dream: ___"
+        }
       }
     ]
   },
-
-  habitos: {
-    id: 'habitos',
-    tag: 'core',
-    level: 'seedling',
-    verseKey: 'habitos',
-    title: T('Hábitos que te Construyen (Hábitos Atómicos)', 'Habits that Build You (Atomic Habits)'),
-    bookKey: 'habitos',
-    project: T('Tu <b>Tracker de 21 Días</b> completo con el hábito de 2 minutos que elegiste, marcado día a día.', 'Your completed <b>21-Day Tracker</b> for the 2-minute habit marked day by day.'),
-    steps: [
+  "habitos": {
+    "id": "habitos",
+    "tag": "core",
+    "level": "seedling",
+    "verseKey": "habitos",
+    "title": {
+      "es": "Hábitos que te Construyen (Hábitos Atómicos)",
+      "en": "Habits that Build You (Atomic Habits)"
+    },
+    "bookKey": "habitos",
+    "project": {
+      "es": "Tu <b>Tracker de 21 Días</b> completo con el hábito de 2 minutos que elegiste, marcado día a día.",
+      "en": "Your completed <b>21-Day Tracker</b> for the 2-minute habit marked day by day."
+    },
+    "steps": [
       {
-        type: 'hook',
-        kicker: T('Paso 1 · Apertura', 'Step 1 · Hook'),
-        h: T('1% mejor cada día', '1% better every day'),
-        scenario: T('Si mejoras solo 1% cada día durante un año, terminas casi 38 veces mejor. Los pequeños hábitos se multiplican exponencialmente.', 'If you improve just 1% each day for a year, you end up nearly 38 times better.'),
-        body: T('Conectamos la idea central de <b>Hábitos Atómicos</b> con tu Tracker de 21 días.', 'We connect the core idea of <b>Atomic Habits</b> with your 21-day tracker.')
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "1% mejor cada día",
+          "en": "1% better every day"
+        },
+        "scenario": {
+          "es": "Si mejoras solo 1% cada día durante un año, terminas casi 38 veces mejor. Los pequeños hábitos se multiplican exponencialmente.",
+          "en": "If you improve just 1% each day for a year, you end up nearly 38 times better."
+        },
+        "body": {
+          "es": "Conectamos la idea central de <b>Hábitos Atómicos</b> con tu Tracker de 21 días.",
+          "en": "We connect the core idea of <b>Atomic Habits</b> with your 21-day tracker."
+        }
       },
       {
-        type: 'theory',
-        kicker: T('Paso 2 · Principio', 'Step 2 · Principle'),
-        h: T('Sistemas, no metas', 'Systems, not goals'),
-        body: T('No subes al nivel de tus metas; caes al nivel de tus sistemas. El sistema es lo que repites a diario.', 'You do not rise to the level of your goals; you fall to the level of your systems.'),
-        diagram: T('<b>Las 4 Leyes del Hábito</b><br>1. Hazlo obvio · 2. Hazlo atractivo · 3. Hazlo fácil (regla de 2 min) · 4. Hazlo satisfactorio.', '<b>The 4 Laws of Habit</b><br>1. Make it obvious · 2. Make it attractive · 3. Make it easy (2-min rule) · 4. Make it satisfying.')
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Principio",
+          "en": "Step 2 · Principle"
+        },
+        "h": {
+          "es": "Sistemas, no metas",
+          "en": "Systems, not goals"
+        },
+        "body": {
+          "es": "No subes al nivel de tus metas; caes al nivel de tus sistemas. El sistema es lo que repites a diario.",
+          "en": "You do not rise to the level of your goals; you fall to the level of your systems."
+        },
+        "diagram": {
+          "es": "<b>Las 4 Leyes del Hábito</b><br>1. Hazlo obvio · 2. Hazlo atractivo · 3. Hazlo fácil (regla de 2 min) · 4. Hazlo satisfactorio.",
+          "en": "<b>The 4 Laws of Habit</b><br>1. Make it obvious · 2. Make it attractive · 3. Make it easy (2-min rule) · 4. Make it satisfying."
+        }
       },
       {
-        type: 'quiz',
-        kicker: T('Paso 3 · Comprobación', 'Step 3 · Quiz'),
-        h: T('Meta vs. Sistema', 'Goal vs. System'),
-        q: T('¿Cuál de las siguientes opciones describe un SISTEMA y no una simple meta?', 'Which of the following describes a SYSTEM and not just a goal?'),
-        opts: [
-          { t: T('Quiero ser una persona sabia y leída este año', 'I want to be a well-read person this year'), ok: false },
-          { t: T('Leo 10 páginas de mi libro de formación cada día después de cenar', 'I read 10 pages of my book daily right after dinner'), ok: true },
-          { t: T('Voy a sacar un promedio perfecto en el curso', 'I will get a perfect GPA in the course'), ok: false },
-          { t: T('Deseo tener un cuerpo atlético', 'I wish to have an athletic body'), ok: false }
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "Meta vs. Sistema",
+          "en": "Goal vs. System"
+        },
+        "q": {
+          "es": "¿Cuál de las siguientes opciones describe un SISTEMA y no una simple meta?",
+          "en": "Which of the following describes a SYSTEM and not just a goal?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Quiero ser una persona sabia y leída este año",
+              "en": "I want to be a well-read person this year"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Leo 10 páginas de mi libro de formación cada día después de cenar",
+              "en": "I read 10 pages of my book daily right after dinner"
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Voy a sacar un promedio perfecto en el curso",
+              "en": "I will get a perfect GPA in the course"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Deseo tener un cuerpo atlético",
+              "en": "I wish to have an athletic body"
+            },
+            "ok": false
+          }
         ],
-        okMsg: T('¡Correcto! Una acción concreta, contextualizada y repetible en el tiempo.', 'Correct! A concrete, contextualized, repeatable action.'),
-        noMsg: T('Eso es un deseo o meta general. Un sistema define la acción exacta y el momento.', 'That is a wish/goal. A system defines exact action and trigger.')
+        "okMsg": {
+          "es": "¡Correcto! Una acción concreta, contextualizada y repetible en el tiempo.",
+          "en": "Correct! A concrete, contextualized, repeatable action."
+        },
+        "noMsg": {
+          "es": "Eso es un deseo o meta general. Un sistema define la acción exacta y el momento.",
+          "en": "That is a wish/goal. A system defines exact action and trigger."
+        }
       },
       {
-        type: 'reflect',
-        kicker: T('Paso 4 · Aplicación', 'Step 4 · Reflection'),
-        h: T('Diseña tu Hábito de 2 Minutos', 'Design your 2-Minute Habit'),
-        body: T('Aplica la ley "hazlo fácil": define un micro-hábito que tome menos de 2 minutos para arrancar tu tracker.', 'Apply "make it easy": define a micro-habit taking under 2 minutes.'),
-        prompt: T('• Hábito deseado: ___\n• Versión de 2 minutos para empezar: ___\n• Señal o disparador (¿cuándo lo harás?): ___', '• Target habit: ___\n• 2-minute startup version: ___\n• Trigger cue: ___')
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Diseña tu Hábito de 2 Minutos",
+          "en": "Design your 2-Minute Habit"
+        },
+        "body": {
+          "es": "Aplica la ley \"hazlo fácil\": define un micro-hábito que tome menos de 2 minutos para arrancar tu tracker.",
+          "en": "Apply \"make it easy\": define a micro-habit taking under 2 minutes."
+        },
+        "prompt": {
+          "es": "• Hábito deseado: ___\n• Versión de 2 minutos para empezar: ___\n• Señal o disparador (¿cuándo lo harás?): ___",
+          "en": "• Target habit: ___\n• 2-minute startup version: ___\n• Trigger cue: ___"
+        }
       }
     ]
   },
-
-  lenguajes: {
-    id: 'lenguajes',
-    tag: 'core',
-    level: 'seedling',
-    verseKey: 'lenguajes',
-    title: T('Los 5 Lenguajes del Amor y Relaciones', 'The 5 Love Languages & Relationships'),
-    bookKey: 'lenguajes',
-    project: T('Una <b>carta a tus padres o mentor</b> escrita en su lenguaje principal de amor, con reflexión.', 'A <b>letter to parents or mentor</b> written in their primary love language.'),
-    steps: [
+  "lenguajes": {
+    "id": "lenguajes",
+    "tag": "core",
+    "level": "seedling",
+    "verseKey": "lenguajes",
+    "title": {
+      "es": "Los 5 Lenguajes del Amor y Relaciones",
+      "en": "The 5 Love Languages & Relationships"
+    },
+    "bookKey": "lenguajes",
+    "project": {
+      "es": "Una <b>carta a tus padres o mentor</b> escrita en su lenguaje principal de amor, con reflexión.",
+      "en": "A <b>letter to parents or mentor</b> written in their primary love language."
+    },
+    "steps": [
       {
-        type: 'hook',
-        kicker: T('Paso 1 · Apertura', 'Step 1 · Hook'),
-        h: T('No todos nos sentimos amados igual', 'Not everyone feels loved the same way'),
-        scenario: T('Puedes comprarle un regalo costoso a un amigo y que no se emocione… pero cuando le dedicas una tarde para conversar sin mirar el móvil, sus ojos brillan.', 'You can buy someone an expensive gift and they feel neutral, but spend an hour listening without your phone and their eyes light up.'),
-        body: T('Los 5 lenguajes explican cómo cada persona percibe y recibe el aprecio genuino.', 'The 5 love languages explain how individuals perceive authentic care.')
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "No todos nos sentimos amados igual",
+          "en": "Not everyone feels loved the same way"
+        },
+        "scenario": {
+          "es": "Puedes comprarle un regalo costoso a un amigo y que no se emocione… pero cuando le dedicas una tarde para conversar sin mirar el móvil, sus ojos brillan.",
+          "en": "You can buy someone an expensive gift and they feel neutral, but spend an hour listening without your phone and their eyes light up."
+        },
+        "body": {
+          "es": "Los 5 lenguajes explican cómo cada persona percibe y recibe el aprecio genuino.",
+          "en": "The 5 love languages explain how individuals perceive authentic care."
+        }
       },
       {
-        type: 'theory',
-        kicker: T('Paso 2 · Los 5 Canales', 'Step 2 · 5 Channels'),
-        h: T('Cinco formas de expresar amor', 'Five ways to express love'),
-        body: T('Cada persona tiene uno o dos lenguajes predominantes. Madurar en liderazgo implica aprender a hablar el lenguaje del prójimo.', 'Each person has primary languages. Maturing in leadership means speaking the other person’s language.'),
-        diagram: T('<b>Los 5 Lenguajes</b><br>1. Palabras de afirmación · 2. Tiempo de calidad · 3. Regalos con significado · 4. Actos de servicio · 5. Contacto físico respetuoso.', '<b>The 5 Languages</b><br>1. Words of affirmation · 2. Quality time · 3. Meaningful gifts · 4. Acts of service · 5. Respectful touch.')
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Los 5 Canales",
+          "en": "Step 2 · 5 Channels"
+        },
+        "h": {
+          "es": "Cinco formas de expresar amor",
+          "en": "Five ways to express love"
+        },
+        "body": {
+          "es": "Cada persona tiene uno o dos lenguajes predominantes. Madurar en liderazgo implica aprender a hablar el lenguaje del prójimo.",
+          "en": "Each person has primary languages. Maturing in leadership means speaking the other person’s language."
+        },
+        "diagram": {
+          "es": "<b>Los 5 Lenguajes</b><br>1. Palabras de afirmación · 2. Tiempo de calidad · 3. Regalos con significado · 4. Actos de servicio · 5. Contacto físico respetuoso.",
+          "en": "<b>The 5 Languages</b><br>1. Words of affirmation · 2. Quality time · 3. Meaningful gifts · 4. Acts of service · 5. Respectful touch."
+        }
       },
       {
-        type: 'quiz',
-        kicker: T('Paso 3 · Práctica', 'Step 3 · Practice'),
-        h: T('Identificando Lenguajes', 'Identifying Languages'),
-        q: T('Si tu hermano menor se siente feliz cuando le ayudas a ordenar sus legos sin criticarle, su lenguaje es:', 'If your younger sibling is happiest when you help organize their toys without complaint, their language is:'),
-        opts: [
-          { t: T('Regalos', 'Gifts'), ok: false },
-          { t: T('Actos de servicio', 'Acts of service'), ok: true },
-          { t: T('Palabras de afirmación', 'Words of affirmation'), ok: false },
-          { t: T('Contacto físico', 'Physical touch'), ok: false }
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Práctica",
+          "en": "Step 3 · Practice"
+        },
+        "h": {
+          "es": "Identificando Lenguajes",
+          "en": "Identifying Languages"
+        },
+        "q": {
+          "es": "Si tu hermano menor se siente feliz cuando le ayudas a ordenar sus legos sin criticarle, su lenguaje es:",
+          "en": "If your younger sibling is happiest when you help organize their toys without complaint, their language is:"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Regalos",
+              "en": "Gifts"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Actos de servicio",
+              "en": "Acts of service"
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Palabras de afirmación",
+              "en": "Words of affirmation"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Contacto físico",
+              "en": "Physical touch"
+            },
+            "ok": false
+          }
         ],
-        okMsg: T('¡Exacto! La acción práctica y dedicada de ayuda comunica amor directo.', 'Exact! Practical dedicated help directly communicates love.'),
-        noMsg: T('Observa la naturaleza de la acción: es una ayuda práctica.', 'Notice the nature of the action: practical help.')
+        "okMsg": {
+          "es": "¡Exacto! La acción práctica y dedicada de ayuda comunica amor directo.",
+          "en": "Exact! Practical dedicated help directly communicates love."
+        },
+        "noMsg": {
+          "es": "Observa la naturaleza de la acción: es una ayuda práctica.",
+          "en": "Notice the nature of the action: practical help."
+        }
       },
       {
-        type: 'reflect',
-        kicker: T('Paso 4 · Compromiso', 'Step 4 · Action'),
-        h: T('Tu Gesto de Amor Esta Semana', 'Your Love Action This Week'),
-        body: T('Identifica el lenguaje principal de papá o mamá y planifica un gesto concreto.', 'Identify your parent\'s primary language and plan a specific action.'),
-        prompt: T('• Persona: ___\n• Su lenguaje estimado: ___\n• Acción concreta que realizaré esta semana: ___', '• Person: ___\n• Estimated language: ___\n• Concrete action this week: ___')
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Compromiso",
+          "en": "Step 4 · Action"
+        },
+        "h": {
+          "es": "Tu Gesto de Amor Esta Semana",
+          "en": "Your Love Action This Week"
+        },
+        "body": {
+          "es": "Identifica el lenguaje principal de papá o mamá y planifica un gesto concreto.",
+          "en": "Identify your parent's primary language and plan a specific action."
+        },
+        "prompt": {
+          "es": "• Persona: ___\n• Su lenguaje estimado: ___\n• Acción concreta que realizaré esta semana: ___",
+          "en": "• Person: ___\n• Estimated language: ___\n• Concrete action this week: ___"
+        }
       }
     ]
   },
-
-  saludEmocional: {
-    id: 'saludEmocional',
-    tag: 'care',
-    level: 'seedling',
-    verseKey: 'saludEmocional',
-    title: T('Salud Emocional, Estrés y Paz en Cristo', 'Emotional Health, Stress & Peace in Christ'),
-    bookKey: 'mentirasChicas',
-    project: T('Tu <b>Semáforo Emocional</b> y diario de autorregulación con versículos de paz.', 'Your <b>Emotional Traffic Light</b> and self-regulation journal with peace verses.'),
-    steps: [
+  "saludEmocional": {
+    "id": "saludEmocional",
+    "tag": "care",
+    "level": "seedling",
+    "verseKey": "saludEmocional",
+    "title": {
+      "es": "Salud Emocional, Estrés y Paz en Cristo",
+      "en": "Emotional Health, Stress & Peace in Christ"
+    },
+    "bookKey": "mentirasChicas",
+    "project": {
+      "es": "Tu <b>Semáforo Emocional</b> y diario de autorregulación con versículos de paz.",
+      "en": "Your <b>Emotional Traffic Light</b> and self-regulation journal with peace verses."
+    },
+    "steps": [
       {
-        type: 'hook',
-        kicker: T('Paso 1 · Apertura', 'Step 1 · Hook'),
-        h: T('Las emociones son mensajeros, no capitanes', 'Emotions are messengers, not captains'),
-        scenario: T('Sentir frustración o ansiedad ante una entrega difícil es natural. Lo determinante es qué haces con esa emoción: ¿la dejas tomar el control o la llevas a Dios?', 'Feeling stressed before a deadline is normal. What matters is what you do with it: let it control you or take it to God?'),
-        body: T('Aprende a gestionar el semáforo emocional: Verde (calma), Amarillo (alerta), Rojo (pausa necesaria).', 'Learn to handle the emotional traffic light: Green, Yellow, Red.')
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Las emociones son mensajeros, no capitanes",
+          "en": "Emotions are messengers, not captains"
+        },
+        "scenario": {
+          "es": "Sentir frustración o ansiedad ante una entrega difícil es natural. Lo determinante es qué haces con esa emoción: ¿la dejas tomar el control o la llevas a Dios?",
+          "en": "Feeling stressed before a deadline is normal. What matters is what you do with it: let it control you or take it to God?"
+        },
+        "body": {
+          "es": "Aprende a gestionar el semáforo emocional: Verde (calma), Amarillo (alerta), Rojo (pausa necesaria).",
+          "en": "Learn to handle the emotional traffic light: Green, Yellow, Red."
+        }
       },
       {
-        type: 'theory',
-        kicker: T('Paso 2 · Autorregulación', 'Step 2 · Theory'),
-        h: T('El Filtro Bíblico de los Pensamientos', 'The Biblical Filter for Thoughts'),
-        body: T('Filipenses 4:8 nos enseña a llenar la mente con lo verdadero, lo honesto, lo justo, lo puro y lo amable. Reconocer pensamientos distorsionados es clave.', 'Philippians 4:8 teaches us to fill our minds with truth, honor, justice, and purity.'),
-        diagram: T('<b>El Proceso de Calma</b><br>1. Detente y respira · 2. Nombra la emoción · 3. Lleva la carga en oración · 4. Elige una acción sabia.', '<b>Calm Process</b><br>1. Stop & breathe · 2. Name emotion · 3. Pray · 4. Choose wise action.')
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Autorregulación",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "El Filtro Bíblico de los Pensamientos",
+          "en": "The Biblical Filter for Thoughts"
+        },
+        "body": {
+          "es": "Filipenses 4:8 nos enseña a llenar la mente con lo verdadero, lo honesto, lo justo, lo puro y lo amable. Reconocer pensamientos distorsionados es clave.",
+          "en": "Philippians 4:8 teaches us to fill our minds with truth, honor, justice, and purity."
+        },
+        "diagram": {
+          "es": "<b>El Proceso de Calma</b><br>1. Detente y respira · 2. Nombra la emoción · 3. Lleva la carga en oración · 4. Elige una acción sabia.",
+          "en": "<b>Calm Process</b><br>1. Stop & breathe · 2. Name emotion · 3. Pray · 4. Choose wise action."
+        }
       },
       {
-        type: 'quiz',
-        kicker: T('Paso 3 · Quiz', 'Step 3 · Quiz'),
-        h: T('Respuesta ante la Presión', 'Response to Pressure'),
-        q: T('Cuando sientes que el tiempo no te alcanza y comienzas a entrar en pánico, ¿cuál es el primer paso sabio?', 'When you feel overwhelmed by lack of time and panic starts, what is the first wise step?'),
-        opts: [
-          { t: T('Quejarte en redes sociales y posponer todo', 'Complain online and procrastinate'), ok: false },
-          { t: T('Hacer una pausa de 2 minutos, respirar, orar y priorizar 1 sola tarea inmediata', 'Pause 2 min, breathe, pray, and prioritize 1 single immediate task'), ok: true },
-          { t: T('Renunciar a la materia', 'Give up on the subject'), ok: false },
-          { t: T('Enojarte con quienes te rodean', 'Get angry with those around you'), ok: false }
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Quiz",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "Respuesta ante la Presión",
+          "en": "Response to Pressure"
+        },
+        "q": {
+          "es": "Cuando sientes que el tiempo no te alcanza y comienzas a entrar en pánico, ¿cuál es el primer paso sabio?",
+          "en": "When you feel overwhelmed by lack of time and panic starts, what is the first wise step?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Quejarte en redes sociales y posponer todo",
+              "en": "Complain online and procrastinate"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Hacer una pausa de 2 minutos, respirar, orar y priorizar 1 sola tarea inmediata",
+              "en": "Pause 2 min, breathe, pray, and prioritize 1 single immediate task"
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Renunciar a la materia",
+              "en": "Give up on the subject"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Enojarte con quienes te rodean",
+              "en": "Get angry with those around you"
+            },
+            "ok": false
+          }
         ],
-        okMsg: T('¡Excelente! Pausa, reordenamiento mental y enfoque en una sola cosa a la vez.', 'Excellent! Pause, mental reset, and focus on one thing at a time.'),
-        noMsg: T('Esa reacción aumenta el estrés en lugar de resolverlo.', 'That reaction increases stress rather than resolving it.')
+        "okMsg": {
+          "es": "¡Excelente! Pausa, reordenamiento mental y enfoque en una sola cosa a la vez.",
+          "en": "Excellent! Pause, mental reset, and focus on one thing at a time."
+        },
+        "noMsg": {
+          "es": "Esa reacción aumenta el estrés en lugar de resolverlo.",
+          "en": "That reaction increases stress rather than resolving it."
+        }
       },
       {
-        type: 'reflect',
-        kicker: T('Paso 4 · Tu Diario', 'Step 4 · Journal'),
-        h: T('Tu Ancla de Paz', 'Your Peace Anchor'),
-        body: T('Escribe tu versículo ancla para momentos de sobrecarga.', 'Write your anchor verse for moments of overload.'),
-        prompt: T('• Mi versículo de paz favorito: ___\n• Una situación donde lo recordaré: ___', '• My favorite peace verse: ___\n• A situation where I will remember it: ___')
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Tu Diario",
+          "en": "Step 4 · Journal"
+        },
+        "h": {
+          "es": "Tu Ancla de Paz",
+          "en": "Your Peace Anchor"
+        },
+        "body": {
+          "es": "Escribe tu versículo ancla para momentos de sobrecarga.",
+          "en": "Write your anchor verse for moments of overload."
+        },
+        "prompt": {
+          "es": "• Mi versículo de paz favorito: ___\n• Una situación donde lo recordaré: ___",
+          "en": "• My favorite peace verse: ___\n• A situation where I will remember it: ___"
+        }
       }
     ]
   },
-
-  padreRico: {
-    id: 'padreRico',
-    tag: 'money',
-    level: 'builder',
-    verseKey: 'padreRico',
-    title: T('Inteligencia Financiera: Activos vs. Pasivos', 'Financial Literacy: Assets vs. Liabilities'),
-    bookKey: 'padreRico',
-    project: T('Tu <b>Portfolio Virtual de $10.000</b> en Google Finance con reporte mensual de tesis de inversión.', 'Your <b>$10k Virtual Portfolio</b> on Google Finance with thesis report.'),
-    steps: [
+  "padreRico": {
+    "id": "padreRico",
+    "tag": "money",
+    "level": "builder",
+    "verseKey": "padreRico",
+    "title": {
+      "es": "Inteligencia Financiera: Activos vs. Pasivos",
+      "en": "Financial Literacy: Assets vs. Liabilities"
+    },
+    "bookKey": "padreRico",
+    "project": {
+      "es": "Tu <b>Portfolio Virtual de $10.000</b> en Google Finance con reporte mensual de tesis de inversión.",
+      "en": "Your <b>$10k Virtual Portfolio</b> on Google Finance with thesis report."
+    },
+    "steps": [
       {
-        type: 'hook',
-        kicker: T('Paso 1 · Apertura', 'Step 1 · Hook'),
-        h: T('El dinero como herramienta de servicio', 'Money as a tool of service'),
-        scenario: T('Dos personas ganan $2.000 al mes: la primera gasta $2.100 en cosas que pierden valor; la segunda ahorra e invierte $400 en activos productivos y mayordomía.', 'Two people earn $2,000/mo: one spends $2,100 on depreciating items; the other invests $400 into productive assets and giving.'),
-        body: T('La diferencia entre libertad financiera y esclavitud de deudas es la distinción entre activos y pasivos.', 'The difference between financial peace and debt bondage is understanding assets vs liabilities.')
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "El dinero como herramienta de servicio",
+          "en": "Money as a tool of service"
+        },
+        "scenario": {
+          "es": "Dos personas ganan $2.000 al mes: la primera gasta $2.100 en cosas que pierden valor; la segunda ahorra e invierte $400 en activos productivos y mayordomía.",
+          "en": "Two people earn $2,000/mo: one spends $2,100 on depreciating items; the other invests $400 into productive assets and giving."
+        },
+        "body": {
+          "es": "La diferencia entre libertad financiera y esclavitud de deudas es la distinción entre activos y pasivos.",
+          "en": "The difference between financial peace and debt bondage is understanding assets vs liabilities."
+        }
       },
       {
-        type: 'theory',
-        kicker: T('Paso 2 · Concepto Clave', 'Step 2 · Core Concept'),
-        h: T('¿Qué es un Activo real?', 'What is a real Asset?'),
-        body: T('Un activo pone dinero en tu bolsillo (o genera valor real a largo plazo). Un pasivo extrae dinero de tu bolsillo.', 'An asset puts value/money into your pocket over time. A liability takes money out.'),
-        diagram: T('<b>Ecuación de Mayordomía</b><br>Ingresos → [Diezmo 10% + Ahorro/Inversión 30%] → Gastos Sabios 60% → Paz Financiera.', '<b>Stewardship Equation</b><br>Income → [Tithe 10% + Investment 30%] → Wise Expenses 60% → Peace.')
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Concepto Clave",
+          "en": "Step 2 · Core Concept"
+        },
+        "h": {
+          "es": "¿Qué es un Activo real?",
+          "en": "What is a real Asset?"
+        },
+        "body": {
+          "es": "Un activo pone dinero en tu bolsillo (o genera valor real a largo plazo). Un pasivo extrae dinero de tu bolsillo.",
+          "en": "An asset puts value/money into your pocket over time. A liability takes money out."
+        },
+        "diagram": {
+          "es": "<b>Ecuación de Mayordomía</b><br>Ingresos → [Diezmo 10% + Ahorro/Inversión 30%] → Gastos Sabios 60% → Paz Financiera.",
+          "en": "<b>Stewardship Equation</b><br>Income → [Tithe 10% + Investment 30%] → Wise Expenses 60% → Peace."
+        }
       },
       {
-        type: 'quiz',
-        kicker: T('Paso 3 · Quiz', 'Step 3 · Quiz'),
-        h: T('Activo o Pasivo', 'Asset or Liability'),
-        q: T('Comprar el último smartphone a plazos con intereses mensuales que no puedes pagar de contado es:', 'Buying the latest smartphone with monthly high-interest debt you cannot pay in cash is:'),
-        opts: [
-          { t: T('Una inversión de capital', 'A capital investment'), ok: false },
-          { t: T('Un pasivo que reduce tu flujo de caja', 'A liability that shrinks your cash flow'), ok: true },
-          { t: T('Un activo libre de riesgo', 'A risk-free asset'), ok: false },
-          { t: T('Una donación benéfica', 'A charitable donation'), ok: false }
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Quiz",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "Activo o Pasivo",
+          "en": "Asset or Liability"
+        },
+        "q": {
+          "es": "Comprar el último smartphone a plazos con intereses mensuales que no puedes pagar de contado es:",
+          "en": "Buying the latest smartphone with monthly high-interest debt you cannot pay in cash is:"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Una inversión de capital",
+              "en": "A capital investment"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Un pasivo que reduce tu flujo de caja",
+              "en": "A liability that shrinks your cash flow"
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Un activo libre de riesgo",
+              "en": "A risk-free asset"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Una donación benéfica",
+              "en": "A charitable donation"
+            },
+            "ok": false
+          }
         ],
-        okMsg: T('¡Exactamente! Se devalúa con el tiempo y te genera una obligación financiera.', 'Exactly! It depreciates and generates debt obligation.'),
-        noMsg: T('Analiza si genera ingresos o si te genera gastos mensuales.', 'Analyze whether it generates income or drains monthly expenses.')
+        "okMsg": {
+          "es": "¡Exactamente! Se devalúa con el tiempo y te genera una obligación financiera.",
+          "en": "Exactly! It depreciates and generates debt obligation."
+        },
+        "noMsg": {
+          "es": "Analiza si genera ingresos o si te genera gastos mensuales.",
+          "en": "Analyze whether it generates income or drains monthly expenses."
+        }
       },
       {
-        type: 'reflect',
-        kicker: T('Paso 4 · Portfolio', 'Step 4 · Portfolio'),
-        h: T('Definición de 3 Empresas para tu Portfolio', 'Define 3 Companies for Portfolio'),
-        body: T('Selecciona 3 empresas éticas para tu simulación en Google Finance y fundamenta por qué las elegiste.', 'Select 3 ethical companies for Google Finance simulation and justify them.'),
-        prompt: T('• Empresa 1 (Tecnología/Salud/Energía): ___ | Motivo: ___\n• Empresa 2: ___ | Motivo: ___\n• Empresa 3: ___ | Motivo: ___', '• Company 1: ___ | Reason: ___\n• Company 2: ___ | Reason: ___\n• Company 3: ___ | Reason: ___')
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Portfolio",
+          "en": "Step 4 · Portfolio"
+        },
+        "h": {
+          "es": "Definición de 3 Empresas para tu Portfolio",
+          "en": "Define 3 Companies for Portfolio"
+        },
+        "body": {
+          "es": "Selecciona 3 empresas éticas para tu simulación en Google Finance y fundamenta por qué las elegiste.",
+          "en": "Select 3 ethical companies for Google Finance simulation and justify them."
+        },
+        "prompt": {
+          "es": "• Empresa 1 (Tecnología/Salud/Energía): ___ | Motivo: ___\n• Empresa 2: ___ | Motivo: ___\n• Empresa 3: ___ | Motivo: ___",
+          "en": "• Company 1: ___ | Reason: ___\n• Company 2: ___ | Reason: ___\n• Company 3: ___ | Reason: ___"
+        }
       }
     ]
   },
-
-  sieteEsferas: {
-    id: 'sieteEsferas',
-    tag: 'leadership',
-    level: 'builder',
-    verseKey: 'sieteEsferas',
-    title: T('Las 7 Esferas de Influencia en la Sociedad', 'The 7 Spheres of Cultural Influence'),
-    bookKey: 'sieteEsferas',
-    project: T('Tu <b>Mapeo de Esfera Vocacional</b> con plan de impacto cristiano para tu comunidad.', 'Your <b>Vocational Sphere Map</b> with Christian impact plan.'),
-    steps: [
+  "sieteEsferas": {
+    "id": "sieteEsferas",
+    "tag": "leadership",
+    "level": "builder",
+    "verseKey": "sieteEsferas",
+    "title": {
+      "es": "Las 7 Esferas de Influencia en la Sociedad",
+      "en": "The 7 Spheres of Cultural Influence"
+    },
+    "bookKey": "sieteEsferas",
+    "project": {
+      "es": "Tu <b>Mapeo de Esfera Vocacional</b> con plan de impacto cristiano para tu comunidad.",
+      "en": "Your <b>Vocational Sphere Map</b> with Christian impact plan."
+    },
+    "steps": [
       {
-        type: 'hook',
-        kicker: T('Paso 1 · Apertura', 'Step 1 · Hook'),
-        h: T('La fe fuera de las cuatro paredes', 'Faith outside church walls'),
-        scenario: T('Muchos creen que servir a Dios es solo ser pastor o misionero tradicional. Pero Dios necesita médicos, ingenieros, artistas, educadores y empresarios íntegros.', 'Many think serving God is only being a pastor. God needs honest doctors, engineers, artists, educators, and entrepreneurs.'),
-        body: T('Las 7 Esferas representan las áreas que moldean la cultura de una nación.', 'The 7 Spheres represent key areas that shape cultural values.')
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "La fe fuera de las cuatro paredes",
+          "en": "Faith outside church walls"
+        },
+        "scenario": {
+          "es": "Muchos creen que servir a Dios es solo ser pastor o misionero tradicional. Pero Dios necesita médicos, ingenieros, artistas, educadores y empresarios íntegros.",
+          "en": "Many think serving God is only being a pastor. God needs honest doctors, engineers, artists, educators, and entrepreneurs."
+        },
+        "body": {
+          "es": "Las 7 Esferas representan las áreas que moldean la cultura de una nación.",
+          "en": "The 7 Spheres represent key areas that shape cultural values."
+        }
       },
       {
-        type: 'theory',
-        kicker: T('Paso 2 · Las 7 Montañas', 'Step 2 · The 7 Mountains'),
-        h: T('Los 7 Pilares Culturales', 'The 7 Cultural Pillars'),
-        body: T('1. Artes y Entretenimiento · 2. Negocios y Economía · 3. Educación · 4. Familia · 5. Gobierno y Leyes · 6. Medios de Comunicación · 7. Iglesia y Fe.', '1. Arts/Media · 2. Business · 3. Education · 4. Family · 5. Government · 6. Media · 7. Church.'),
-        diagram: T('<b>Sal y Luz</b><br>Tu profesión es tu púlpito; tu excelencia técnica es tu testimonio.', '<b>Salt & Light</b><br>Your profession is your platform; your excellence is your testimony.')
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Las 7 Montañas",
+          "en": "Step 2 · The 7 Mountains"
+        },
+        "h": {
+          "es": "Los 7 Pilares Culturales",
+          "en": "The 7 Cultural Pillars"
+        },
+        "body": {
+          "es": "1. Artes y Entretenimiento · 2. Negocios y Economía · 3. Educación · 4. Familia · 5. Gobierno y Leyes · 6. Medios de Comunicación · 7. Iglesia y Fe.",
+          "en": "1. Arts/Media · 2. Business · 3. Education · 4. Family · 5. Government · 6. Media · 7. Church."
+        },
+        "diagram": {
+          "es": "<b>Sal y Luz</b><br>Tu profesión es tu púlpito; tu excelencia técnica es tu testimonio.",
+          "en": "<b>Salt & Light</b><br>Your profession is your platform; your excellence is your testimony."
+        }
       },
       {
-        type: 'quiz',
-        kicker: T('Paso 3 · Quiz', 'Step 3 · Quiz'),
-        h: T('Tu Llamado', 'Your Calling'),
-        q: T('Si tu talento es la programación y el diseño web, ¿en qué esfera principal puedes impactar con valores bíblicos?', 'If your talent is coding and web design, in which primary sphere can you impact with values?'),
-        opts: [
-          { t: T('Negocios, Tecnología y Medios', 'Business, Technology & Media'), ok: true },
-          { t: T('Únicamente en el coro de la iglesia', 'Only in the church choir'), ok: false },
-          { t: T('En ninguna, la tecnología no se relaciona con la fe', 'None, technology does not relate to faith'), ok: false },
-          { t: T('Solo si estudio teología', 'Only if I study theology'), ok: false }
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Quiz",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "Tu Llamado",
+          "en": "Your Calling"
+        },
+        "q": {
+          "es": "Si tu talento es la programación y el diseño web, ¿en qué esfera principal puedes impactar con valores bíblicos?",
+          "en": "If your talent is coding and web design, in which primary sphere can you impact with values?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Negocios, Tecnología y Medios",
+              "en": "Business, Technology & Media"
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Únicamente en el coro de la iglesia",
+              "en": "Only in the church choir"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "En ninguna, la tecnología no se relaciona con la fe",
+              "en": "None, technology does not relate to faith"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Solo si estudio teología",
+              "en": "Only if I study theology"
+            },
+            "ok": false
+          }
         ],
-        okMsg: T('¡Totalmente! La tecnología y los negocios transforman vidas cuando se construyen sobre la verdad.', 'Totally! Tech and business transform lives when anchored in truth.'),
-        noMsg: T('La tecnología y los medios son herramientas de enorme alcance e impacto cultural.', 'Tech and media are powerful tools for cultural impact.')
+        "okMsg": {
+          "es": "¡Totalmente! La tecnología y los negocios transforman vidas cuando se construyen sobre la verdad.",
+          "en": "Totally! Tech and business transform lives when anchored in truth."
+        },
+        "noMsg": {
+          "es": "La tecnología y los medios son herramientas de enorme alcance e impacto cultural.",
+          "en": "Tech and media are powerful tools for cultural impact."
+        }
       },
       {
-        type: 'reflect',
-        kicker: T('Paso 4 · Mapeo', 'Step 4 · Mapping'),
-        h: T('Identifica tu Esfera de Interés', 'Identify your Sphere'),
-        body: T('Escribe en cuál de las 7 esferas sientes mayor inclinación y qué problema te gustaría resolver.', 'Which of the 7 spheres attracts you most and what problem would you like to solve?'),
-        prompt: T('• Mi esfera elegida: ___\n• Necesidad o injusticia que veo en esa área: ___\n• Cómo puedo aportar una solución con excelencia: ___', '• My chosen sphere: ___\n• Need or injustice observed: ___\n• How I can bring a solution with excellence: ___')
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Mapeo",
+          "en": "Step 4 · Mapping"
+        },
+        "h": {
+          "es": "Identifica tu Esfera de Interés",
+          "en": "Identify your Sphere"
+        },
+        "body": {
+          "es": "Escribe en cuál de las 7 esferas sientes mayor inclinación y qué problema te gustaría resolver.",
+          "en": "Which of the 7 spheres attracts you most and what problem would you like to solve?"
+        },
+        "prompt": {
+          "es": "• Mi esfera elegida: ___\n• Necesidad o injusticia que veo en esa área: ___\n• Cómo puedo aportar una solución con excelencia: ___",
+          "en": "• My chosen sphere: ___\n• Need or injustice observed: ___\n• How I can bring a solution with excellence: ___"
+        }
+      }
+    ]
+  },
+  "comunicacion": {
+    "id": "comunicacion",
+    "tag": "core",
+    "level": "seedling",
+    "verseKey": "comunicacion",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Palabras que Construyen",
+      "en": "Words That Build"
+    },
+    "project": {
+      "es": "Tu <b>Registro de Palabras</b> de una semana: 5 momentos en que tus palabras construyeron y 2 en que derribaron, con lo que dirías hoy.",
+      "en": "Your one-week <b>Word Log</b>: 5 moments your words built up and 2 where they tore down, with what you would say today."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Lo dicho no se recoge",
+          "en": "What is said cannot be unsaid"
+        },
+        "scenario": {
+          "es": "Un amigo comparte algo que le costó contar. Tú respondes con una broma rápida delante de otros. Todos ríen. Él también ríe… y no vuelve a contarte nada.",
+          "en": "A friend shares something hard to say. You crack a quick joke in front of others. Everyone laughs. He laughs too… and never confides in you again."
+        },
+        "body": {
+          "es": "Nadie mintió y nadie insultó. Aun así algo se rompió. Esta cápsula trata de la diferencia entre <b>tener razón</b> y <b>edificar</b>.",
+          "en": "Nobody lied and nobody insulted. Still, something broke. This capsule is about the difference between <b>being right</b> and <b>building up</b>."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "El filtro de las tres puertas",
+          "en": "The three-gate filter"
+        },
+        "body": {
+          "es": "Efesios 4:29 no prohíbe hablar: pide que lo que salga sirva para <b>edificación</b>. La pregunta no es \"¿es verdad?\" sino \"¿es verdad, es necesario y es el momento?\".",
+          "en": "Ephesians 4:29 does not forbid speaking: it asks that what comes out serves to <b>build up</b>. The question is not \"is it true?\" but \"is it true, is it necessary, and is it the moment?\"."
+        },
+        "diagram": {
+          "es": "<b>Antes de hablar, tres puertas</b><br>1. ¿Es cierto? · 2. ¿Es necesario decirlo? · 3. ¿Es este el momento y el lugar?<br>Si falla una, espera.",
+          "en": "<b>Three gates before speaking</b><br>1. Is it true? · 2. Is it necessary? · 3. Is this the time and place?<br>If one fails, wait."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Cuál pasa las tres puertas?",
+          "en": "Which one passes all three gates?"
+        },
+        "q": {
+          "es": "Tu hermana ha dibujado algo que no le ha salido bien y te lo enseña. ¿Qué respuesta edifica sin mentir?",
+          "en": "Your sister shows you a drawing that did not turn out well. Which answer builds up without lying?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "\"Está feo, te ha quedado mal.\"",
+              "en": "\"It is ugly, you did it badly.\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"¡Es perfecto, eres una artista!\"",
+              "en": "\"It is perfect, you are an artist!\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"Las manos aún no te salen, pero mira cómo has mejorado la cara. ¿Sigues?\"",
+              "en": "\"Hands are not there yet, but look how the face improved. Keep going?\""
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "No decir nada y cambiar de tema.",
+              "en": "Say nothing and change the subject."
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Exacto. Es verdad (no niegas el fallo), es necesario (te lo pidió) y edifica (señala el avance y la invita a seguir).",
+          "en": "Exactly. It is true, it is necessary, and it builds up by naming progress and inviting her to continue."
+        },
+        "noMsg": {
+          "es": "Revisa las tres puertas: mentir no edifica, y callar tampoco cuando te han pedido tu opinión.",
+          "en": "Check the three gates: lying does not build up, and staying silent does not either when asked."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Registro de Palabras",
+          "en": "Your Word Log"
+        },
+        "body": {
+          "es": "Durante una semana anota momentos reales. No busques ser el bueno de la historia: busca los datos.",
+          "en": "For one week write down real moments. Do not try to be the hero: look for the data."
+        },
+        "prompt": {
+          "es": "1. Palabras que construyeron (5 momentos): ___\n2. Palabras que derribaron (2 momentos): ___\n3. Qué diría hoy en su lugar: ___\n4. ¿A quién debo una conversación?: ___",
+          "en": "1. Words that built up (5): ___\n2. Words that tore down (2): ___\n3. What I would say today: ___\n4. Who do I owe a conversation?: ___"
+        }
+      }
+    ]
+  },
+  "bold": {
+    "id": "bold",
+    "tag": "core",
+    "level": "seedling",
+    "verseKey": "bold",
+    "bookKey": "contrabandistaDios",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Valentía que no es Ruido",
+      "en": "Courage That Is Not Noise"
+    },
+    "project": {
+      "es": "Tu <b>Acta de Valentía</b>: una acción correcta y difícil que hiciste esta semana, con lo que temías y lo que pasó de verdad.",
+      "en": "Your <b>Courage Record</b>: one right and difficult action taken this week, what you feared, and what actually happened."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "El valiente también tiembla",
+          "en": "The brave one shakes too"
+        },
+        "scenario": {
+          "es": "En el grupo se están riendo de alguien que no está. Tú no te ríes, pero tampoco dices nada. Al salir sientes un peso raro. No hiciste nada malo… y aun así.",
+          "en": "The group is laughing at someone who is not there. You do not laugh, but you say nothing. Leaving, you feel a strange weight. You did nothing wrong… and still."
+        },
+        "body": {
+          "es": "Josué 1:9 no dice \"no sientas miedo\". Dice \"esfuérzate y sé valiente <b>porque</b> yo estoy contigo\". La valentía no es ausencia de miedo: es moverse con él.",
+          "en": "Joshua 1:9 does not say \"feel no fear\". It says be strong and courageous <b>because</b> I am with you. Courage is not the absence of fear: it is moving with it."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Valentía no es temeridad",
+          "en": "Courage is not recklessness"
+        },
+        "body": {
+          "es": "Gritar más fuerte no es ser valiente. La temeridad busca público; la valentía busca lo correcto, muchas veces sin que nadie lo vea. La cobardía se disfraza de \"no era asunto mío\".",
+          "en": "Shouting louder is not courage. Recklessness seeks an audience; courage seeks what is right, often unseen. Cowardice disguises itself as \"it was not my business\"."
+        },
+        "diagram": {
+          "es": "<b>Tres posiciones</b><br>Cobardía: veo y callo · Temeridad: actúo para que me vean · Valentía: actúo porque es correcto, con o sin público.",
+          "en": "<b>Three positions</b><br>Cowardice: I see and stay silent · Recklessness: I act to be seen · Courage: I act because it is right."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Dónde está la valentía?",
+          "en": "Where is the courage?"
+        },
+        "q": {
+          "es": "Se están burlando de un compañero en el grupo de clase. ¿Cuál de estas es valentía y no temeridad?",
+          "en": "Classmates are mocking someone in the class chat. Which is courage and not recklessness?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Escribir en el grupo un insulto más fuerte al que se burla.",
+              "en": "Post an even harsher insult at the mocker."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Escribir \"cortad ya\" y luego hablar a solas con el compañero del que se burlan.",
+              "en": "Write \"stop it\" and then speak privately with the person mocked."
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Salir del grupo sin decir nada.",
+              "en": "Leave the chat without saying anything."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Guardar capturas para enseñárselas a todos después.",
+              "en": "Save screenshots to show everyone later."
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Eso es. Actúas donde ocurrió el daño y además cuidas a la persona en privado, sin montar un espectáculo.",
+          "en": "That is it. You act where the harm happened and care for the person privately, without making a show."
+        },
+        "noMsg": {
+          "es": "Pregúntate: ¿esa acción protege a alguien, o solo te coloca a ti en buen lugar?",
+          "en": "Ask yourself: does that action protect someone, or does it just make you look good?"
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Acta de Valentía",
+          "en": "Your Courage Record"
+        },
+        "body": {
+          "es": "Una sola acción concreta, esta semana. Pequeña y real vale más que grande e imaginaria.",
+          "en": "One concrete action this week. Small and real beats big and imaginary."
+        },
+        "prompt": {
+          "es": "1. Lo que sabía que debía hacer: ___\n2. Lo que temía que pasara: ___\n3. Lo que hice: ___\n4. Lo que pasó de verdad: ___",
+          "en": "1. What I knew I should do: ___\n2. What I feared: ___\n3. What I did: ___\n4. What actually happened: ___"
+        }
+      }
+    ]
+  },
+  "presentaciones": {
+    "id": "presentaciones",
+    "tag": "core",
+    "level": "seedling",
+    "verseKey": "presentaciones",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Hablar en Público sin Morir",
+      "en": "Public Speaking Without Dying"
+    },
+    "project": {
+      "es": "Tu <b>Charla de 3 Minutos</b> grabada: una idea, tres apoyos y un cierre que pide algo concreto.",
+      "en": "Your recorded <b>3-Minute Talk</b>: one idea, three supports, and a closing that asks for something concrete."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Nadie recuerda tus nervios",
+          "en": "Nobody remembers your nerves"
+        },
+        "scenario": {
+          "es": "Te tiembla la voz, se te olvida una parte y piensas que ha sido un desastre. Al terminar, tres personas te dicen que les hizo pensar. Ninguna menciona el temblor.",
+          "en": "Your voice shakes, you forget a part, you think it was a disaster. Afterwards three people say it made them think. None mention the shaking."
+        },
+        "body": {
+          "es": "El público no ve tu interior: ve si entendió algo. Preparar una charla es ordenar una idea, no memorizar un texto.",
+          "en": "The audience does not see your insides: it sees whether it understood something. Preparing a talk is ordering an idea, not memorizing a text."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Una idea, tres apoyos, una petición",
+          "en": "One idea, three supports, one ask"
+        },
+        "body": {
+          "es": "1 Pedro 3:15 pide estar <b>preparados</b> para responder, con mansedumbre. Preparación no es improvisar con seguridad: es saber qué quieres que se lleve el que escucha.",
+          "en": "1 Peter 3:15 asks us to be <b>prepared</b> to answer, with gentleness. Preparation is not confident improvising: it is knowing what you want the listener to take away."
+        },
+        "diagram": {
+          "es": "<b>Estructura 1-3-1</b><br>1 idea en una frase · 3 apoyos (dato, historia, ejemplo) · 1 petición concreta al final.<br>Si no cabe en una frase, todavía no la tienes.",
+          "en": "<b>1-3-1 structure</b><br>1 idea in one sentence · 3 supports (data, story, example) · 1 concrete ask.<br>If it does not fit in one sentence, you do not have it yet."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Cuál es una idea, no un tema?",
+          "en": "Which is an idea, not a topic?"
+        },
+        "q": {
+          "es": "Vas a hablar tres minutos. ¿Cuál de estas frases es una idea que se puede defender?",
+          "en": "You will speak for three minutes. Which of these is a defensible idea?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "\"El reciclaje.\"",
+              "en": "\"Recycling.\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"Voy a hablar sobre el medio ambiente.\"",
+              "en": "\"I will talk about the environment.\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"Separar la basura en casa cambia más que firmar peticiones online.\"",
+              "en": "\"Sorting trash at home changes more than signing online petitions.\""
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "\"El medio ambiente es muy importante para todos.\"",
+              "en": "\"The environment is very important for everyone.\""
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Correcto. Se puede estar en desacuerdo con ella, y por eso merece tres minutos. Un tema no se defiende; una idea sí.",
+          "en": "Correct. One can disagree with it, which is why it deserves three minutes. A topic cannot be defended; an idea can."
+        },
+        "noMsg": {
+          "es": "Eso es un tema o una obviedad. Pregúntate: ¿alguien podría discutirme esto? Si no, no es una idea.",
+          "en": "That is a topic or a truism. Ask: could anyone argue with this? If not, it is not an idea."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Charla de 3 Minutos",
+          "en": "Your 3-Minute Talk"
+        },
+        "body": {
+          "es": "Escribe la estructura, grábate con el móvil y vuelve a verte una vez. Solo una.",
+          "en": "Write the structure, record on your phone, and watch yourself once. Only once."
+        },
+        "prompt": {
+          "es": "1. Mi idea en UNA frase: ___\n2. Apoyo 1 (un dato): ___\n3. Apoyo 2 (una historia): ___\n4. Apoyo 3 (un ejemplo): ___\n5. Lo que pido al final: ___",
+          "en": "1. My idea in ONE sentence: ___\n2. Support 1 (data): ___\n3. Support 2 (story): ___\n4. Support 3 (example): ___\n5. My closing ask: ___"
+        }
+      }
+    ]
+  },
+  "carreras": {
+    "id": "carreras",
+    "tag": "core",
+    "level": "explorer",
+    "verseKey": "carreras",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Explorar Carreras sin Humo",
+      "en": "Exploring Careers Without the Hype"
+    },
+    "project": {
+      "es": "Tu <b>Ficha de Tres Rutas</b>: tres profesiones reales con un día típico, lo que se estudia, lo que se cobra y qué parte no te gustaría.",
+      "en": "Your <b>Three Routes Sheet</b>: three real professions with a typical day, required study, pay, and the part you would not enjoy."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "El título no es el trabajo",
+          "en": "The title is not the job"
+        },
+        "scenario": {
+          "es": "\"Quiero ser diseñador.\" ¿Cuántas horas al día dibujarías? ¿Cuántas estarías corrigiendo lo mismo por tercera vez porque al cliente no le convence? La mayoría solo imagina la primera parte.",
+          "en": "\"I want to be a designer.\" How many hours a day would you draw? How many revising the same thing a third time because the client is unconvinced? Most people picture only the first part."
+        },
+        "body": {
+          "es": "Elegir carrera por el título es como elegir comida por la foto. Vas a investigar el <b>día real</b>, no la portada.",
+          "en": "Choosing a career by its title is like choosing food by the photo. You will research the <b>real day</b>, not the cover."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Fíate, pero investiga",
+          "en": "Trust, and investigate"
+        },
+        "body": {
+          "es": "Proverbios 3:5-6 pide no apoyarse en la propia prudencia — y reconocerle a Él en <b>todos</b> tus caminos, lo que incluye informarte bien. Confiar no es no mirar: es mirar sin miedo.",
+          "en": "Proverbs 3:5-6 asks us not to lean on our own understanding — and to acknowledge Him in <b>all</b> our ways, which includes getting informed. Trusting is not refusing to look: it is looking without fear."
+        },
+        "diagram": {
+          "es": "<b>Cuatro preguntas por ruta</b><br>1. ¿Cómo es un martes cualquiera? · 2. ¿Qué se estudia y cuánto dura? · 3. ¿De qué se vive? · 4. ¿Qué parte NO me gustaría?<br>La cuarta es la que más informa.",
+          "en": "<b>Four questions per route</b><br>1. What is an ordinary Tuesday like? · 2. What study and how long? · 3. What is the income? · 4. What part would I dislike?<br>The fourth teaches the most."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Qué fuente informa mejor?",
+          "en": "Which source informs best?"
+        },
+        "q": {
+          "es": "Quieres saber cómo es de verdad ser enfermero. ¿Qué fuente te da la información más fiable?",
+          "en": "You want to know what being a nurse is really like. Which source is most reliable?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Una serie de televisión ambientada en un hospital.",
+              "en": "A TV series set in a hospital."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Media hora de preguntas a un enfermero con 5 años de ejercicio.",
+              "en": "Half an hour of questions with a nurse of 5 years."
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "La página de marketing de una universidad privada.",
+              "en": "A private university marketing page."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Un vídeo de \"un día en mi vida\" con 2 millones de visitas.",
+              "en": "A \"day in my life\" video with 2 million views."
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Sí. Quien lo vive a diario te contará los turnos, el papeleo y lo que nadie graba. Las otras fuentes venden algo.",
+          "en": "Yes. Someone living it daily will tell you about shifts, paperwork, and what nobody films. The others are selling something."
+        },
+        "noMsg": {
+          "es": "Fíjate en quién gana algo si tú eliges esa carrera. Esa fuente no es neutral.",
+          "en": "Notice who gains if you choose that career. That source is not neutral."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Ficha de Tres Rutas",
+          "en": "Your Three Routes Sheet"
+        },
+        "body": {
+          "es": "Tres profesiones distintas entre sí. Al menos una debe ser alguna en la que no habías pensado.",
+          "en": "Three professions different from each other. At least one you had not considered."
+        },
+        "prompt": {
+          "es": "Ruta 1: ___\n  Martes normal: ___\n  Se estudia: ___\n  Se vive de: ___\n  Lo que NO me gustaría: ___\n\n(Repite para Ruta 2 y Ruta 3)\n\nCon quién hablé y qué me sorprendió: ___",
+          "en": "Route 1: ___\n  Ordinary Tuesday: ___\n  Study: ___\n  Income: ___\n  What I would dislike: ___\n\n(Repeat for Routes 2 and 3)\n\nWho I spoke with and what surprised me: ___"
+        }
+      }
+    ]
+  },
+  "ganarAmigos": {
+    "id": "ganarAmigos",
+    "tag": "core",
+    "level": "explorer",
+    "verseKey": "ganarAmigos",
+    "bookKey": "ganarAmigos",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Interés Real por el Otro",
+      "en": "Real Interest in Others"
+    },
+    "project": {
+      "es": "Tu <b>Experimento de Escucha</b>: tres conversaciones en las que solo preguntas, con lo que aprendiste de cada persona.",
+      "en": "Your <b>Listening Experiment</b>: three conversations where you only ask questions, plus what you learned about each person."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Caer bien no es una técnica",
+          "en": "Being liked is not a technique"
+        },
+        "scenario": {
+          "es": "Sales de una conversación pensando \"qué majo es\". Repasa: ¿cuánto habló él de sí mismo? Probablemente poco. Te preguntó a ti.",
+          "en": "You leave a conversation thinking \"what a great guy\". Look back: how much did he talk about himself? Probably little. He asked about you."
+        },
+        "body": {
+          "es": "Dale Carnegie lo resumió así: se hacen más amigos en dos meses interesándose por otros que en dos años intentando que se interesen por ti.",
+          "en": "Dale Carnegie put it this way: you make more friends in two months by becoming interested in others than in two years trying to get them interested in you."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Estimar al otro como superior",
+          "en": "Esteeming others as better"
+        },
+        "body": {
+          "es": "Filipenses 2:3-4 no pide fingir humildad: pide <b>mirar</b> lo del otro de verdad. La diferencia entre manipular y amar es qué buscas al final: que te compren algo, o que la persona esté mejor.",
+          "en": "Philippians 2:3-4 does not ask for fake humility: it asks us to genuinely <b>look</b> at others. The difference between manipulating and loving is the end goal: selling something, or leaving the person better."
+        },
+        "diagram": {
+          "es": "<b>Técnica vs. carácter</b><br>Técnica: recuerdo tu nombre para venderte algo.<br>Carácter: recuerdo tu nombre porque me importas.<br>Se hace lo mismo. No es lo mismo.",
+          "en": "<b>Technique vs. character</b><br>Technique: I remember your name to sell you something.<br>Character: I remember your name because you matter.<br>Same action. Not the same thing."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Qué pregunta abre de verdad?",
+          "en": "Which question really opens up?"
+        },
+        "q": {
+          "es": "Quieres conocer mejor a alguien nuevo en clase. ¿Qué pregunta abre más conversación?",
+          "en": "You want to get to know someone new in class. Which question opens the most?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "\"¿Te gusta el instituto?\"",
+              "en": "\"Do you like school?\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"¿De dónde eres?\"",
+              "en": "\"Where are you from?\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"¿Qué es lo que más echas de menos de donde vivías antes?\"",
+              "en": "\"What do you miss most about where you lived before?\""
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "\"¿Has visto la serie que ve todo el mundo?\"",
+              "en": "\"Have you seen the show everyone watches?\""
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Exacto. Es abierta, es personal y demuestra que ya escuchaste algo antes de preguntar. Las de sí/no cierran.",
+          "en": "Exactly. It is open, personal, and shows you already listened before asking. Yes/no questions close."
+        },
+        "noMsg": {
+          "es": "Esa se responde en una palabra. Busca preguntas que no se puedan contestar con sí o no.",
+          "en": "That one is answered in a word. Look for questions that cannot be answered yes or no."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Experimento de Escucha",
+          "en": "Your Listening Experiment"
+        },
+        "body": {
+          "es": "Tres conversaciones. Regla única: no hablas de ti salvo que te pregunten. Cuesta más de lo que parece.",
+          "en": "Three conversations. One rule: do not talk about yourself unless asked. Harder than it sounds."
+        },
+        "prompt": {
+          "es": "Persona 1 (sin nombres, usa iniciales): ___\n  Lo que aprendí de ella: ___\n  Cuántas veces desvié la conversación hacia mí: ___\n\n(Repite para 2 y 3)\n\nQué me costó más: ___",
+          "en": "Person 1 (initials only): ___\n  What I learned: ___\n  Times I steered it back to me: ___\n\n(Repeat for 2 and 3)\n\nHardest part: ___"
+        }
+      }
+    ]
+  },
+  "encuestas": {
+    "id": "encuestas",
+    "tag": "core",
+    "level": "explorer",
+    "verseKey": "encuestas",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Preguntar para Saber, no para Confirmar",
+      "en": "Asking to Learn, Not to Confirm"
+    },
+    "project": {
+      "es": "Tu <b>Miniencuesta</b> de 5 preguntas a 10 personas, con los resultados y una conclusión que te sorprendió.",
+      "en": "Your 5-question <b>Mini-Survey</b> of 10 people, with results and one conclusion that surprised you."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "La pregunta ya trae la respuesta",
+          "en": "The question already carries the answer"
+        },
+        "scenario": {
+          "es": "\"¿No te parece injusto que nos manden tantos deberes?\" Casi todos dirán que sí. Ahora prueba: \"¿Cuánto tiempo dedicaste ayer a deberes?\" Las respuestas cambian del todo.",
+          "en": "\"Don't you think all this homework is unfair?\" Almost everyone says yes. Now try: \"How long did you spend on homework yesterday?\" The answers change completely."
+        },
+        "body": {
+          "es": "Una encuesta mal hecha no mide la realidad: mide lo que tú ya creías. Vas a aprender a preguntar sin empujar.",
+          "en": "A badly built survey does not measure reality: it measures what you already believed. You will learn to ask without pushing."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "El oído del sabio busca ciencia",
+          "en": "The ear of the wise seeks knowledge"
+        },
+        "body": {
+          "es": "Proverbios 18:15 habla de <b>buscar</b>, no de confirmar. Una pregunta honesta es aquella cuya respuesta podría hacerte cambiar de opinión. Si ninguna respuesta te haría cambiar, no estás preguntando.",
+          "en": "Proverbs 18:15 speaks of <b>seeking</b>, not confirming. An honest question is one whose answer could change your mind. If no answer would change it, you are not really asking."
+        },
+        "diagram": {
+          "es": "<b>Tres trampas</b><br>Sesgada: \"¿No crees que…?\" · Doble: dos preguntas en una · Vaga: \"¿usas mucho el móvil?\" (¿cuánto es mucho?)<br>Arreglo: pide hechos, no opiniones sobre hechos.",
+          "en": "<b>Three traps</b><br>Leading: \"Don't you think…?\" · Double-barrelled: two questions in one · Vague: \"do you use your phone a lot?\"<br>Fix: ask for facts, not opinions about facts."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Cuál es una pregunta limpia?",
+          "en": "Which is a clean question?"
+        },
+        "q": {
+          "es": "Quieres saber si tus compañeros duermen poco. ¿Qué pregunta te da el dato más fiable?",
+          "en": "You want to know if classmates sleep too little. Which question gives the most reliable data?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "\"¿Verdad que todos dormimos poquísimo?\"",
+              "en": "\"We all sleep way too little, right?\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"¿Duermes mal y estás cansado en clase?\"",
+              "en": "\"Do you sleep badly and feel tired in class?\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"¿A qué hora te dormiste anoche y a qué hora te levantaste?\"",
+              "en": "\"What time did you fall asleep last night and what time did you wake up?\""
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "\"¿Crees que los jóvenes de hoy duermen poco?\"",
+              "en": "\"Do you think young people today sleep too little?\""
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Correcto. Pide un hecho concreto y comprobable, sin insinuar qué respuesta esperas. De ahí sale un número real.",
+          "en": "Correct. It asks for a concrete, checkable fact without hinting at the expected answer. That yields a real number."
+        },
+        "noMsg": {
+          "es": "Esa pregunta ya sugiere la respuesta, mezcla dos cosas, o pide una opinión general en vez de un dato propio.",
+          "en": "That question suggests the answer, mixes two things, or asks for a general opinion instead of personal data."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Miniencuesta",
+          "en": "Your Mini-Survey"
+        },
+        "body": {
+          "es": "Cinco preguntas, diez personas. Sin nombres: los datos se guardan en agregado.",
+          "en": "Five questions, ten people. No names: data is kept in aggregate."
+        },
+        "prompt": {
+          "es": "1. Lo que quiero averiguar: ___\n2. Mis 5 preguntas: ___\n3. Lo que yo creía antes de empezar: ___\n4. Lo que dijeron los datos: ___\n5. En qué me equivocaba: ___",
+          "en": "1. What I want to find out: ___\n2. My 5 questions: ___\n3. What I believed beforehand: ___\n4. What the data said: ___\n5. Where I was wrong: ___"
+        }
+      }
+    ]
+  },
+  "ideaNegocio": {
+    "id": "ideaNegocio",
+    "tag": "money",
+    "level": "explorer",
+    "verseKey": "ideaNegocio",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "De Queja a Idea de Negocio",
+      "en": "From Complaint to Business Idea"
+    },
+    "project": {
+      "es": "Tu <b>Ficha de Idea</b>: un problema real que sufre gente concreta, tu solución y por qué pagarían por ella.",
+      "en": "Your <b>Idea Sheet</b>: a real problem suffered by concrete people, your solution, and why they would pay for it."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Las buenas ideas empiezan como quejas",
+          "en": "Good ideas start as complaints"
+        },
+        "scenario": {
+          "es": "\"Qué rabia que la fuente del patio esté siempre rota.\" Eso es una queja. Ahora: ¿cuánta gente la sufre cada día? ¿Qué hacen mientras tanto? ¿Cuánto les cuesta? Ahí empieza una idea.",
+          "en": "\"So annoying that the courtyard fountain is always broken.\" That is a complaint. Now: how many suffer it daily? What do they do meanwhile? What does it cost them? There an idea begins."
+        },
+        "body": {
+          "es": "No vas a \"buscar una idea genial\". Vas a buscar un <b>problema que ya existe</b> y a quién le duele.",
+          "en": "You are not going to \"find a brilliant idea\". You are going to find a <b>problem that already exists</b> and who it hurts."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Con sabiduría se edifica la casa",
+          "en": "By wisdom a house is built"
+        },
+        "body": {
+          "es": "Proverbios 24:3-4 pone el orden: sabiduría, prudencia, ciencia. Primero entender, después construir. Al revés se llama \"tener una idea buenísima\" y suele acabar en nada.",
+          "en": "Proverbs 24:3-4 sets the order: wisdom, understanding, knowledge. First understand, then build. The reverse is called \"having a brilliant idea\" and usually ends in nothing."
+        },
+        "diagram": {
+          "es": "<b>Prueba de las tres preguntas</b><br>1. ¿Quién exactamente lo sufre? (si es \"todo el mundo\", no lo sabes)<br>2. ¿Qué hace hoy sin ti?<br>3. ¿Pagaría, o solo diría que le parece útil?",
+          "en": "<b>Three-question test</b><br>1. Who exactly suffers it? (if \"everyone\", you do not know)<br>2. What do they do today without you?<br>3. Would they pay, or just say it sounds useful?"
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Cuál es una idea con base?",
+          "en": "Which idea has a foundation?"
+        },
+        "q": {
+          "es": "¿Cuál de estas ideas está mejor fundamentada?",
+          "en": "Which of these ideas is best grounded?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "\"Una app para todo el mundo que haga la vida más fácil.\"",
+              "en": "\"An app for everyone that makes life easier.\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"Los 40 alumnos que vienen en bus llegan sin desayunar; vender bocadillos preparados a las 7:50.\"",
+              "en": "\"The 40 students arriving by bus have not had breakfast; sell prepared sandwiches at 7:50.\""
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "\"Una red social mejor que las que ya existen.\"",
+              "en": "\"A social network better than existing ones.\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"Algo con inteligencia artificial, que ahora se lleva mucho.\"",
+              "en": "\"Something with AI, since it is trending.\""
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Exacto. Sabes cuántos son, dónde están, cuándo les pasa y qué hacen ahora. Eso se puede probar la semana que viene.",
+          "en": "Exactly. You know how many, where, when it happens, and what they do now. That can be tested next week."
+        },
+        "noMsg": {
+          "es": "Demasiado ancha. Si no puedes nombrar a diez personas concretas que lo sufran, todavía no tienes una idea.",
+          "en": "Too broad. If you cannot name ten concrete people who suffer it, you do not have an idea yet."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Ficha de Idea",
+          "en": "Your Idea Sheet"
+        },
+        "body": {
+          "es": "Parte de una queja que hayas oído esta semana. Real, no inventada.",
+          "en": "Start from a complaint you actually heard this week. Real, not invented."
+        },
+        "prompt": {
+          "es": "1. La queja que oí: ___\n2. Quién exactamente la sufre (número aproximado): ___\n3. Qué hacen hoy para apañarse: ___\n4. Mi solución: ___\n5. Por qué pagarían: ___\n6. Cómo lo probaría con 5 € y una semana: ___",
+          "en": "1. The complaint I heard: ___\n2. Who exactly suffers it (rough number): ___\n3. What they do today: ___\n4. My solution: ___\n5. Why they would pay: ___\n6. How I would test it with 5 € and one week: ___"
+        }
+      }
+    ]
+  },
+  "trabajoEquipo": {
+    "id": "trabajoEquipo",
+    "tag": "leadership",
+    "level": "explorer",
+    "verseKey": "trabajoEquipo",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Equipo no es Repartirse el Trabajo",
+      "en": "A Team Is Not Just Splitting Work"
+    },
+    "project": {
+      "es": "Tu <b>Acta de Equipo</b>: roles, acuerdos y qué pasa si alguien falla, firmada por todos antes de empezar.",
+      "en": "Your <b>Team Charter</b>: roles, agreements, and what happens if someone fails, signed by all before starting."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "El trabajo en grupo que acabas haciendo tú",
+          "en": "The group project you end up doing alone"
+        },
+        "scenario": {
+          "es": "Cinco personas, un trabajo. Dos hacen todo, uno aparece el último día y dos no contestan. Todos sacan la misma nota. Ya lo has vivido.",
+          "en": "Five people, one project. Two do everything, one shows up on the last day, two never reply. All get the same grade. You have lived this."
+        },
+        "body": {
+          "es": "El problema casi nunca es la gente: es que nadie acordó nada al principio. Vas a aprender a abrir un equipo, no a sobrevivirlo.",
+          "en": "The problem is rarely the people: nobody agreed anything at the start. You will learn to open a team, not survive one."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Mejores son dos que uno",
+          "en": "Two are better than one"
+        },
+        "body": {
+          "es": "Eclesiastés 4:9-10 da la razón concreta: <b>si uno cae, el otro lo levanta</b>. Un equipo real no es dividir tareas: es cubrirse. Y eso solo funciona si se pactó antes de que alguien caiga.",
+          "en": "Ecclesiastes 4:9-10 gives the concrete reason: <b>if one falls, the other lifts him</b>. A real team is not dividing tasks: it is covering each other. That only works if agreed before anyone falls."
+        },
+        "diagram": {
+          "es": "<b>Acta de equipo, 4 puntos</b><br>1. Quién hace qué (con nombre)<br>2. Para cuándo<br>3. Dónde se avisa si algo se tuerce<br>4. Qué hacemos si alguien no entrega<br>Se firma ANTES.",
+          "en": "<b>Team charter, 4 points</b><br>1. Who does what (by name)<br>2. By when<br>3. Where to flag trouble<br>4. What we do if someone misses<br>Signed BEFORE."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "Alguien no ha entregado",
+          "en": "Someone has not delivered"
+        },
+        "q": {
+          "es": "Faltan dos días y un miembro no ha hecho su parte ni contesta. ¿Cuál es la mejor primera acción?",
+          "en": "Two days left and a member has not done their part nor replied. What is the best first action?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Hacer tú su parte y decírselo al profesor al final.",
+              "en": "Do their part yourself and tell the teacher at the end."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Escribirle a solas recordando el acuerdo y preguntando qué le pasa y qué puede entregar hoy.",
+              "en": "Message them privately recalling the agreement, asking what is wrong and what they can deliver today."
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Escribir en el grupo que no ha hecho nada para que todos lo vean.",
+              "en": "Post in the group chat that they have done nothing, so everyone sees."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Quitarle su parte y repartirla sin avisarle.",
+              "en": "Remove their part and redistribute without telling them."
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Eso es. Recuerdas lo pactado, dejas la puerta abierta y pides algo concreto y posible hoy. Si tras eso no responde, ya hay base para escalar.",
+          "en": "That is it. You recall the agreement, leave the door open, and ask for something concrete and doable today. If they still do not respond, there is now a basis to escalate."
+        },
+        "noMsg": {
+          "es": "Eso protege la nota pero rompe el equipo. Primero se habla a solas; señalar en público o tapar el problema no arregla ninguno de los dos.",
+          "en": "That protects the grade but breaks the team. Speak privately first; public shaming or silently covering fixes neither."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Acta de Equipo",
+          "en": "Your Team Charter"
+        },
+        "body": {
+          "es": "Úsala en tu próximo trabajo en grupo, de verdad. Cinco minutos al principio ahorran la semana entera.",
+          "en": "Use it on your next group project, for real. Five minutes at the start saves the whole week."
+        },
+        "prompt": {
+          "es": "1. Quién hace qué: ___\n2. Fechas de cada parte: ___\n3. Dónde avisamos si algo se tuerce: ___\n4. Qué hacemos si alguien no entrega: ___\n5. Cómo fue de verdad: ___",
+          "en": "1. Who does what: ___\n2. Dates per part: ___\n3. Where we flag trouble: ___\n4. What if someone misses: ___\n5. How it actually went: ___"
+        }
+      }
+    ]
+  },
+  "contabilidad": {
+    "id": "contabilidad",
+    "tag": "money",
+    "level": "builder",
+    "verseKey": "contabilidad",
+    "bookKey": "padreRico",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Calcular Antes de Construir",
+      "en": "Counting the Cost Before Building"
+    },
+    "project": {
+      "es": "Tu <b>Cuenta de Resultados</b> de un proyecto real: ingresos, costes fijos, costes variables y a partir de cuántas unidades ganas dinero.",
+      "en": "Your project <b>Income Statement</b>: revenue, fixed costs, variable costs, and the break-even point."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Vendiste 100 y perdiste dinero",
+          "en": "You sold 100 and lost money"
+        },
+        "scenario": {
+          "es": "Vendes pulseras a 3 €. Te costaron 1,20 € cada una. \"Gano 1,80\". Pero el hilo lo compraste en packs, pagaste 15 € de envío y la mesa del mercadillo costó 20 €. ¿Sigues ganando?",
+          "en": "You sell bracelets at 3 €. Each cost 1.20 €. \"I make 1.80\". But thread came in packs, shipping was 15 €, and the market stall cost 20 €. Still profitable?"
+        },
+        "body": {
+          "es": "La diferencia entre precio y coste no es beneficio. Vas a aprender a ver el dinero completo, no solo el que pasa por tus manos.",
+          "en": "The gap between price and cost is not profit. You will learn to see the whole money picture, not just what passes through your hands."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Sentarse primero y calcular",
+          "en": "Sit down first and count"
+        },
+        "body": {
+          "es": "Lucas 14:28 es literalmente contabilidad: antes de edificar, <b>calcula si tienes con qué acabar</b>. Fijo es lo que pagas aunque no vendas nada. Variable es lo que solo pagas si vendes.",
+          "en": "Luke 14:28 is literally accounting: before building, <b>count whether you can finish</b>. Fixed is what you pay even selling nothing. Variable is what you pay only when you sell."
+        },
+        "diagram": {
+          "es": "<b>Punto de equilibrio</b><br>Unidades = Costes fijos ÷ (Precio − Coste variable)<br>Ejemplo: 35 € fijos ÷ (3 € − 1,20 €) = 20 pulseras.<br>Hasta la 20 no ganas nada: las recuperas.",
+          "en": "<b>Break-even</b><br>Units = Fixed costs ÷ (Price − Variable cost)<br>Example: 35 € ÷ (3 € − 1.20 €) = 20 bracelets.<br>Until unit 20 you earn nothing: you recover."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "Calcula el equilibrio",
+          "en": "Compute break-even"
+        },
+        "q": {
+          "es": "Vendes limonada a 2 € el vaso. Los ingredientes cuestan 0,50 € por vaso. Alquilar el puesto cuesta 30 € el día. ¿Cuántos vasos necesitas para empezar a ganar?",
+          "en": "You sell lemonade at 2 € a cup. Ingredients cost 0.50 € per cup. The stand costs 30 € for the day. How many cups to start profiting?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "15 vasos",
+              "en": "15 cups"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "20 vasos",
+              "en": "20 cups"
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "30 vasos",
+              "en": "30 cups"
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "60 vasos",
+              "en": "60 cups"
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Correcto: 30 ÷ (2 − 0,50) = 30 ÷ 1,50 = 20 vasos. Del 21 en adelante ganas 1,50 € por vaso.",
+          "en": "Correct: 30 ÷ (2 − 0.50) = 20 cups. From cup 21 you earn 1.50 € each."
+        },
+        "noMsg": {
+          "es": "Recuerda: primero el margen por unidad (precio − coste variable), y luego divide los costes fijos entre ese margen.",
+          "en": "Remember: first the margin per unit (price − variable cost), then divide fixed costs by that margin."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Cuenta de Resultados",
+          "en": "Your Income Statement"
+        },
+        "body": {
+          "es": "Sobre un proyecto real tuyo, o el de tu trimestre. Con números que puedas defender.",
+          "en": "On a real project of yours, or your quarterly one. With numbers you can defend."
+        },
+        "prompt": {
+          "es": "1. Qué vendo y a qué precio: ___\n2. Coste variable por unidad: ___\n3. Costes fijos totales: ___\n4. Punto de equilibrio (unidades): ___\n5. ¿Es alcanzable de verdad? ¿Por qué?: ___",
+          "en": "1. What I sell and at what price: ___\n2. Variable cost per unit: ___\n3. Total fixed costs: ___\n4. Break-even (units): ___\n5. Is it realistically reachable? Why?: ___"
+        }
+      }
+    ]
+  },
+  "planNegocio": {
+    "id": "planNegocio",
+    "tag": "money",
+    "level": "builder",
+    "verseKey": "planNegocio",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Plan de Negocio en Una Página",
+      "en": "One-Page Business Plan"
+    },
+    "project": {
+      "es": "Tu <b>Plan de Una Página</b>: problema, cliente, solución, precio, costes, primer paso y cómo sabrás si va bien.",
+      "en": "Your <b>One-Page Plan</b>: problem, customer, solution, price, costs, first step, and how you will know it works."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Un plan de 40 páginas que nadie lee",
+          "en": "A 40-page plan nobody reads"
+        },
+        "scenario": {
+          "es": "Hay quien pasa tres meses escribiendo un plan precioso y cero días hablando con un cliente. El plan queda impecable. El negocio no existe.",
+          "en": "Some spend three months writing a beautiful plan and zero days talking to a customer. The plan is immaculate. The business does not exist."
+        },
+        "body": {
+          "es": "Un plan sirve para <b>pensar y decidir</b>, no para impresionar. Si no cabe en una página, aún no está claro.",
+          "en": "A plan exists to <b>think and decide</b>, not to impress. If it does not fit on one page, it is not clear yet."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Encomienda tus obras y serán afirmados tus pensamientos",
+          "en": "Commit your works and your plans will be established"
+        },
+        "body": {
+          "es": "Proverbios 16:3 pone el orden al revés de lo que esperamos: primero encomiendas la <b>obra</b>, después se afirman los pensamientos. Se piensa mejor haciendo que planificando en abstracto.",
+          "en": "Proverbs 16:3 reverses the expected order: first commit the <b>work</b>, then thoughts are established. You think better by doing than by planning in the abstract."
+        },
+        "diagram": {
+          "es": "<b>Las 7 casillas</b><br>Problema · Cliente concreto · Solución · Precio · Costes · Primer paso esta semana · Señal de que funciona.<br>Una frase por casilla. Ni una más.",
+          "en": "<b>The 7 boxes</b><br>Problem · Concrete customer · Solution · Price · Costs · First step this week · Signal it works.<br>One sentence each. No more."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Qué señal sirve?",
+          "en": "Which signal counts?"
+        },
+        "q": {
+          "es": "Tu plan necesita una \"señal de que funciona\" para las dos primeras semanas. ¿Cuál es una señal útil?",
+          "en": "Your plan needs a \"signal it works\" for the first two weeks. Which is useful?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Que a mi familia le parezca buena idea.",
+              "en": "My family thinks it is a good idea."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Tener 200 seguidores en la cuenta nueva.",
+              "en": "200 followers on the new account."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Que 5 personas que no conozco paguen antes de que exista el producto final.",
+              "en": "5 strangers pay before the final product exists."
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Terminar el logotipo y las tarjetas.",
+              "en": "Finish the logo and business cards."
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Exacto. Pagar es la única señal que no miente. Los elogios, los seguidores y el logo no son demanda.",
+          "en": "Exactly. Paying is the only signal that does not lie. Praise, followers, and logos are not demand."
+        },
+        "noMsg": {
+          "es": "Eso mide ánimo o actividad tuya, no demanda real. Pregúntate qué señal implicaría que alguien renuncia a algo por ti.",
+          "en": "That measures encouragement or your own activity, not real demand. Ask what signal means someone gives something up for you."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Plan de Una Página",
+          "en": "Your One-Page Plan"
+        },
+        "body": {
+          "es": "Una frase por casilla. Si necesitas dos, es que aún no lo tienes claro.",
+          "en": "One sentence per box. If you need two, it is not clear yet."
+        },
+        "prompt": {
+          "es": "1. Problema: ___\n2. Cliente concreto: ___\n3. Solución: ___\n4. Precio: ___\n5. Costes: ___\n6. Primer paso esta semana: ___\n7. Señal de que funciona: ___",
+          "en": "1. Problem: ___\n2. Concrete customer: ___\n3. Solution: ___\n4. Price: ___\n5. Costs: ___\n6. First step this week: ___\n7. Signal it works: ___"
+        }
+      }
+    ]
+  },
+  "construirWeb": {
+    "id": "construirWeb",
+    "tag": "core",
+    "level": "builder",
+    "verseKey": "construirWeb",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Tu Presencia Digital con Criterio",
+      "en": "Your Digital Presence, Done Right"
+    },
+    "project": {
+      "es": "Tu <b>Página Personal</b> publicada: quién eres, qué sabes hacer, tres pruebas y cómo contactarte.",
+      "en": "Your published <b>Personal Page</b>: who you are, what you can do, three proofs, and how to reach you."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Ya tienes presencia digital",
+          "en": "You already have a digital presence"
+        },
+        "scenario": {
+          "es": "Alguien escribe tu nombre en un buscador antes de una entrevista o una beca. Algo va a salir. La pregunta no es si tienes presencia digital: es si la elegiste tú.",
+          "en": "Someone types your name before an interview or scholarship. Something will appear. The question is not whether you have a digital presence: it is whether you chose it."
+        },
+        "body": {
+          "es": "Vas a construir un sitio propio, sencillo y honesto, que muestre lo que sabes hacer con pruebas.",
+          "en": "You will build your own simple, honest site showing what you can do, with proof."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Como para el Señor, no para los hombres",
+          "en": "As for the Lord, not for men"
+        },
+        "body": {
+          "es": "Colosenses 3:23-24 cambia el criterio: no publicas para impresionar, publicas porque el trabajo bien hecho se muestra bien hecho. Eso descarta inflar y descarta esconderse.",
+          "en": "Colossians 3:23-24 changes the criterion: you do not publish to impress, you publish because good work deserves to be shown well. That rules out inflating and rules out hiding."
+        },
+        "diagram": {
+          "es": "<b>Cuatro bloques, nada más</b><br>1. Quién eres (2 líneas)<br>2. Qué sabes hacer (lista corta)<br>3. Tres pruebas (proyecto, foto, enlace)<br>4. Cómo contactarte<br>Sin datos privados: ni dirección, ni teléfono, ni centro exacto.",
+          "en": "<b>Four blocks, nothing more</b><br>1. Who you are (2 lines)<br>2. What you can do<br>3. Three proofs<br>4. How to reach you<br>No private data: no address, phone, or exact school."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Qué NO va en tu página?",
+          "en": "What does NOT belong on your page?"
+        },
+        "q": {
+          "es": "Estás montando tu página personal. ¿Qué elemento deberías dejar fuera?",
+          "en": "You are building your personal page. Which element should be left out?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Tres proyectos tuyos con una foto de cada uno.",
+              "en": "Three of your projects with a photo each."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Tu dirección, tu teléfono y el horario de tu instituto.",
+              "en": "Your address, phone, and school timetable."
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Un correo de contacto creado para esto.",
+              "en": "A contact email created for this."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Dos líneas sobre qué te interesa y por qué.",
+              "en": "Two lines on what interests you and why."
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Correcto. Una página pública es pública para todos. Contacto sí; localización y rutina diaria, nunca.",
+          "en": "Correct. A public page is public to everyone. Contact yes; location and daily routine, never."
+        },
+        "noMsg": {
+          "es": "Eso sí debe estar. Lo que nunca se publica es lo que permite localizarte físicamente.",
+          "en": "That does belong. What must never be published is anything that lets someone locate you physically."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Página Personal",
+          "en": "Your Personal Page"
+        },
+        "body": {
+          "es": "Publícala de verdad, aunque sea sencilla. Una página real y modesta vale más que un diseño imaginario.",
+          "en": "Actually publish it, even if simple. A real modest page beats an imaginary design."
+        },
+        "prompt": {
+          "es": "1. Quién soy (2 líneas): ___\n2. Qué sé hacer: ___\n3. Prueba 1 / 2 / 3: ___\n4. Correo de contacto: ___\n5. Qué he dejado fuera a propósito: ___",
+          "en": "1. Who I am (2 lines): ___\n2. What I can do: ___\n3. Proof 1 / 2 / 3: ___\n4. Contact email: ___\n5. What I deliberately left out: ___"
+        }
+      }
+    ]
+  },
+  "expediente": {
+    "id": "expediente",
+    "tag": "core",
+    "level": "launch",
+    "verseKey": "expediente",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Tu Expediente Cuenta una Historia",
+      "en": "Your Record Tells a Story"
+    },
+    "project": {
+      "es": "Tu <b>Índice de Expediente</b>: los 8 entregables que mejor cuentan quién eres, ordenados y con una línea explicando qué prueba cada uno.",
+      "en": "Your <b>Portfolio Index</b>: the 8 artifacts that best tell who you are, ordered, each with one line on what it proves."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Una carpeta no es un expediente",
+          "en": "A folder is not a portfolio"
+        },
+        "scenario": {
+          "es": "Dos alumnos entregan lo mismo. Uno adjunta 30 archivos con nombres como \"documento_final_2.pdf\". El otro entrega 8, ordenados, cada uno con una línea diciendo qué demuestra. Adivina a cuál leen entero.",
+          "en": "Two students submit the same work. One attaches 30 files named \"final_doc_2.pdf\". The other submits 8, ordered, each with a line on what it proves. Guess which gets read fully."
+        },
+        "body": {
+          "es": "Tu expediente no es un almacén: es un <b>argumento</b>. Vas a elegir qué prueba qué.",
+          "en": "Your portfolio is not storage: it is an <b>argument</b>. You will choose what proves what."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Conocimiento e inteligencia probados",
+          "en": "Knowledge and understanding, tested"
+        },
+        "body": {
+          "es": "En Daniel 1, los cuatro jóvenes no se presentan hablando de sí mismos: <b>los examinan</b> y su trabajo responde. Un buen expediente hace lo mismo: no dice \"soy responsable\", enseña dónde se ve.",
+          "en": "In Daniel 1, the four young men do not present themselves with words: <b>they are examined</b> and their work answers. A good portfolio does the same: it does not say \"I am responsible\", it shows where that is visible."
+        },
+        "diagram": {
+          "es": "<b>Regla de la línea</b><br>Cada pieza lleva una línea: \"Esto demuestra que…\".<br>Si no sabes terminar la frase, esa pieza sobra.",
+          "en": "<b>The one-line rule</b><br>Each piece carries one line: \"This demonstrates that…\".<br>If you cannot finish the sentence, that piece does not belong."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Qué pieza es más fuerte?",
+          "en": "Which piece is strongest?"
+        },
+        "q": {
+          "es": "Quieres demostrar constancia. ¿Qué evidencia lo prueba mejor?",
+          "en": "You want to demonstrate perseverance. Which evidence proves it best?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "Un párrafo explicando que eres muy constante.",
+              "en": "A paragraph explaining that you are very persevering."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "Un diploma de asistencia a una charla de motivación.",
+              "en": "An attendance certificate from a motivational talk."
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "El registro de 21 días seguidos de tu hábito, con los dos días que fallaste y cómo volviste.",
+              "en": "Your 21-day habit log, including the two days you failed and how you resumed."
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "Una carta de un familiar diciendo que eres muy trabajador.",
+              "en": "A letter from a relative saying you are hardworking."
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Eso es. Muestra el proceso completo, incluidos los fallos. Nada convence más que una evidencia que no se esconde.",
+          "en": "That is it. It shows the full process, failures included. Nothing convinces more than evidence that does not hide."
+        },
+        "noMsg": {
+          "es": "Eso son afirmaciones sobre ti, no pruebas. Busca lo que un tercero pueda verificar sin creerte a ti.",
+          "en": "Those are claims about you, not proof. Look for what a third party can verify without taking your word."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Índice de Expediente",
+          "en": "Your Portfolio Index"
+        },
+        "body": {
+          "es": "Ocho piezas, ni una más. Elegir qué dejas fuera es la mitad del trabajo.",
+          "en": "Eight pieces, no more. Choosing what to leave out is half the work."
+        },
+        "prompt": {
+          "es": "Pieza 1: ___ → Esto demuestra que: ___\nPieza 2: ___ → Esto demuestra que: ___\n(hasta 8)\n\nQué dejé fuera y por qué: ___\nQué me falta y cómo lo consigo este trimestre: ___",
+          "en": "Piece 1: ___ → This demonstrates that: ___\nPiece 2: ___ → This demonstrates that: ___\n(up to 8)\n\nWhat I left out and why: ___\nWhat is missing and how I get it this quarter: ___"
+        }
+      }
+    ]
+  },
+  "curriculum": {
+    "id": "curriculum",
+    "tag": "core",
+    "level": "launch",
+    "verseKey": "curriculum",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Un CV que Alguien Quiera Leer",
+      "en": "A CV Someone Wants to Read"
+    },
+    "project": {
+      "es": "Tu <b>CV de Una Página</b> con cada logro escrito como acción, contexto y resultado medible.",
+      "en": "Your one-page <b>CV</b> with each achievement written as action, context, and measurable result."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "Seis segundos",
+          "en": "Six seconds"
+        },
+        "scenario": {
+          "es": "Quien revisa currículos dedica unos segundos a la primera criba. En ese tiempo no lee: <b>escanea</b>. Si tu mejor logro está en la línea 14, no existe.",
+          "en": "Whoever screens CVs spends seconds on the first pass. In that time they do not read: they <b>scan</b>. If your best achievement sits on line 14, it does not exist."
+        },
+        "body": {
+          "es": "No se trata de exagerar. Se trata de poner delante lo que ya hiciste y de decirlo en el formato que se entiende rápido.",
+          "en": "This is not about exaggerating. It is about putting what you already did up front, in a format understood fast."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "El solícito en su trabajo",
+          "en": "Diligent in your work"
+        },
+        "body": {
+          "es": "Proverbios 22:29 no habla de quien mejor se vende, sino de quien es <b>solícito</b> — diligente y constante. Tu CV documenta eso. Si no hay obra detrás, ningún formato lo salva.",
+          "en": "Proverbs 22:29 speaks not of the best self-promoter but of the <b>diligent</b> one. Your CV documents that. With no work behind it, no format saves you."
+        },
+        "diagram": {
+          "es": "<b>Fórmula ACR</b><br><b>A</b>cción (verbo) + <b>C</b>ontexto + <b>R</b>esultado medible.<br>Flojo: \"Ayudé en el grupo de jóvenes\".<br>Fuerte: \"Coordiné a 8 voluntarios en 12 sesiones semanales; la asistencia pasó de 15 a 34.\"",
+          "en": "<b>ACR formula</b><br><b>A</b>ction + <b>C</b>ontext + measurable <b>R</b>esult.<br>Weak: \"Helped with youth group\".<br>Strong: \"Coordinated 8 volunteers across 12 weekly sessions; attendance grew 15 → 34.\""
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "¿Cuál está bien escrito?",
+          "en": "Which is well written?"
+        },
+        "q": {
+          "es": "¿Cuál de estas líneas sigue la fórmula acción + contexto + resultado?",
+          "en": "Which line follows action + context + measurable result?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "\"Persona responsable y con muchas ganas de aprender.\"",
+              "en": "\"Responsible person, eager to learn.\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"Participé en un proyecto de reciclaje en el instituto.\"",
+              "en": "\"Participated in a recycling project at school.\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"Organicé la recogida de papel de 6 aulas durante 3 meses; se reciclaron 240 kg.\"",
+              "en": "\"Organized paper collection across 6 classrooms for 3 months; 240 kg recycled.\""
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "\"Tengo experiencia en trabajo en equipo y liderazgo.\"",
+              "en": "\"I have experience in teamwork and leadership.\""
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Exacto. Verbo concreto, alcance medible y resultado verificable. Eso se lee en dos segundos y se recuerda.",
+          "en": "Exactly. Concrete verb, measurable scope, verifiable result. Read in two seconds and remembered."
+        },
+        "noMsg": {
+          "es": "Eso es un adjetivo sobre ti o una participación sin resultado. Pregúntate: ¿cuántos? ¿cuánto tiempo? ¿qué cambió?",
+          "en": "That is an adjective about you or participation without result. Ask: how many? how long? what changed?"
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu CV de Una Página",
+          "en": "Your One-Page CV"
+        },
+        "body": {
+          "es": "Reescribe tus cinco mejores líneas con la fórmula ACR. Una página, sin foto, sin datos privados de más.",
+          "en": "Rewrite your five best lines with the ACR formula. One page, no photo, no unnecessary private data."
+        },
+        "prompt": {
+          "es": "Logro 1 → Acción: ___ Contexto: ___ Resultado: ___\nLogro 2 → ___\nLogro 3 → ___\nLogro 4 → ___\nLogro 5 → ___\n\nCuál pongo primero y por qué: ___",
+          "en": "Achievement 1 → Action: ___ Context: ___ Result: ___\nAchievement 2 → ___\n(up to 5)\n\nWhich goes first and why: ___"
+        }
+      }
+    ]
+  },
+  "entrevista": {
+    "id": "entrevista",
+    "tag": "core",
+    "level": "launch",
+    "verseKey": "entrevista",
+    "status": "draft",
+    "authoring": "ai_assisted",
+    "title": {
+      "es": "Entrevistas sin Fingir",
+      "en": "Interviews Without Faking"
+    },
+    "project": {
+      "es": "Tu <b>Simulacro de Entrevista</b> grabado: cinco preguntas reales respondidas con ejemplos concretos, y tu autoevaluación.",
+      "en": "Your recorded <b>Mock Interview</b>: five real questions answered with concrete examples, plus your self-assessment."
+    },
+    "steps": [
+      {
+        "type": "hook",
+        "kicker": {
+          "es": "Paso 1 · Apertura",
+          "en": "Step 1 · Hook"
+        },
+        "h": {
+          "es": "\"Háblame de una debilidad\"",
+          "en": "\"Tell me about a weakness\""
+        },
+        "scenario": {
+          "es": "\"Mi debilidad es que soy demasiado perfeccionista.\" Quien entrevista ha oído esa frase cientos de veces. No suena a humildad: suena a que no quieres responder.",
+          "en": "\"My weakness is that I am too much of a perfectionist.\" The interviewer has heard it hundreds of times. It does not sound humble: it sounds evasive."
+        },
+        "body": {
+          "es": "Una entrevista no es un examen de respuestas correctas. Es comprobar si eres quien dices y si se puede trabajar contigo.",
+          "en": "An interview is not a test of correct answers. It checks whether you are who you say and whether you are workable with."
+        }
+      },
+      {
+        "type": "theory",
+        "kicker": {
+          "es": "Paso 2 · Fundamento",
+          "en": "Step 2 · Theory"
+        },
+        "h": {
+          "es": "Palabra con gracia, sazonada con sal",
+          "en": "Speech with grace, seasoned with salt"
+        },
+        "body": {
+          "es": "Colosenses 4:6 pide las dos cosas a la vez: <b>gracia</b> (amable) y <b>sal</b> (con sustancia, que sepa a algo). Una respuesta amable y vacía falla igual que una brusca.",
+          "en": "Colossians 4:6 asks for both: <b>grace</b> (kind) and <b>salt</b> (substance). A kind but empty answer fails as much as a blunt one."
+        },
+        "diagram": {
+          "es": "<b>Método SAR</b><br><b>S</b>ituación (breve) → <b>A</b>cción (lo que hiciste tú) → <b>R</b>esultado (qué pasó y qué aprendiste).<br>30 a 60 segundos. Ni monosílabo ni discurso.",
+          "en": "<b>SAR method</b><br><b>S</b>ituation → <b>A</b>ction (what you did) → <b>R</b>esult (what happened, what you learned).<br>30 to 60 seconds. Neither monosyllable nor speech."
+        }
+      },
+      {
+        "type": "quiz",
+        "kicker": {
+          "es": "Paso 3 · Comprobación",
+          "en": "Step 3 · Quiz"
+        },
+        "h": {
+          "es": "Una debilidad, bien respondida",
+          "en": "A weakness, answered well"
+        },
+        "q": {
+          "es": "Te preguntan por una debilidad real. ¿Cuál es la mejor respuesta?",
+          "en": "You are asked about a real weakness. Which is the best answer?"
+        },
+        "opts": [
+          {
+            "t": {
+              "es": "\"Soy demasiado perfeccionista y trabajo demasiado.\"",
+              "en": "\"I am too perfectionist and work too hard.\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"La verdad es que no se me ocurre ninguna.\"",
+              "en": "\"Honestly, I cannot think of any.\""
+            },
+            "ok": false
+          },
+          {
+            "t": {
+              "es": "\"Me cuesta pedir ayuda pronto. En el proyecto de Q2 perdí una semana atascado; ahora me pongo un límite de dos días y pregunto.\"",
+              "en": "\"I struggle to ask for help early. In the Q2 project I lost a week stuck; now I set a two-day limit and ask.\""
+            },
+            "ok": true
+          },
+          {
+            "t": {
+              "es": "\"Soy muy desorganizado, pero bueno, todos lo somos.\"",
+              "en": "\"I am very disorganized, but everyone is.\""
+            },
+            "ok": false
+          }
+        ],
+        "okMsg": {
+          "es": "Exacto. Debilidad real, ejemplo concreto y qué has cambiado. Demuestra autoconocimiento sin hundirte.",
+          "en": "Exactly. Real weakness, concrete example, and what you changed. It shows self-awareness without sinking yourself."
+        },
+        "noMsg": {
+          "es": "Eso es un cliché, una evasiva o una debilidad sin arreglo. La estructura es: real + ejemplo + qué haces ahora.",
+          "en": "That is a cliché, an evasion, or a weakness with no fix. The structure is: real + example + what you do now."
+        }
+      },
+      {
+        "type": "reflect",
+        "kicker": {
+          "es": "Paso 4 · Aplicación",
+          "en": "Step 4 · Reflection"
+        },
+        "h": {
+          "es": "Tu Simulacro de Entrevista",
+          "en": "Your Mock Interview"
+        },
+        "body": {
+          "es": "Pide a tu mentor o a un adulto que te entreviste. Grábalo y revísalo una vez con la estructura SAR en la mano.",
+          "en": "Ask your mentor or an adult to interview you. Record it and review once with the SAR structure in hand."
+        },
+        "prompt": {
+          "es": "1. Háblame de ti → S/A/R: ___\n2. Una dificultad que superaste → S/A/R: ___\n3. Una debilidad real → S/A/R: ___\n4. Por qué tú → S/A/R: ___\n5. Tu pregunta para ellos: ___\n\nQué vi al revisar la grabación: ___",
+          "en": "1. Tell me about yourself → S/A/R: ___\n2. A difficulty you overcame → S/A/R: ___\n3. A real weakness → S/A/R: ___\n4. Why you → S/A/R: ___\n5. Your question for them: ___\n\nWhat I saw on review: ___"
+        }
       }
     ]
   }

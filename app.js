@@ -22,6 +22,11 @@ import {
 const SUPABASE_URL = 'https://gepsbesbhsxfyxymemim.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlcHNiZXNiaHN4Znl4eW1lbWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjg1MjgsImV4cCI6MjA4Mzc0NDUyOH0.VQ6q4ex-tWp2Nr2YK-Sd7PPGCZgcQvQUmTGNNjZtp5Q';
 
+const VIEWS_BY_AUDIENCE = {
+  junior: ['juniors', 'capsulas', 'habitos'],
+  highschool: ['capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'transversales'],
+};
+
 // ---------------- Application State ----------------
 const state = {
   lang: 'es',
@@ -35,6 +40,10 @@ const state = {
   userRole: 'student',
   // Se rellena solo tras validación en servidor; vacío en Vista Estudiante.
   mentorContent: {},
+
+  // Audiencia: 'junior' (8-13, Off-Campus) o 'highschool' (Seedling..Launch).
+  // null = sin sesión y sin elegir todavía; se muestra el selector de entrada.
+  audience: null,
 
   juniorsFilter: 'all',
   coins: parseInt(localStorage.getItem('chanak_coins') || '20', 10),
@@ -76,6 +85,8 @@ window.closeMentorPinModal = closeMentorPinModal;
 window.submitMentorPin = submitMentorPin;
 
 window.setViewMode = setViewMode;
+window.chooseAudience = chooseAudience;
+window.resetAudience = resetAudience;
 window.selectHighSchoolLevel = selectHighSchoolLevel;
 window.selectStage = selectStage;
 window.filterJuniors = filterJuniors;
@@ -141,10 +152,26 @@ function initApp() {
     // cualquiera que escribiera el parámetro. El desbloqueo ocurre ahora contra
     // el servidor, en unlockMentorView().
     state.userRole = 'student';
+
+    // La audiencia sale del nivel firmado en el token, no de una eleccion.
+    state.audience = state.assignedLevel === 'junior' ? 'junior' : 'highschool';
+    if (state.audience === 'junior') {
+      state.currentLevel = null;
+      state.viewMode = 'juniors';
+    }
   } else {
     state.isSis = false;
     state.assignedLevel = null;
-    if (params.get('level')) {
+
+    // Sin sesión del SIS no se adivina la edad: se elige explícitamente.
+    // Antes se mostraba todo a todos, incluido el currículo de secundaria a
+    // un niño de 10 años y el catálogo Junior a uno de 17.
+    const chosen = params.get('audience') || localStorage.getItem('chanak_audience');
+    state.audience = (chosen === 'junior' || chosen === 'highschool') ? chosen : null;
+
+    if (state.audience === 'junior') {
+      state.viewMode = 'juniors';
+    } else if (params.get('level')) {
       state.currentLevel = params.get('level').toLowerCase();
     }
   }
@@ -384,6 +411,9 @@ function switchLanguage(lang) {
 // ---------------- Navigation & View Switching ----------------
 function setViewMode(mode) {
   if (state.mode === 'dual' && mode === 'juniors') return;
+  // No basta con ocultar la pestana: si la vista no corresponde a esta
+  // audiencia, tampoco se entra por URL ni desde la consola.
+  if (!isViewAllowed(mode)) return;
   state.viewMode = mode;
   updateNavigationUI();
   renderCurrentView();
@@ -407,9 +437,53 @@ function selectHighSchoolLevel(levelKey) {
   renderCurrentView();
 }
 
+// Qué secciones corresponden a cada audiencia. Un alumno de 10 años no tiene
+// por qué ver el currículo de secundaria ni el expediente universitario, y uno
+// de 17 no tiene por qué ver el catálogo Junior.
+function allowedViews() {
+  return VIEWS_BY_AUDIENCE[state.audience] || [];
+}
+
+function isViewAllowed(view) {
+  // En Vista Mentor se ve todo: el docente necesita el mapa completo.
+  if (state.roleView === 'mentor') return true;
+  if (view === 'test-dones' && !isRiasecAvailable()) return false;
+  return allowedViews().includes(view);
+}
+
+function chooseAudience(audience) {
+  if (audience !== 'junior' && audience !== 'highschool') return;
+  state.audience = audience;
+  try { localStorage.setItem('chanak_audience', audience); } catch (e) { /* modo privado */ }
+  state.viewMode = audience === 'junior' ? 'juniors' : 'capsulas';
+  // Un Junior no pertenece a ningun nivel de secundaria; al volver a
+  // Secundaria hay que devolverle un nivel o la vista de capsulas recibe null.
+  state.currentLevel = audience === 'junior'
+    ? null
+    : (state.assignedLevel || state.currentLevel || 'seedling');
+  renderCurrentView();
+  updateNavigationUI();
+}
+
+function resetAudience() {
+  try { localStorage.removeItem('chanak_audience'); } catch (e) { /* modo privado */ }
+  state.audience = null;
+  renderCurrentView();
+  updateNavigationUI();
+}
+
+// Cápsulas que puede abrir un Junior: solo las transversales de fundamento.
+// Tiene acceso a las generales, no a todas.
+function juniorCapsuleKeys() {
+  return Object.entries(CAPSULES_DATA)
+    .filter(([, c]) => c.tag === 'core' && c.level === 'seedling')
+    .map(([k]) => k);
+}
+
 // El Test "Quién Soy" está anclado a Explorer Q1. En una sesión del SIS de otro
 // nivel no se ofrece; sin token (demo/mentor) queda visible.
 function isRiasecAvailable() {
+  if (state.audience === 'junior') return false;
   if (!state.isSis) return true;
   return state.assignedLevel === 'explorer';
 }
@@ -418,15 +492,21 @@ function updateNavigationUI() {
   const tabs = ['capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'juniors', 'transversales'];
   tabs.forEach(tab => {
     const el = document.getElementById(`tab-${tab}`);
-    if (el) el.classList.toggle('active', state.viewMode === tab);
+    if (!el) return;
+    el.classList.toggle('active', state.viewMode === tab);
+    // Cada audiencia ve solo sus secciones. Antes todos veían todas.
+    el.hidden = !isViewAllowed(tab);
   });
 
-  const testTab = document.getElementById('tab-test-dones');
-  if (testTab) testTab.hidden = !isRiasecAvailable();
+  const navBar = document.getElementById('stage-tabs-bar');
+  if (navBar) navBar.hidden = !state.audience && state.roleView !== 'mentor';
 
   const subLevelsBar = document.getElementById('sub-levels-bar');
   if (subLevelsBar) {
-    const showSubBar = ['capsulas', 'cuaderno'].includes(state.viewMode);
+    // La barra de niveles Seedling..Launch no aplica a un Junior, ni antes de
+    // que se haya elegido itinerario.
+    const showSubBar = state.audience === 'highschool'
+      && ['capsulas', 'cuaderno'].includes(state.viewMode);
     subLevelsBar.style.display = showSubBar ? 'flex' : 'none';
 
     const levelsMeta = [
@@ -470,6 +550,17 @@ function renderCurrentView() {
   const container = document.getElementById('stage-content-area');
   if (!container) return;
 
+  // Sin audiencia definida se pregunta antes de mostrar nada.
+  if (!state.audience && state.roleView !== 'mentor') {
+    renderAudienceChooser(container);
+    return;
+  }
+
+  // Si la vista activa no corresponde a la audiencia, se cae a la de inicio.
+  if (!isViewAllowed(state.viewMode)) {
+    state.viewMode = state.audience === 'junior' ? 'juniors' : 'capsulas';
+  }
+
   switch (state.viewMode) {
     case 'cuaderno':
       renderCuadernoDeVidaView(container);
@@ -506,6 +597,13 @@ function renderCurrentView() {
 function renderCapsulesAndChallengesView(container, stageKey) {
   const isEs = state.lang === 'es';
   const isMentor = state.roleView === 'mentor';
+
+  // Un Junior no pertenece a ningún nivel de secundaria: ve las cápsulas de
+  // fundamento, sin trimestres, sin expediente y sin lecturas de bachillerato.
+  if (state.audience === 'junior' || !stageKey) {
+    renderJuniorCapsulesView(container);
+    return;
+  }
 
   // Bloqueo estricto si el nivel no coincide con el asignado por el SIS
   if (state.isSis && state.assignedLevel && stageKey !== state.assignedLevel) {
@@ -607,9 +705,27 @@ function renderCapsulesAndChallengesView(container, stageKey) {
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-        ${Array.from(new Set((levelData.quarters || []).flatMap(q => q.capsules || []))).map(capKey => {
+        ${(state.audience === 'junior'
+            ? juniorCapsuleKeys()
+            : Array.from(new Set((levelData.quarters || []).flatMap(q => q.capsules || [])))
+          ).map(capKey => {
           const cap = CAPSULES_DATA[capKey];
-          if (!cap) return '';
+          // Nunca se sustituye por contenido de otro nivel ni se descarta en
+          // silencio: si falta, se dice (R3).
+          if (!cap) return `
+            <article class="module-card is-preparacion">
+              <header class="module-card__top">
+                <span class="module-card__id">${capKey}</span>
+                <span class="module-card__state">${isEs ? 'En preparación' : 'In preparation'}</span>
+              </header>
+              <h4 class="module-card__title">${isEs ? 'Cápsula en preparación' : 'Capsule in preparation'}</h4>
+              <p class="module-card__eq">
+                ${isEs
+                  ? 'Esta sesión está en preparación — habla con tu mentora.'
+                  : 'This session is being prepared — talk to your mentor.'}
+              </p>
+            </article>
+          `;
           const isDone = localStorage.getItem(`chanak_cap_${capKey}`) === 'done';
           const capTitle = cap.title ? (cap.title[state.lang] || cap.title.es || cap.title) : capKey;
           const capProject = cap.project ? (cap.project[state.lang] || cap.project.es || cap.project) : '';
@@ -743,6 +859,101 @@ function moduleProgress(modId, total) {
     pct: total ? Math.round((done / total) * 100) : 0,
     status: finished ? 'completado' : done > 0 ? 'en-curso' : 'pendiente',
   };
+}
+
+// Cápsulas de fundamento para Junior: acceso a las generales, no a todas.
+function renderJuniorCapsulesView(container) {
+  const isEs = state.lang === 'es';
+  const keys = juniorCapsuleKeys();
+
+  container.innerHTML = `
+    <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+      <span class="eyebrow-tag" style="color: var(--green); margin: 0;">
+        ${isEs ? 'PORTAL CHANAK · JUNIORS · CÁPSULAS DE FUNDAMENTO' : 'CHANAK PORTAL · JUNIORS · FOUNDATION CAPSULES'}
+      </span>
+      <h3 style="font-size: 26px; color: var(--navy); margin: 6px 0 4px; font-family: var(--font-display);">
+        🚀 ${isEs ? 'Cápsulas de Fundamento' : 'Foundation Capsules'}
+      </h3>
+      <p style="font-size: 14px; color: var(--ink-muted); margin: 0;">
+        ${isEs
+          ? 'Micro-lecciones en 4 pasos sobre identidad, hábitos y cómo tratar a los demás. Las cápsulas de secundaria llegarán cuando pases a Seedling.'
+          : 'Four-step micro-lessons on identity, habits and how to treat others. High school capsules arrive when you reach Seedling.'}
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      ${keys.map(capKey => {
+        const cap = CAPSULES_DATA[capKey];
+        const isDone = localStorage.getItem(`chanak_cap_${capKey}`) === 'done';
+        const capTitle = cap.title ? (cap.title[state.lang] || cap.title.es || capKey) : capKey;
+        const stepsCount = (cap.steps && cap.steps.length) || 4;
+
+        return `
+          <article class="module-card is-${isDone ? 'completado' : 'pendiente'}">
+            <header class="module-card__top">
+              <span class="module-card__id">${stepsCount} ${isEs ? 'PASOS' : 'STEPS'}</span>
+              <span class="module-card__state">${isDone ? (isEs ? '✓ Completada' : '✓ Completed') : '+10 🪙'}</span>
+            </header>
+            <h4 class="module-card__title">${cap.icon || '🚀'} ${capTitle}</h4>
+            <button class="btn-primary module-card__cta" style="margin-top: auto;" onclick="openCapsule('${capKey}')">
+              ${isDone ? (isEs ? 'Repasar cápsula →' : 'Review capsule →') : (isEs ? 'Iniciar cápsula →' : 'Start capsule →')}
+            </button>
+          </article>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+// Puerta de entrada cuando no hay sesión del SIS. Antes se abría directamente
+// con todo visible para todos; ahora se elige el itinerario una vez y queda
+// recordado en el navegador.
+function renderAudienceChooser(container) {
+  const isEs = state.lang === 'es';
+
+  container.innerHTML = `
+    <div class="audience-gate">
+      <span class="eyebrow-tag" style="color: var(--green);">
+        ${isEs ? 'PORTAL CHANAK · ELIGE TU ITINERARIO' : 'CHANAK PORTAL · CHOOSE YOUR TRACK'}
+      </span>
+      <h2>${isEs ? '¿Quién va a trabajar hoy?' : 'Who is working today?'}</h2>
+      <p class="audience-gate__lead">
+        ${isEs
+          ? 'Cada etapa tiene sus propios retos y su propio ritmo. Elige la tuya para ver solo lo que te toca.'
+          : 'Each stage has its own challenges and pace. Pick yours to see only what belongs to you.'}
+      </p>
+
+      <div class="audience-gate__options">
+        <button class="audience-option" onclick="chooseAudience('junior')">
+          <span class="audience-option__icon">🌿</span>
+          <b>${isEs ? 'Junior' : 'Junior'}</b>
+          <span class="audience-option__age">${isEs ? '8 a 13 años · Off-Campus' : 'Ages 8–13 · Off-Campus'}</span>
+          <span class="audience-option__desc">
+            ${isEs
+              ? 'Retos de carácter, ciencia, servicio y ahorro, más las cápsulas de fundamento.'
+              : 'Character, science, service and savings challenges, plus foundation capsules.'}
+          </span>
+        </button>
+
+        <button class="audience-option" onclick="chooseAudience('highschool')">
+          <span class="audience-option__icon">🎓</span>
+          <b>${isEs ? 'Secundaria' : 'High School'}</b>
+          <span class="audience-option__age">${isEs ? '14 a 17 años · Seedling a Launch' : 'Ages 14–17 · Seedling to Launch'}</span>
+          <span class="audience-option__desc">
+            ${isEs
+              ? 'Currículo por niveles, Cuaderno de Vida, expediente universitario y proyectos de trimestre.'
+              : 'Level curriculum, Life Notebook, university portfolio and quarterly projects.'}
+          </span>
+        </button>
+      </div>
+
+      <p class="audience-gate__note">
+        ${isEs
+          ? 'Si entras desde el SIS con tu cuenta, esto se decide solo con tu grado y no tienes que elegir nada.'
+          : 'When you enter from the SIS with your account, this is set automatically from your grade.'}
+      </p>
+    </div>
+  `;
 }
 
 function renderCuadernoDeVidaView(container) {
