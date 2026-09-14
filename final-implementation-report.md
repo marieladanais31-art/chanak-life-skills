@@ -397,6 +397,74 @@ llega un id indefinido, esa consulta se vuelve impredecible.
 
 ---
 
+## 6-bis. Acceso por grado y el contenido que no existía
+
+### 6-bis.1 Explorer y Launch no tenían ni una sola cápsula
+
+Los niveles anunciaban 20 cápsulas distintas; en `CAPSULES_DATA` existían **6**.
+El render hacía `if (!cap) return ''`, así que las 14 restantes **desaparecían sin
+dejar rastro**. Esa era la causa real de "las actividades están muy pobres".
+
+| Nivel | Cápsulas con contenido (antes → ahora) |
+|---|---|
+| Seedling | 4 de 7 → **7 de 7** |
+| Explorer | **0 de 6** → **6 de 6** |
+| Builder | 2 de 6 → **6 de 6** |
+| Launch | **0 de 5** → **5 de 5** |
+
+Se escribieron las 14 que faltaban con la estructura existente de cuatro pasos
+(apertura → fundamento → quiz → aplicación), cada una sobre el versículo que ya
+tenía asignado en `BIBLE_VERSES` desde que se planificaron. Verificado en navegador:
+la cápsula se abre, avanza por los cuatro pasos y el quiz corrige bien.
+
+Una cápsula sin contenido ya no se descarta en silencio: muestra *"Esta sesión está
+en preparación — habla con tu mentora"* (R3).
+
+### 6-bis.2 Todos veían todo
+
+No había concepto de audiencia: un alumno de 1.º de Primaria veía el currículo de
+secundaria y el expediente universitario, y uno de 17 veía el catálogo Junior.
+
+**En el SIS la causa estaba en el resolver.** `resolveLevel()` devolvía `'seedling'`
+para cualquier grado que no encajara. Con los datos reales:
+
+| Grado real | Alumnos | Nivel que recibía | Nivel correcto |
+|---|---|---|---|
+| 1.º a 7.º | 11 | seedling | **junior** |
+| 8.º | 3 | seedling | seedling |
+| Grade 10 | 1 | explorer | explorer |
+
+Es decir, **11 de 15 alumnos recibían el currículo de secundaria**. El resolver se
+reescribió con una banda `junior` (8-13 años) y se probó contra los 12 valores de
+grado que existen hoy en `students`: **27/27 casos correctos**. Bachillerato y ESO se
+comprueban antes que el número suelto, para que "4.º ESO" no se confunda con el grado
+4 de primaria. Sin dato de grado se asume `junior`, la banda más protegida, en vez de
+secundaria.
+
+**En el cliente**, cada audiencia ve solo lo suyo, y no es solo visual:
+
+| | Junior | Secundaria |
+|---|---|---|
+| Aterriza en | Catálogo Junior | Cápsulas de su nivel |
+| Secciones | Cápsulas, Hábitos, Catálogo Junior | Cápsulas, Cuaderno, Test, Hábitos, Expediente, Transversales |
+| Barra de niveles Seedling→Launch | oculta | visible |
+| Cápsulas accesibles | 6 de fundamento (`core` + `seedling`) | las de su nivel |
+
+Verificado que la restricción aguanta desde la consola del navegador:
+`setViewMode('cuaderno')`, `setViewMode('expediente')` y `setViewMode('test-dones')`
+como Junior **no cambian de vista**; `setViewMode('juniors')` como alumno de
+secundaria tampoco.
+
+Sin sesión del SIS ya no se abre con todo visible: se elige itinerario una vez
+(Junior / Secundaria) y queda recordado. Con sesión del SIS no se pregunta nada,
+porque el grado ya lo decide.
+
+Bug encontrado durante la verificación: al volver de Junior a Secundaria,
+`currentLevel` se quedaba en `null` y la vista de cápsulas reventaba. Corregido en el
+origen y con una guarda adicional.
+
+---
+
 ## 7. Fuera de alcance — no se tocó
 
 - `chanak-extension-local` y `chanak-lms-portal`.
