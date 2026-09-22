@@ -177,6 +177,9 @@ window.toggleWeeklyCommitment = toggleWeeklyCommitment;
 function initApp() {
   const params = new URLSearchParams(window.location.search);
   
+  const studentNameParam = (params.get('student_name') || '').toLowerCase();
+  const isGabrielOrDaniel = studentNameParam.includes('gabriel') || studentNameParam.includes('daniel');
+
   if (params.get('token')) {
     state.token = params.get('token');
     state.studentId = params.get('student_id');
@@ -187,61 +190,104 @@ function initApp() {
 
     // Parse signed token (5 parts: student_id.school_year.level.expires_at.signature)
     const tokenParts = state.token.split('.');
+    let rawLevel = '';
     if (tokenParts.length === 5) {
-      state.assignedLevel = tokenParts[2].toLowerCase();
-      state.currentLevel = state.assignedLevel;
+      rawLevel = tokenParts[2].toLowerCase();
     } else if (params.get('level')) {
-      state.assignedLevel = params.get('level').toLowerCase();
-      state.currentLevel = state.assignedLevel;
+      rawLevel = params.get('level').toLowerCase();
     } else {
-      state.assignedLevel = 'seedling';
-      state.currentLevel = 'seedling';
+      rawLevel = 'seedling';
     }
 
-    // Normalización de Grado 8 / Seedling
-    if (['8', '8th', 'grade8', 'grade 8', 'seedling', '1', 'level1', 'freshman'].includes(state.assignedLevel)) {
+    if (rawLevel.includes('seedling') || rawLevel.includes('8') || rawLevel.includes('freshman') || rawLevel === '1') {
       state.assignedLevel = 'seedling';
-      state.currentLevel = 'seedling';
+    } else if (rawLevel.includes('explorer') || rawLevel.includes('10') || rawLevel.includes('sophomore') || rawLevel === '2') {
+      state.assignedLevel = 'explorer';
+    } else if (rawLevel.includes('builder') || rawLevel.includes('11') || rawLevel === '3') {
+      state.assignedLevel = 'builder';
+    } else if (rawLevel.includes('launch') || rawLevel.includes('12') || rawLevel.includes('senior') || rawLevel === '4') {
+      state.assignedLevel = 'launch';
+    } else if (rawLevel.includes('junior')) {
+      state.assignedLevel = 'junior';
+    } else {
+      state.assignedLevel = 'seedling';
     }
 
-    state.userRole = 'student';
+    state.currentLevel = state.assignedLevel;
 
-    // La audiencia sale del nivel firmado en el token: Grado 8 / Seedling es High School
-    state.audience = state.assignedLevel === 'junior' ? 'junior' : 'highschool';
-    if (state.audience === 'junior') {
-      state.currentLevel = null;
-      state.viewMode = 'juniors';
-    } else {
+    // Normalización especial para Gabriel, Daniel o estudiantes en Grado 8+ / Secundaria
+    if (isGabrielOrDaniel || ['seedling', 'explorer', 'builder', 'launch'].includes(state.assignedLevel)) {
+      state.audience = 'highschool';
+      if (isGabrielOrDaniel || !state.currentLevel || state.currentLevel === 'junior') {
+        state.assignedLevel = 'seedling';
+        state.currentLevel = 'seedling';
+      }
       state.viewMode = 'ruta';
+      try { localStorage.setItem('chanak_audience', 'highschool'); } catch (e) {}
+    } else {
+      state.audience = state.assignedLevel === 'junior' ? 'junior' : 'highschool';
+      if (state.audience === 'junior') {
+        state.currentLevel = null;
+        state.viewMode = 'juniors';
+      } else {
+        state.viewMode = 'ruta';
+      }
     }
+    state.userRole = 'student';
   } else {
     state.isSis = false;
     state.assignedLevel = null;
 
     const chosen = params.get('audience') || localStorage.getItem('chanak_audience');
     const gradeParam = params.get('grade');
-    if (gradeParam) {
+    const levelParam = params.get('level');
+    let resolvedHs = false;
+
+    if (isGabrielOrDaniel) {
+      state.audience = 'highschool';
+      state.assignedLevel = 'seedling';
+      state.currentLevel = 'seedling';
+      state.viewMode = 'ruta';
+      resolvedHs = true;
+      try { localStorage.setItem('chanak_audience', 'highschool'); } catch (e) {}
+    } else if (gradeParam) {
       const g = gradeParam.toLowerCase();
       const n = parseInt((g.match(/\d+/) || [])[0], 10);
-      if (n >= 8 || g.includes('seedling') || g.includes('freshman')) {
+      if (n >= 8 || g.includes('seedling') || g.includes('freshman') || g.includes('eso') || g.includes('bach')) {
         state.audience = 'highschool';
         state.assignedLevel = 'seedling';
         state.currentLevel = 'seedling';
         state.viewMode = 'ruta';
+        resolvedHs = true;
+        try { localStorage.setItem('chanak_audience', 'highschool'); } catch (e) {}
       }
-    } else {
-      state.audience = (chosen === 'junior' || chosen === 'highschool') ? chosen : null;
     }
 
-    if (state.audience === 'junior') {
-      state.viewMode = 'juniors';
-    } else if (params.get('level')) {
-      let lvl = params.get('level').toLowerCase();
-      if (['8', '8th', 'grade8', 'grade 8', '1', 'level1', 'seedling', 'freshman'].includes(lvl)) lvl = 'seedling';
-      state.currentLevel = lvl;
+    if (!resolvedHs && levelParam) {
+      let lvl = levelParam.toLowerCase();
+      if (lvl.includes('seedling') || lvl.includes('8') || lvl.includes('freshman') || lvl === '1') lvl = 'seedling';
+      else if (lvl.includes('explorer') || lvl.includes('10') || lvl.includes('sophomore') || lvl === '2') lvl = 'explorer';
+      else if (lvl.includes('builder') || lvl.includes('11') || lvl === '3') lvl = 'builder';
+      else if (lvl.includes('launch') || lvl.includes('12') || lvl.includes('senior') || lvl === '4') lvl = 'launch';
+
       if (['seedling', 'explorer', 'builder', 'launch'].includes(lvl)) {
         state.audience = 'highschool';
+        state.assignedLevel = lvl;
+        state.currentLevel = lvl;
         state.viewMode = 'ruta';
+        resolvedHs = true;
+        try { localStorage.setItem('chanak_audience', 'highschool'); } catch (e) {}
+      }
+    }
+
+    if (!resolvedHs) {
+      state.audience = (chosen === 'junior' || chosen === 'highschool') ? chosen : null;
+      if (state.audience === 'junior') {
+        state.viewMode = 'juniors';
+        state.currentLevel = null;
+      } else if (state.audience === 'highschool') {
+        state.viewMode = 'ruta';
+        state.currentLevel = state.currentLevel || 'seedling';
       }
     }
   }
@@ -573,6 +619,11 @@ function updateNavigationUI() {
 
   const navBar = document.getElementById('stage-tabs-bar');
   if (navBar) navBar.hidden = !state.audience && state.roleView !== 'mentor';
+
+  const btnAudHs = document.getElementById('btn-aud-highschool');
+  const btnAudJr = document.getElementById('btn-aud-junior');
+  if (btnAudHs) btnAudHs.classList.toggle('active', state.audience === 'highschool');
+  if (btnAudJr) btnAudJr.classList.toggle('active', state.audience === 'junior');
 
   const subLevelsBar = document.getElementById('sub-levels-bar');
   if (subLevelsBar) {
