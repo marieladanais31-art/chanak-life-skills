@@ -5687,10 +5687,181 @@ export const EXTENSION_CAPSULES_DATA = {
   }
 };
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { EXTENSION_CAPSULES_DATA };
-}
+/* ---------------- 6 Tracks Vocacionales Oficiales Chanak ---------------- */
+export const VOCATIONAL_TRACKS = {
+  tree: {
+    id: 'tree',
+    name: T('TREE · Naturaleza e Ingeniería', 'TREE · Nature & Engineering'),
+    icon: '🌳',
+    tag: T('Ingeniería, Tecnología, Ciencias Naturales y STEM', 'Engineering, Technology, Natural Sciences & STEM'),
+    levels: {
+      seedling: [
+        T('Q1: Experimento casero documentado con el Método Científico y aplicación práctica.', 'Q1: Documented home experiment using Scientific Method with practical application.'),
+        T('Q2: Mapa de recursos naturales y problemáticas ecológicas en tu entorno local.', 'Q2: Map of natural resources and environmental issues in your local community.'),
+        T('Q3: Proyecto BOLD: Campaña de limpieza o preservación de área natural con registro y fotos.', 'Q3: BOLD Project: Natural area clean-up or preservation campaign with log and photos.')
+      ],
+      explorer: [
+        T('Q1: Investigación local: calidad del agua, biodiversidad o reciclaje con entrevistas reales.', 'Q1: Local research: water quality, biodiversity or recycling with real interviews.'),
+        T('Q2: Póster científico con hipótesis, datos recolectados y conclusiones técnicas.', 'Q2: Scientific poster with hypothesis, collected data and technical conclusions.'),
+        T('Q3: Shark Tank Junior: Prototipo o servicio de tecnología/reciclaje/energía presentado en video.', 'Q3: Shark Tank Junior: Tech/recycling/energy prototype or service pitched on video.')
+      ],
+      builder: [
+        T('Q1: Proyecto BOLD de Liderazgo Social en ciencia o ingeniería (mín. 10 participantes y log de horas).', 'Q1: BOLD Social Leadership project in science/engineering (min. 10 participants and hours log).'),
+        T('Q2: Finanzas: Portafolio virtual en Google Finance con empresas de energía renovable/tecnología y análisis mensual.', 'Q2: Finance: Google Finance virtual portfolio with renewable energy/tech companies and monthly analysis.'),
+        T('Q3: Inicio de Capstone: Propuesta formal de solución a una problemática técnica/ambiental con metodología y datos.', 'Q3: Capstone launch: Formal proposed solution to a technical/environmental issue with methodology and data.')
+      ],
+      launch: [
+        T('Q1: Capstone STEM: Investigación científica o prototipo de ingeniería con metodología formal y datos reales.', 'Q1: STEM Capstone: Scientific research or engineering prototype with formal methodology and real data.'),
+        T('Q2: Resume USA: Enfoque en ciencias, tecnología, proyectos STEM, SAT 1260+ y logros de investigación.', 'Q2: Resume USA: Focus on science, tech, STEM projects, SAT score 1260+ and research milestones.'),
+        T('Q3: Personal Statement: Ensayo universitario conectando cómo la ciencia, la fe y la vocación forman tu llamado.', 'Q3: Personal Statement: College essay connecting how science, faith and calling shape your mission.')
+      ]
+    }
+  },
+  palette: {
+    id: 'palette',
+    name: T('PALETTE · Artes y Creatividad', 'PALETTE · Arts & Creativity'),
+    icon: '🎨',
+    tag: T('Diseño, Artes Visuales, Música, Narrativa y Multimedia', 'Design, Visual Arts, Music, Storytelling & Multimedia'),
+    levels: {
+      seedling: [
+        T('Q1: Árbol genealógico ilustrado con narrativa y legado familiar.', 'Q1: Illustrated family tree with storytelling and family legacy.'),
+        T('Q2: Escudo de Armas Personal en técnica mixta (arte, fotos y valores).', 'Q2: Personal Coat of Arms in mixed media (art, photos and values).'),
+        T('Q3: Proyecto BOLD: Mural o pieza creativa para tu grupo o comunidad.', 'Q3: BOLD Project: Mural or creative piece for your group or community.')
+      ],
+      explorer: [
+        T('Q1: Test de Dones + Ensayo: ¿Cómo usar el talento creativo para servir a otros?', 'Q1: Spiritual Gifts + Essay: How to use creative talent to serve others?'),
+        T('Q2: Proyecto de arte comunitario: ilustración de libro, diseño de logo para ONG o campaña.', 'Q2: Community art project: book illustration, NGO logo design or campaign.'),
+        T('Q3: Shark Tank Junior: Emprendimiento creativo (diseño, animación o producción audiovisual).', 'Q3: Shark Tank Junior: Creative venture (design, animation or audiovisual production).')
+      ],
+      builder: [
+        T('Q1: Proyecto BOLD: Exposición comunitaria o festival creativo con público real y registro.', 'Q1: BOLD Project: Community exhibition or creative showcase with real audience and photos.'),
+        T('Q2: Finanzas: Portafolio virtual con empresas de medios, diseño y entretenimiento + análisis.', 'Q2: Finance: Virtual portfolio with media, design and entertainment companies + analysis.'),
+        T('Q3: Inicio de Capstone: Propuesta de proyecto artístico o multimedia de largo alcance.', 'Q3: Capstone launch: Long-term artistic or multimedia project proposal.')
+      ],
+      launch: [
+        T('Q1: Capstone Artístico: Obra maestra creativa con impacto documentado en la comunidad.', 'Q1: Artistic Capstone: Creative masterpiece with documented community impact.'),
+        T('Q2: Resume USA: Portfolio artístico adjunto, exposiciones y proyectos multimedia documentados.', 'Q2: Resume USA: Attached artistic portfolio, exhibitions and documented media projects.'),
+        T('Q3: Personal Statement: Cómo el arte, la belleza y la fe se fusionan en tu vocación.', 'Q3: Personal Statement: How art, beauty and faith merge in your personal calling.')
+      ]
+    }
+  },
+  heartbeat: {
+    id: 'heartbeat',
+    name: T('HEARTBEAT · Salud y Deporte', 'HEARTBEAT · Health & Sports'),
+    icon: '💓',
+    tag: T('Bienestar Físico, Nutrición, Medicina, Deportes y Salud Mental', 'Physical Wellness, Nutrition, Medicine, Sports & Mental Health'),
+    levels: {
+      seedling: [
+        T('Q1: Plan de acondicionamiento físico de 4 semanas con registro de hábitos diarios.', 'Q1: 4-week physical conditioning plan with daily habit tracking.'),
+        T('Q2: Guía de nutrición saludable y mayordomía del cuerpo como templo del Espíritu Santo.', 'Q2: Healthy nutrition guide and stewardship of the body as a temple of the Holy Spirit.'),
+        T('Q3: Proyecto BOLD: Organización de una jornada deportiva o de actividad física familiar.', 'Q3: BOLD Project: Organizing a family or community sports and active day.')
+      ],
+      explorer: [
+        T('Q1: Test de Dones + Ensayo: Mi vocación hacia el cuidado de la salud y el servicio físico.', 'Q1: Gifts Test + Essay: My calling toward healthcare and physical service.'),
+        T('Q2: Proyecto de bienestar integral: Registro de sueño, alimentación y actividad durante 4 semanas.', 'Q2: Comprehensive wellness project: Sleep, nutrition and activity tracking for 4 weeks.'),
+        T('Q3: Shark Tank Junior: App, servicio o taller de nutrición/deporte para jóvenes.', 'Q3: Shark Tank Junior: App, service or workshop on youth nutrition/athletics.')
+      ],
+      builder: [
+        T('Q1: Proyecto BOLD: Liderar un club, taller o entrenamiento deportivo para menores con horas documentadas.', 'Q1: BOLD Project: Leading a youth sports clinic, workshop or club with documented hours.'),
+        T('Q2: Finanzas: Portafolio virtual con empresas de salud, biomedicina y farmacéutica + análisis ético.', 'Q2: Finance: Virtual portfolio with healthcare and biotech companies + ethical analysis.'),
+        T('Q3: Inicio de Capstone: Programa estructurado de bienestar para un grupo con métricas de impacto.', 'Q3: Capstone launch: Structured wellness program for a target group with impact metrics.')
+      ],
+      launch: [
+        T('Q1: Capstone de Salud/Deporte: Intervención de bienestar implementada con resultados medibles.', 'Q1: Health/Sports Capstone: Implemented wellness intervention with measurable outcomes.'),
+        T('Q2: Resume USA: Logros deportivos, liderazgo físico, voluntariado en salud y primeros auxilios.', 'Q2: Resume USA: Athletic achievements, physical leadership, healthcare volunteering and first aid.'),
+        T('Q3: Personal Statement: Cómo la disciplina física y el cuidado de la vida reflejan honrar a Dios.', 'Q3: Personal Statement: How physical discipline and caring for life reflect honoring God.')
+      ]
+    }
+  },
+  helping: {
+    id: 'helping',
+    name: T('HELPING · Servicio y Fe', 'HELPING · Service & Faith'),
+    icon: '🤝',
+    tag: T('Impacto Social, Voluntariado, Capellanía, Misiones y Comunidades', 'Social Impact, Volunteering, Chaplaincy, Missions & Communities'),
+    levels: {
+      seedling: [
+        T('Q1: Entrevista a 3 personas en tu comunidad sobre necesidades sociales y espirituales.', 'Q1: Interviewing 3 community members regarding social and spiritual needs.'),
+        T('Q2: Plan de servicio estructurado: Objetivo SMART, acciones concretas y evaluación.', 'Q2: Structured service plan: SMART goal, concrete actions and assessment.'),
+        T('Q3: Proyecto BOLD: Mínimo 15 horas de servicio voluntario con registro fotográfico y carta.', 'Q3: BOLD Project: Min. 15 hours of volunteer service with photo log and endorsement.')
+      ],
+      explorer: [
+        T('Q1: Diagnóstico social de una necesidad local y propuesta de acompañamiento solidario.', 'Q1: Social assessment of a local need and community outreach plan.'),
+        T('Q2: Campaña solidaria o taller de apoyo escolar/familiar con recogida de métricas.', 'Q2: Community drive or tutoring workshop with collected metrics.'),
+        T('Q3: Shark Tank Junior: Creación de una iniciativa o micro-ONG social autosostenible.', 'Q3: Shark Tank Junior: Creating a sustainable community initiative or micro-NGO.')
+      ],
+      builder: [
+        T('Q1: Proyecto BOLD: Liderar una iniciativa de voluntariado de 30–50 horas con supervisor.', 'Q1: BOLD Project: Leading a 30–50 hour volunteer initiative with external supervisor.'),
+        T('Q2: Finanzas: Portafolio virtual con empresas de impacto social / ESG y análisis ético.', 'Q2: Finance: Virtual portfolio with social impact/ESG companies and ethical review.'),
+        T('Q3: Inicio de Capstone: Plan formal de intervención social o ministerio comunitario local.', 'Q3: Capstone launch: Formal plan for social intervention or local community ministry.')
+      ],
+      launch: [
+        T('Q1: Capstone Social: Proyecto de servicio de 100+ horas con carta institucional de impacto.', 'Q1: Social Capstone: 100+ hour service project with institutional letter of impact.'),
+        T('Q2: Resume USA: Historial completo de servicio comunitario, cartas de referencia y liderazgo.', 'Q2: Resume USA: Full community service history, recommendation letters and leadership.'),
+        T('Q3: Personal Statement: La vocación de servicio cristiano como motor de vida y profesión.', 'Q3: Personal Statement: Christian servant leadership as the lifelong engine of career.')
+      ]
+    }
+  },
+  briefcase: {
+    id: 'briefcase',
+    name: T('BRIEFCASE · Negocios y Finanzas', 'BRIEFCASE · Business & Finance'),
+    icon: '💼',
+    tag: T('Emprendimiento, Economía, Mayordomía, Gestión y Estrategia', 'Entrepreneurship, Economics, Stewardship, Management & Strategy'),
+    levels: {
+      seedling: [
+        T('Q1: Mi Primer Presupuesto Personal: Registro de ingresos, gastos y ahorro durante 30 días.', 'Q1: My First Personal Budget: Income, expenses and savings tracker for 30 days.'),
+        T('Q2: Principios bíblicos de mayordomía financiera y generosidad responsable.', 'Q2: Biblical principles of financial stewardship and cheerful giving.'),
+        T('Q3: Proyecto BOLD: Mini-emprendimiento casero con cálculo de costo, venta y utilidad.', 'Q3: BOLD Project: Home mini-venture calculating costs, sales and net profit.')
+      ],
+      explorer: [
+        T('Q1: Test de Dones + Ensayo: La vocación en los negocios como plataforma de bendición.', 'Q1: Gifts Test + Essay: Business vocation as a platform for blessing others.'),
+        T('Q2: Investigación de mercado local: Identificar problema real, solución y competencia.', 'Q2: Local market research: Identifying real problems, solutions and competition.'),
+        T('Q3: Shark Tank Junior: Pitch de negocio con modelo Canvas y prototipo funcional.', 'Q3: Shark Tank Junior: Business pitch using Business Model Canvas and working demo.')
+      ],
+      builder: [
+        T('Q1: Proyecto BOLD: Lanzar un producto o servicio real que genere valor tangible.', 'Q1: BOLD Project: Launching a real product or service generating tangible community value.'),
+        T('Q2: Finanzas Reales: Portafolio virtual de $10,000 USD en Google Finance con análisis financiero mensual.', 'Q2: Real Finance: $10,000 USD virtual portfolio on Google Finance with monthly analysis.'),
+        T('Q3: Inicio de Capstone: Plan de negocio completo con proyección a 1 año y primeras validaciones.', 'Q3: Capstone launch: Full business plan with 1-year projections and customer validation.')
+      ],
+      launch: [
+        T('Q1: Capstone Empresarial: Emprendimiento o modelo económico en marcha con métricas verificables.', 'Q1: Business Capstone: Live enterprise or economic model with verifiable metrics.'),
+        T('Q2: Resume USA: Logros emprendedores, métricas de ventas, SAT score y portfolio financiero.', 'Q2: Resume USA: Entrepreneurial milestones, sales metrics, SAT score and finance portfolio.'),
+        T('Q3: Personal Statement: Cómo tu mentalidad de mayordomía financiera transforma realidades.', 'Q3: Personal Statement: How faithful financial stewardship transforms communities.')
+      ]
+    }
+  },
+  bullhorn: {
+    id: 'bullhorn',
+    name: T('BULLHORN · Política y Liderazgo', 'BULLHORN · Politics & Leadership'),
+    icon: '📢',
+    tag: T('Liderazgo Cívico, Debate, Oratoria, Derecho y Políticas Públicas', 'Civic Leadership, Debate, Public Speaking, Law & Public Policy'),
+    levels: {
+      seedling: [
+        T('Q1: Análisis de un problema social de tu ciudad: Causas, afectados y posibles soluciones.', 'Q1: Analysis of a local social issue: Causes, stakeholders and potential solutions.'),
+        T('Q2: Redacción de una propuesta constructiva dirigida a una autoridad o junta escolar.', 'Q2: Writing a constructive proposal addressed to a civic authority or school board.'),
+        T('Q3: Proyecto BOLD: Discurso o presentación formal de 3 minutos sobre un valor cívico.', 'Q3: BOLD Project: 3-minute formal persuasive speech on a civic value.')
+      ],
+      explorer: [
+        T('Q1: Ensayo analítico: Justicia, gobierno bíblico y responsabilidad del ciudadano cristiano.', 'Q1: Analytical essay: Justice, biblical governance and Christian citizenship duties.'),
+        T('Q2: Propuesta formal con datos estadísticos sobre un reto comunitario.', 'Q2: Data-backed formal proposal addressing a community civic challenge.'),
+        T('Q3: Shark Tank Junior: Campaña de concienciación pública con plan de comunicación digital.', 'Q3: Shark Tank Junior: Public awareness campaign with digital communication plan.')
+      ],
+      builder: [
+        T('Q1: Proyecto BOLD: Organizar un debate, mesa redonda o foro cívico con moderación y acta.', 'Q1: BOLD Project: Organizing a structured debate, round table or forum with minutes.'),
+        T('Q2: Finanzas: Portafolio virtual con análisis de regulación estatal y políticas de mercado.', 'Q2: Finance: Virtual portfolio analyzing state regulations and market dynamics.'),
+        T('Q3: Inicio de Capstone: Propuesta formal de política pública o reforma comunitaria con evidencias.', 'Q3: Capstone launch: Formal public policy or civic reform proposal with field evidence.')
+      ],
+      launch: [
+        T('Q1: Capstone Cívico: Campaña o propuesta institucional presentada ante autoridades reales.', 'Q1: Civic Capstone: Institutional initiative or proposal presented to real authorities.'),
+        T('Q2: Resume USA: Experiencia en debate, oratoria, liderazgo cívico y publicaciones estudiantiles.', 'Q2: Resume USA: Debate experience, public speaking, civic leadership and publications.'),
+        T('Q3: Personal Statement: La búsqueda de la verdad, la ética y el servicio en la esfera pública.', 'Q3: Personal Statement: The pursuit of truth, ethics and leadership in public service.')
+      ]
+    }
+  }
+};
 
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { EXTENSION_CAPSULES_DATA, VOCATIONAL_TRACKS };
+}
 
 if (typeof window !== 'undefined') {
   window.CHANAK_DATA = {
@@ -5700,6 +5871,7 @@ if (typeof window !== 'undefined') {
     HIGH_SCHOOL_LEVELS,
     CAPSULES_DATA,
     EXPEDIENTE_CATEGORIES,
-    EXTENSION_CAPSULES_DATA
+    EXTENSION_CAPSULES_DATA,
+    VOCATIONAL_TRACKS
   };
 }

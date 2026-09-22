@@ -12,7 +12,8 @@ import {
   CAPSULES_DATA,
   EXPEDIENTE_CATEGORIES,
   EXTENSION_CAPSULES_DATA,
-  RIASEC_TEST_DATA
+  RIASEC_TEST_DATA,
+  VOCATIONAL_TRACKS
 } from './data.js';
 
 // ---------------- Backend ----------------
@@ -24,7 +25,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const VIEWS_BY_AUDIENCE = {
   junior: ['juniors', 'capsulas', 'habitos'],
-  highschool: ['capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'transversales'],
+  highschool: ['ruta', 'capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'transversales'],
 };
 
 // ---------------- Application State ----------------
@@ -32,9 +33,11 @@ const state = {
   lang: 'es',
   mode: 'portal', // 'portal' or 'dual'
   isEmbed: false,
-  viewMode: 'capsulas', // 'capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'juniors', 'transversales'
+  viewMode: 'ruta', // 'ruta', 'test-dones', 'habitos', 'expediente', 'juniors', 'transversales'
   currentLevel: 'seedling', // 'seedling', 'explorer', 'builder', 'launch'
   assignedLevel: null,
+  selectedTrack: (typeof localStorage !== 'undefined' && localStorage.getItem('chanak_selected_track')) || 'tree',
+  expandedModules: {},
   roleView: 'student', // 'student' or 'mentor'
   isMentorUnlocked: false,
   userRole: 'student',
@@ -108,6 +111,11 @@ window.confirmSubmission = confirmSubmission;
 window.toggleTrackerDay = toggleTrackerDay;
 window.updateTrackerHabit = updateTrackerHabit;
 window.updateCoatOfArms = updateCoatOfArms;
+
+// Unified Route & Vocational Handlers
+window.toggleModuleAccordion = toggleModuleAccordion;
+window.selectVocationalTrack = selectVocationalTrack;
+window.toggleDailyGoalDay = toggleDailyGoalDay;
 
 // Curriculum Modules & Sessions Handlers
 window.openCurriculumModule = openCurriculumModule;
@@ -489,11 +497,11 @@ function isRiasecAvailable() {
 }
 
 function updateNavigationUI() {
-  const tabs = ['capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'juniors', 'transversales'];
+  const tabs = ['ruta', 'test-dones', 'habitos', 'expediente', 'juniors', 'transversales'];
   tabs.forEach(tab => {
     const el = document.getElementById(`tab-${tab}`);
     if (!el) return;
-    el.classList.toggle('active', state.viewMode === tab);
+    el.classList.toggle('active', state.viewMode === tab || (tab === 'ruta' && ['capsulas', 'cuaderno'].includes(state.viewMode)));
     // Cada audiencia ve solo sus secciones. Antes todos veían todas.
     el.hidden = !isViewAllowed(tab);
   });
@@ -503,10 +511,9 @@ function updateNavigationUI() {
 
   const subLevelsBar = document.getElementById('sub-levels-bar');
   if (subLevelsBar) {
-    // La barra de niveles Seedling..Launch no aplica a un Junior, ni antes de
-    // que se haya elegido itinerario.
+    // La barra de niveles Seedling..Launch aplica a highschool en ruta/capsulas/cuaderno
     const showSubBar = state.audience === 'highschool'
-      && ['capsulas', 'cuaderno'].includes(state.viewMode);
+      && ['ruta', 'capsulas', 'cuaderno'].includes(state.viewMode);
     subLevelsBar.style.display = showSubBar ? 'flex' : 'none';
 
     const levelsMeta = [
@@ -558,12 +565,14 @@ function renderCurrentView() {
 
   // Si la vista activa no corresponde a la audiencia, se cae a la de inicio.
   if (!isViewAllowed(state.viewMode)) {
-    state.viewMode = state.audience === 'junior' ? 'juniors' : 'capsulas';
+    state.viewMode = state.audience === 'junior' ? 'juniors' : 'ruta';
   }
 
   switch (state.viewMode) {
+    case 'ruta':
+    case 'capsulas':
     case 'cuaderno':
-      renderCuadernoDeVidaView(container);
+      renderUnifiedStudentRouteView(container, state.currentLevel);
       break;
     case 'test-dones':
       renderRiasecTestView(container);
@@ -578,28 +587,77 @@ function renderCurrentView() {
       if (state.mode !== 'dual') {
         renderJuniorsStage(container);
       } else {
-        renderCapsulesAndChallengesView(container, 'seedling');
+        renderUnifiedStudentRouteView(container, 'seedling');
       }
       break;
     case 'transversales':
       renderTransversalModules(container);
       break;
-    case 'capsulas':
     default:
-      renderCapsulesAndChallengesView(container, state.currentLevel);
+      renderUnifiedStudentRouteView(container, state.currentLevel);
       break;
   }
 }
 
 // ============================================================================
-// 1. VISTA: CÁPSULAS INTERACTIVAS & RETOS (Vista Principal de Nivel)
+// 1. VISTA: MI RUTA DE APRENDIZAJE (Experiencia Unificada Dual Diploma & Off-Campus)
 // ============================================================================
-function renderCapsulesAndChallengesView(container, stageKey) {
+
+function getWeekNumber(d = new Date()) {
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+}
+
+function toggleDailyGoalDay(dayIdx) {
+  const week = getWeekNumber();
+  const key = `chanak_daily_goal_w${week}_d${dayIdx}`;
+  const isDone = localStorage.getItem(key) === '1';
+  if (isDone) {
+    localStorage.removeItem(key);
+  } else {
+    localStorage.setItem(key, '1');
+    awardCoins('daily_goal', `goal:w${week}:d${dayIdx}`, 'Meta Diaria Cumplida (+5 🪙)');
+  }
+  const container = document.getElementById('stage-content-area');
+  if (container && ['ruta', 'capsulas', 'cuaderno'].includes(state.viewMode)) {
+    renderUnifiedStudentRouteView(container, state.currentLevel);
+  }
+}
+
+function selectVocationalTrack(trackId) {
+  if (!VOCATIONAL_TRACKS[trackId]) return;
+  state.selectedTrack = trackId;
+  localStorage.setItem('chanak_selected_track', trackId);
+  const container = document.getElementById('stage-content-area');
+  if (container && ['ruta', 'capsulas', 'cuaderno'].includes(state.viewMode)) {
+    renderUnifiedStudentRouteView(container, state.currentLevel);
+  }
+}
+
+function toggleModuleAccordion(modId) {
+  state.expandedModules[modId] = !state.expandedModules[modId];
+  const sessContainer = document.getElementById(`sessions-${modId}`);
+  const arrowEl = document.getElementById(`arrow-${modId}`);
+  if (sessContainer && arrowEl) {
+    const isOpen = state.expandedModules[modId];
+    sessContainer.style.display = isOpen ? 'block' : 'none';
+    arrowEl.classList.toggle('open', isOpen);
+    arrowEl.textContent = isOpen ? '▼' : '▶';
+  } else {
+    const container = document.getElementById('stage-content-area');
+    if (container && ['ruta', 'capsulas', 'cuaderno'].includes(state.viewMode)) {
+      renderUnifiedStudentRouteView(container, state.currentLevel);
+    }
+  }
+}
+
+function renderUnifiedStudentRouteView(container, stageKey) {
   const isEs = state.lang === 'es';
   const isMentor = state.roleView === 'mentor';
 
-  // Un Junior no pertenece a ningún nivel de secundaria: ve las cápsulas de
-  // fundamento, sin trimestres, sin expediente y sin lecturas de bachillerato.
+  // Audiencia Junior ve sus cápsulas de fundamento
   if (state.audience === 'junior' || !stageKey) {
     renderJuniorCapsulesView(container);
     return;
@@ -634,15 +692,41 @@ function renderCapsulesAndChallengesView(container, stageKey) {
   const levelTitle = levelData.title ? (levelData.title[state.lang] || levelData.title.es || levelData.title) : stageKey;
   const levelSub = levelData.subtitle ? (levelData.subtitle[state.lang] || levelData.subtitle.es || levelData.subtitle) : '';
 
+  // Cálculo de metas semanales (Off-Campus Style)
+  const weekNum = getWeekNumber();
+  const daysInfo = [
+    { idx: 1, name: isEs ? 'Lunes' : 'Monday', short: 'Lun' },
+    { idx: 2, name: isEs ? 'Martes' : 'Tuesday', short: 'Mar' },
+    { idx: 3, name: isEs ? 'Miércoles' : 'Wednesday', short: 'Mié' },
+    { idx: 4, name: isEs ? 'Jueves' : 'Thursday', short: 'Jue' },
+    { idx: 5, name: isEs ? 'Viernes' : 'Friday', short: 'Vie' }
+  ];
+  const nowDay = (new Date()).getDay();
+  let doneDaysCount = 0;
+  daysInfo.forEach(d => {
+    if (localStorage.getItem(`chanak_daily_goal_w${weekNum}_d${d.idx}`) === '1') doneDaysCount++;
+  });
+
+  // Itinerario Vocacional Activo
+  const currentTrack = VOCATIONAL_TRACKS[state.selectedTrack] || VOCATIONAL_TRACKS.tree;
+  const trackName = currentTrack.name ? (currentTrack.name[state.lang] || currentTrack.name.es) : currentTrack.id;
+  const trackTag = currentTrack.tag ? (currentTrack.tag[state.lang] || currentTrack.tag.es) : '';
+  const trackLevelProjects = (currentTrack.levels && currentTrack.levels[stageKey]) || [];
+
+  // Módulos para este nivel
+  const allModulesForLevel = Object.entries(EXTENSION_CAPSULES_DATA)
+    .filter(([id, m]) => m.level === stageKey)
+    .sort(([a], [b]) => a.localeCompare(b));
+
   container.innerHTML = `
-    <!-- Level Hero Card -->
+    <!-- 1. Level Hero Card -->
     <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
         <span class="eyebrow-tag" style="color: var(--green); margin: 0;">
-          ${isEs ? `NIVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.age || ''} · ${levelData.gradeUS || ''}` : `LEVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.gradeUS || ''}`}
+          ${isEs ? `NIVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.age || ''} · ${levelData.gradeUS || ''} · FLDOE #134620` : `LEVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.gradeUS || ''}`}
         </span>
-        <a href="https://drive.google.com/file/d/1tuB-OX7-mwLIpHNHXPS0lSKaSRponaAk/view" target="_blank" class="btn-interactive" style="font-size: 12px;">
-          📄 ${isEs ? 'Guía PDF Oficial' : 'Official PDF Guide'} ↗
+        <a href="https://drive.google.com/file/d/1tuB-OX7-mwLIpHNHXPS0lSKaSRponaAk/view" target="_blank" class="btn-interactive" style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+          📄 ${isEs ? 'Guía PDF Oficial del Nivel' : 'Official Level PDF Guide'} ↗
         </a>
       </div>
       <h3 style="font-size: 26px; color: var(--navy); margin-bottom: 6px; font-family: var(--font-display);">
@@ -653,7 +737,54 @@ function renderCapsulesAndChallengesView(container, stageKey) {
       </p>
     </div>
 
-    <!-- Biblical Devotional Card -->
+    <!-- 2. Daily Goals & Weekly Class Schedule Card (Off-Campus Style) -->
+    <div class="daily-goals-card">
+      <div class="daily-goals-top">
+        <div class="daily-goals-title">
+          <span>📋</span> ${isEs ? 'Metas Diarias & Horario Semanal' : 'Daily Goals & Weekly Schedule'}
+          <span style="font-size: 12px; font-weight: 500; color: var(--ink-muted); margin-left: 4px;">
+            (${isEs ? 'Semana' : 'Week'} ${weekNum})
+          </span>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; color: ${doneDaysCount >= 5 ? 'var(--green)' : 'var(--navy)'};">
+          ${doneDaysCount >= 5 ? '🏆 ¡Semana Completa!' : `${doneDaysCount} de 5 ${isEs ? 'días completados' : 'days completed'}`}
+        </div>
+      </div>
+
+      <div class="daily-days-grid">
+        ${daysInfo.map(d => {
+          const isDone = localStorage.getItem(`chanak_daily_goal_w${weekNum}_d${d.idx}`) === '1';
+          const isToday = nowDay === d.idx;
+          return `
+            <div class="daily-day-btn ${isDone ? 'is-checked' : ''} ${isToday ? 'is-today' : ''}"
+                 onclick="toggleDailyGoalDay(${d.idx})"
+                 title="${isEs ? 'Clic para marcar tu meta diaria completada (+5 🪙)' : 'Click to toggle daily goal (+5 🪙)'}">
+              <div class="day-btn-lbl">${d.short} ${isToday ? '⭐' : ''}</div>
+              <div class="day-btn-status">${isDone ? '✓ Listo' : '○'}</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <div class="daily-goals-info">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px;">💡</span>
+          <div>
+            <b>${isEs ? 'Clases Virtuales en Vivo:' : 'Live Online Classes:'}</b>
+            <span style="margin-left: 4px;">
+              🇬🇧 <b>${isEs ? 'Martes 16:00 – 17:00 CET' : 'Tuesday 16:00 – 17:00 CET'}</b> (${isEs ? 'Inglés Académico' : 'Academic English'}) · 
+              🧭 <b>${isEs ? 'Jueves 18:00 – 19:00 CET' : 'Thursday 18:00 – 19:00 CET'}</b> (${isEs ? 'Life Skills & Liderazgo' : 'Life Skills & Leadership'})
+            </span>
+          </div>
+        </div>
+        <a href="https://meet.google.com/gye-nzqs-gdd" target="_blank" rel="noopener noreferrer"
+           style="background: #16a34a; color: #fff; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+          📹 ${isEs ? 'Entrar a Meet' : 'Join Meet'} ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- 3. Biblical Devotional Card -->
     <div class="devotional-card" style="margin-bottom: 28px;">
       <div class="devotional-ref">
         📖 <span>${verse.ref || 'Cita Bíblica'}</span> · ${isEs ? 'Texto Bíblico del Nivel' : 'Key Scripture'}
@@ -668,7 +799,7 @@ function renderCapsulesAndChallengesView(container, stageKey) {
       ` : ''}
     </div>
 
-    <!-- Special Highlight for Explorer Q1: Test "Quién Soy" -->
+    <!-- 4. Special Highlight for Explorer Q1: Test "Quién Soy" -->
     ${stageKey === 'explorer' ? `
       <div style="background: linear-gradient(135deg, #1e3a8a, #0f2240); color: #fff; border-radius: var(--radius-md); padding: 24px 28px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: var(--shadow-md);">
         <div style="max-width: 620px;">
@@ -688,157 +819,300 @@ function renderCapsulesAndChallengesView(container, stageKey) {
       </div>
     ` : ''}
 
-    <!-- CÁPSULAS INTERACTIVAS DEL NIVEL -->
-    <div style="margin-bottom: 36px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+    <!-- 5. Master Class Section (Libros Formativos de cada Nivel) -->
+    <div class="masterclass-section">
+      <div class="masterclass-head">
         <div>
-          <h3 style="font-size: 22px; color: var(--navy); font-family: var(--font-display); margin: 0 0 4px;">
-            🚀 ${isEs ? 'Cápsulas Interactivas de Aprendizaje' : 'Interactive Learning Capsules'}
+          <span class="eyebrow-tag" style="color: var(--gold); margin: 0;">MASTER CLASS · FORMACIÓN POR LECTURA</span>
+          <h3 style="font-family: var(--font-display); margin-top: 4px;">
+            📖 ${isEs ? 'Master Class & Lecturas Clave del Nivel' : 'Master Class & Key Level Books'}
           </h3>
-          <p style="font-size: 13px; color: var(--ink-muted); margin: 0;">
-            ${isEs ? 'Micro-lecciones guiadas en 4 pasos: Apertura, Principio, Quiz interactivo y Reflexión personal.' : 'Guided 4-step micro-lessons with quiz and personal reflection.'}
+          <p style="font-size: 13px; color: var(--ink-muted); margin: 2px 0 0;">
+            ${isEs ? 'Libros formativos de impacto integrados a las sesiones curriculares con ideas fuerza y citas inspiradoras.' : 'Foundational books integrated into curriculum sessions with core principles and quotes.'}
           </p>
         </div>
-        <span class="badge" style="background: var(--green-light); color: var(--green); font-weight: 700; font-size: 12px; padding: 6px 14px;">
-          +10 🪙 ChanakCoins por cápsula
+        <span class="badge" style="background: var(--gold-light); color: #7a5a1e; font-weight: 700; font-size: 12px;">
+          ${(levelData.books || []).length} ${isEs ? 'Lecturas de Impacto' : 'Key Readings'}
         </span>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-        ${(state.audience === 'junior'
-            ? juniorCapsuleKeys()
-            : Array.from(new Set((levelData.quarters || []).flatMap(q => q.capsules || [])))
-          ).map(capKey => {
-          const cap = CAPSULES_DATA[capKey];
-          // Nunca se sustituye por contenido de otro nivel ni se descarta en
-          // silencio: si falta, se dice (R3).
-          if (!cap) return `
-            <article class="module-card is-preparacion">
-              <header class="module-card__top">
-                <span class="module-card__id">${capKey}</span>
-                <span class="module-card__state">${isEs ? 'En preparación' : 'In preparation'}</span>
-              </header>
-              <h4 class="module-card__title">${isEs ? 'Cápsula en preparación' : 'Capsule in preparation'}</h4>
-              <p class="module-card__eq">
-                ${isEs
-                  ? 'Esta sesión está en preparación — habla con tu mentora.'
-                  : 'This session is being prepared — talk to your mentor.'}
-              </p>
-            </article>
-          `;
-          const isDone = localStorage.getItem(`chanak_cap_${capKey}`) === 'done';
-          const capTitle = cap.title ? (cap.title[state.lang] || cap.title.es || cap.title) : capKey;
-          const capProject = cap.project ? (cap.project[state.lang] || cap.project.es || cap.project) : '';
-          const stepsCount = (cap.steps && cap.steps.length) || 4;
-
+      <div class="masterclass-grid">
+        ${(levelData.books || []).map(bKey => {
+          const book = BOOKS[bKey];
+          if (!book) return '';
+          const bAudience = book.audience ? (book.audience[state.lang] || book.audience.es || book.audience) : (isEs ? 'Lectura Formativa' : 'Recommended Book');
+          const bTitle = book.title ? (book.title[state.lang] || book.title.es || book.title) : bKey;
+          const bAuthor = book.author || '';
+          const bKeyPoint = book.key ? (book.key[state.lang] || book.key.es || book.key) : '';
+          const bQuote = book.quote ? (book.quote[state.lang] || book.quote.es || book.quote) : '';
           return `
-            <article class="module-card is-${isDone ? 'completado' : 'pendiente'}">
-              <header class="module-card__top">
-                <span class="module-card__id">
-                  ${cap.tag ? cap.tag.toUpperCase() : 'CÁPSULA'} · ${stepsCount} ${isEs ? 'PASOS' : 'STEPS'}
-                </span>
-                <span class="module-card__state">
-                  ${isDone ? (isEs ? '✓ Completada' : '✓ Completed') : '+10 🪙'}
-                </span>
-              </header>
-
-              <h4 class="module-card__title">${cap.icon || '🚀'} ${capTitle}</h4>
-
-              ${capProject ? `
-                <p class="module-card__eq">
-                  <span>${isEs ? 'Entregable asociado' : 'Linked deliverable'}</span>
-                  ${capProject}
-                </p>
-              ` : ''}
-
-              <button class="btn-primary module-card__cta" style="margin-top: auto;" onclick="openCapsule('${capKey}')">
-                ${isDone
-                  ? (isEs ? 'Repasar cápsula →' : 'Review capsule →')
-                  : (isEs ? 'Iniciar cápsula →' : 'Start capsule →')}
-              </button>
-            </article>
-          `;
-        }).join('')}
-      </div>
-    </div>
-
-    <!-- PROYECTOS Y ENTREGABLES POR TRIMESTRE (Q1, Q2, Q3) -->
-    <div style="margin-bottom: 32px;">
-      <div style="margin-bottom: 16px;">
-        <h3 style="font-size: 20px; color: var(--navy); font-family: var(--font-display); margin: 0 0 4px;">
-          📁 ${isEs ? 'Proyectos y Entregables por Trimestre (Drive)' : 'Quarterly Projects & Drive Deliverables'}
-        </h3>
-        <p style="font-size: 13px; color: var(--ink-muted); margin: 0;">
-          ${isEs ? 'Evidencias requeridas para la carpeta Drive institucional y rúbrica 40/30/30.' : 'Required evidences for institutional Drive folder and 40/30/30 rubric.'}
-        </p>
-      </div>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-        ${(levelData.quarters || []).map(q => {
-          const qTitle = q.title ? (q.title[state.lang] || q.title.es || q.title) : q.id;
-          const qProject = q.project ? (q.project[state.lang] || q.project.es || q.project) : '';
-          const qFiles = q.files || [];
-          return `
-            <div class="quarter-card" style="display: flex; flex-direction: column; justify-content: space-between;">
-              <div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                  <span class="quarter-badge">${q.id} · Trimestre</span>
-                  <span style="font-size: 12px; font-weight: 700; color: var(--gold);">
-                    📁 Entregables Drive
-                  </span>
-                </div>
-                <h4 style="font-size: 17px; color: var(--navy); margin-bottom: 6px;">${qTitle}</h4>
-                <p style="font-size: 13px; color: var(--ink-muted); margin-bottom: 14px; line-height: 1.5;">
-                  ${qProject}
-                </p>
-
-                <div class="deliverable-box" style="margin-bottom: 14px;">
-                  <b style="font-size: 11px; text-transform: uppercase; color: var(--navy); display: block; margin-bottom: 4px;">
-                    📂 Carpeta Drive: <code>${q.folder || ''}</code>
-                  </b>
-                  <ul class="deliverable-files">
-                    ${qFiles.map(f => `<li>📄 <code>${f}</code></li>`).join('')}
-                  </ul>
-                </div>
-
-                ${/khan|sat/i.test(`${qTitle} ${qProject} ${qFiles.join(' ')}`) ? `
-                  <a href="https://www.khanacademy.org/digital-sat" target="_blank" rel="noopener noreferrer"
-                     class="resource-link">
-                    🎓 ${isEs ? 'Abrir Khan Academy · Digital SAT Prep (gratuito)' : 'Open Khan Academy · Digital SAT Prep (free)'}
-                  </a>
-                ` : ''}
-              </div>
+            <div class="masterclass-card">
+              <span class="mc-badge">${bAudience}</span>
+              <div class="mc-title">⚡ ${bTitle}</div>
+              <div class="mc-author">Por ${bAuthor}</div>
+              <div class="mc-key"><b>💡 ${isEs ? 'Idea Fuerza' : 'Key Idea'}:</b> ${bKeyPoint}</div>
+              <div class="mc-quote">"${bQuote}"</div>
             </div>
           `;
         }).join('')}
       </div>
     </div>
 
-    <!-- Lecturas Clave del Nivel -->
-    <div style="margin: 32px 0 14px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--navy);">
-      📚 ${isEs ? 'Lecturas Clave del Nivel:' : 'Key Level Readings:'}
+    <!-- 6. Vocational Tracks Picker & Project Context -->
+    <div class="tracks-picker-box">
+      <div class="tracks-picker-head">
+        <span class="eyebrow-tag" style="color: var(--green); margin: 0;">ITINERARIOS VOCACIONALES CHANAK</span>
+        <h4 style="font-family: var(--font-display); margin-top: 4px;">
+          🎯 ${isEs ? 'Elige tu Track Vocacional para los Proyectos' : 'Choose your Vocational Track for Projects'}
+        </h4>
+        <p style="font-size: 13px; color: var(--ink-muted); margin: 2px 0 0;">
+          ${isEs ? 'Cada módulo y entregable trimestral se adapta a la vocación y talentos que Dios te dio:' : 'Every module and quarterly deliverable adapts to your calling and talents:'}
+        </p>
+      </div>
+
+      <div class="tracks-picker-pills">
+        ${Object.values(VOCATIONAL_TRACKS).map(trk => {
+          const isActive = trk.id === state.selectedTrack;
+          const tName = trk.name ? (trk.name[state.lang] || trk.name.es) : trk.id;
+          return `
+            <button class="track-pill-btn ${isActive ? 'is-active' : ''}" onclick="selectVocationalTrack('${trk.id}')">
+              <span>${trk.icon}</span> ${tName}
+            </button>
+          `;
+        }).join('')}
+      </div>
+
+      <div class="track-detail-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <b style="font-size: 14px; color: var(--navy);">
+            ${currentTrack.icon} ${trackName}
+          </b>
+          <span style="font-size: 11px; background: rgba(22, 163, 74, 0.15); color: #166534; padding: 2px 8px; border-radius: 10px; font-weight: 700;">
+            ${isEs ? 'Track Activo' : 'Active Track'}
+          </span>
+        </div>
+        <div style="font-size: 12px; color: var(--ink-muted); margin-bottom: 8px;">
+          ${trackTag}
+        </div>
+        <div style="font-size: 13px; line-height: 1.5; color: var(--ink);">
+          📌 <b>${isEs ? `Aplicación en ${stageKey.toUpperCase()}:` : `Application in ${stageKey.toUpperCase()}:`}</b>
+          ${trackLevelProjects.length > 0 ? trackLevelProjects.map((p, i) => {
+            const pTxt = typeof p === 'object' ? (p[state.lang] || p.es) : p;
+            return `<div style="margin-top: 4px;">• ${pTxt}</div>`;
+          }).join('') : (isEs ? 'Personaliza tus entregables en base a este itinerario.' : 'Customize your deliverables based on this track.')}
+        </div>
+      </div>
     </div>
-    <div class="readings-grid">
-      ${(levelData.books || []).map(bKey => {
-        const book = BOOKS[bKey];
-        if (!book) return '';
-        const bAudience = book.audience ? (book.audience[state.lang] || book.audience.es || book.audience) : (isEs ? 'Lectura Recomendada' : 'Recommended Reading');
-        const bTitle = book.title ? (book.title[state.lang] || book.title.es || book.title) : bKey;
-        const bAuthor = book.author || '';
-        const bKeyPoint = book.key ? (book.key[state.lang] || book.key.es || book.key) : '';
-        const bQuote = book.quote ? (book.quote[state.lang] || book.quote.es || book.quote) : '';
+
+    <!-- 7. CONTINUOUS ROUTE BY QUARTERS WITH INLINE ACCORDION SESSIONS (English I style) -->
+    <div style="margin-bottom: 36px;">
+      <div style="margin-bottom: 18px;">
+        <span class="eyebrow-tag" style="color: var(--navy); margin: 0;">CURRÍCULO INTEGRADO · RUTA CONTINUA</span>
+        <h3 style="font-size: 24px; color: var(--navy); font-family: var(--font-display); margin: 4px 0;">
+          🧭 ${isEs ? 'Ruta Continua de Aprendizaje por Trimestres' : 'Continuous Learning Route by Quarters'}
+        </h3>
+        <p style="font-size: 14px; color: var(--ink-muted); margin: 0;">
+          ${isEs ? 'Haz clic en cada módulo para desplegar sus 8 sesiones/cápsulas directamente abajo. Todo en un único flujo sin perderte.' : 'Click each module to unfold its 8 sessions/capsules directly underneath in a single unified flow.'}
+        </p>
+      </div>
+
+      ${(levelData.quarters || []).map((q, qIdx) => {
+        const qTitle = q.title ? (q.title[state.lang] || q.title.es || q.title) : q.id;
+        const qProject = q.project ? (q.project[state.lang] || q.project.es || q.project) : '';
+        const qFiles = q.files || [];
+
+        // Match modules for this quarter
+        let qModules = allModulesForLevel.filter(([modId, modData]) => {
+          return modData.quarter === q.id || modId.includes(`-${qIdx + 1}`);
+        });
+
+        if (qModules.length === 0 && allModulesForLevel.length > 0) {
+          const modPerQ = Math.ceil(allModulesForLevel.length / (levelData.quarters.length || 3));
+          qModules = allModulesForLevel.slice(qIdx * modPerQ, (qIdx + 1) * modPerQ);
+        }
+
+        const trackQProject = trackLevelProjects[qIdx] 
+          ? (typeof trackLevelProjects[qIdx] === 'object' ? (trackLevelProjects[qIdx][state.lang] || trackLevelProjects[qIdx].es) : trackLevelProjects[qIdx])
+          : '';
+
         return `
-          <div class="reading-card">
-            <span class="reading-tag">${bAudience}</span>
-            <h4>⚡ ${bTitle}</h4>
-            <div class="author">${bAuthor}</div>
-            <div class="key-point">${bKeyPoint}</div>
-            <div class="quote-box">"${bQuote}"</div>
+          <div class="quarter-section-wrap">
+            <div class="quarter-section-head">
+              <span class="quarter-badge" style="font-size: 13px; padding: 4px 10px;">${q.id}</span>
+              <h3>${qTitle}</h3>
+            </div>
+
+            <!-- Modules in this Quarter with Inline Accordion -->
+            ${qModules.map(([modId, modData]) => {
+              const sessionCount = (modData.sessions && modData.sessions.length) || 8;
+              const p = moduleProgress(modId, sessionCount);
+              const firstTitle = (modData.sessions && modData.sessions[0] && modData.sessions[0].title) || modId;
+              const eq = (modData.teacherGuide && modData.teacherGuide.essentialQuestion) || '';
+              const isExpanded = !!state.expandedModules[modId];
+
+              const stateLabel = {
+                completado: isEs ? '✓ Completado' : '✓ Completed',
+                'en-curso': isEs ? `${p.done}/${p.total} sesiones` : `${p.done}/${p.total} sessions`,
+                pendiente: isEs ? `${sessionCount} sesiones` : `${sessionCount} sessions`,
+              }[p.status];
+
+              return `
+                <div class="module-unit-box">
+                  <div class="module-unit-header" onclick="toggleModuleAccordion('${modId}')">
+                    <div class="unit-head-info">
+                      <span class="unit-head-tag">MÓDULO ${modId.toUpperCase()} · ${sessionCount} SESIONES</span>
+                      <h4 class="unit-head-title">${firstTitle}</h4>
+                      ${eq ? `<p class="unit-head-eq">“${eq}”</p>` : ''}
+                      
+                      <div style="margin-top: 10px; max-width: 400px;">
+                        <div class="progress-track" style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                          <div class="progress-fill" style="width: ${p.pct}%; height: 100%; background: var(--navy); transition: width 0.3s ease;"></div>
+                        </div>
+                        <div style="font-size: 11px; color: var(--ink-muted); margin-top: 4px;">
+                          ${p.done} de ${p.total} ${isEs ? 'sesiones completadas' : 'sessions completed'} (${p.pct}%)
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="unit-head-right">
+                      <span class="unit-status-chip ${p.status}">${stateLabel}</span>
+                      <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--navy); margin-top: 8px;">
+                        <span>${isExpanded ? (isEs ? 'Ocultar' : 'Hide') : (isEs ? 'Ver sesiones' : 'View sessions')}</span>
+                        <span class="unit-expand-arrow ${isExpanded ? 'open' : ''}" id="arrow-${modId}">${isExpanded ? '▼' : '▶'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Inline Accordion Sessions List -->
+                  <div class="module-sessions-container" id="sessions-${modId}" style="display: ${isExpanded ? 'block' : 'none'};">
+                    <div class="sessions-subheading">
+                      📖 ${isEs ? `Sesiones & Cápsulas del Módulo (${sessionCount} Sesiones de 60 min)` : `Module Sessions & Capsules (${sessionCount} 60-min sessions)`}
+                    </div>
+
+                    ${(modData.sessions || []).map(sess => {
+                      const isDone = localStorage.getItem(`chanak_done_${modId}_s${sess.number}`) === 'done';
+                      return `
+                        <div class="session-row-item ${isDone ? 'is-done' : ''}">
+                          <div class="session-num-badge">${sess.number}</div>
+                          <div class="session-meta-text">
+                            <div class="session-row-title">${sess.title || `Sesión ${sess.number}`}</div>
+                            ${sess.objective ? `<div class="session-row-obj"><b>🎯 ${isEs ? 'Objetivo:' : 'Objective:'}</b> ${sess.objective}</div>` : ''}
+                            ${sess.keyActivity ? `<div class="session-row-obj" style="margin-top: 2px;"><b>⚡ ${isEs ? 'Actividad:' : 'Activity:'}</b> ${sess.keyActivity}</div>` : ''}
+                          </div>
+
+                          <div style="display: flex; align-items: center; gap: 10px;">
+                            ${isDone ? `
+                              <span style="font-size: 12px; font-weight: 700; color: var(--green);">
+                                ✓ ${isEs ? 'Completada' : 'Done'}
+                              </span>
+                            ` : `
+                              <span style="font-size: 11px; color: var(--gold); font-weight: 600;">
+                                +10 🪙
+                              </span>
+                            `}
+                            <button class="btn-open-session ${isDone ? 'btn-review' : ''}" onclick="openCurriculumModule('${modId}', ${sess.number})">
+                              ${isDone ? (isEs ? 'Repasar Sesión →' : 'Review Session →') : (isEs ? 'Abrir Cuaderno (+10 🪙) →' : 'Open Notebook (+10 🪙) →')}
+                            </button>
+                          </div>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+
+            <!-- Micro-Cápsulas Interactivas del Trimestre (si existen) -->
+            ${(q.capsules && q.capsules.length > 0) ? `
+              <div style="margin: 16px 0 14px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+                  ⚡ ${isEs ? 'Micro-Cápsulas Interactivas de Práctica (4 Pasos + Quiz)' : 'Interactive Practice Micro-Capsules (4 Steps + Quiz)'}
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+                  ${q.capsules.map(capKey => {
+                    const cap = CAPSULES_DATA[capKey];
+                    if (!cap) return '';
+                    const isDone = localStorage.getItem(`chanak_cap_${capKey}`) === 'done';
+                    const capTitle = cap.title ? (cap.title[state.lang] || cap.title.es || cap.title) : capKey;
+                    return `
+                      <div class="session-row-item ${isDone ? 'is-done' : ''}" style="margin: 0; background: #ffffff;">
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                          <span style="font-size: 20px;">${cap.icon || '🚀'}</span>
+                          <div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--navy);">${capTitle}</div>
+                            <div style="font-size: 11px; color: var(--ink-muted);">4 pasos interactivos · Quiz bíblico/ético</div>
+                          </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          ${isDone ? `<span style="font-size: 11px; font-weight: 700; color: var(--green);">✓ Hecho</span>` : `<span style="font-size: 11px; color: var(--gold); font-weight: 700;">+10 🪙</span>`}
+                          <button class="btn-open-session ${isDone ? 'btn-review' : ''}" style="padding: 4px 10px; font-size: 11px;" onclick="openCapsule('${capKey}')">
+                            ${isDone ? (isEs ? 'Repasar' : 'Review') : (isEs ? 'Iniciar →' : 'Start →')}
+                          </button>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Quarter Deliverable & Drive Folder Card -->
+            <div class="quarter-card" style="margin-top: 14px; background: #ffffff;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                <span class="quarter-badge" style="background: var(--paper); border: 1px solid var(--line); color: var(--navy);">
+                  📁 ${isEs ? `Entregable Oficial del Trimestre ${q.id}` : `Official Deliverable ${q.id}`}
+                </span>
+                <span style="font-size: 12px; font-weight: 700; color: var(--gold);">
+                  📂 ${q.folder || ''}
+                </span>
+              </div>
+
+              <h4 style="font-size: 16px; color: var(--navy); margin-bottom: 6px;">
+                ${qProject}
+              </h4>
+
+              ${trackQProject ? `
+                <div style="background: var(--green-light); border-left: 3px solid var(--green); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 12px; color: #166534; margin-bottom: 10px;">
+                  <b>${currentTrack.icon} ${isEs ? 'Aplicación en tu Track' : 'Application in your Track'}:</b> ${trackQProject}
+                </div>
+              ` : ''}
+
+              <div class="deliverable-box">
+                <b style="font-size: 11px; text-transform: uppercase; color: var(--navy); display: block; margin-bottom: 4px;">
+                  📄 ${isEs ? 'Archivos requeridos en tu Carpeta Drive:' : 'Required files in your Drive folder:'}
+                </b>
+                <ul class="deliverable-files">
+                  ${qFiles.map(f => `<li>📄 <code>${f}</code></li>`).join('')}
+                </ul>
+              </div>
+            </div>
           </div>
         `;
       }).join('')}
     </div>
+
+    <!-- 8. Rubric & Accreditation Footer Card -->
+    <div style="background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 22px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <span class="eyebrow-tag" style="color: var(--navy); margin: 0;">ACREDITACIÓN FLDOE #134620</span>
+        <h4 style="font-size: 17px; color: var(--navy); margin: 4px 0 2px; font-family: var(--font-display);">
+          🎓 Rúbrica Oficial de Evaluación 40 / 30 / 30
+        </h4>
+        <p style="font-size: 13px; color: var(--ink-muted); margin: 0;">
+          40% Cuaderno de Vida & Reflexiones · 30% Proyecto Trimestral & Evidencias Drive · 30% Autoevaluación & Asistencia Virtual
+        </p>
+      </div>
+
+      <button class="btn-interactive" onclick="setViewMode('expediente')" style="font-size: 13px; padding: 10px 18px; background: #fff;">
+        Ver Mi Expediente Completo →
+      </button>
+    </div>
   `;
+}
+
+// Compatibilidad con invocaciones previas
+function renderCapsulesAndChallengesView(container, stageKey) {
+  renderUnifiedStudentRouteView(container, stageKey);
 }
 
 // ============================================================================
@@ -1526,6 +1800,7 @@ function openCapsule(capKey) {
 function closeCapsuleModal() {
   const modal = document.getElementById('capsule-modal');
   if (modal) modal.classList.remove('open');
+  renderCurrentView();
 }
 
 function capsuleNextStep() {
@@ -1673,7 +1948,7 @@ function renderCapsuleModalContent(container) {
 }
 
 // ---------------- Curriculum Module & Student Notebook Modal Controller ----------------
-function openCurriculumModule(modId) {
+function openCurriculumModule(modId, sessionNum = 1) {
   const modData = EXTENSION_CAPSULES_DATA[modId];
   if (!modData) return;
 
@@ -1683,7 +1958,7 @@ function openCurriculumModule(modId) {
   }
 
   state.activeModuleId = modId;
-  state.activeSessionNum = 1;
+  state.activeSessionNum = sessionNum || 1;
   state.userAgeTier = 'standard';
 
   const modal = document.getElementById('capsule-modal');
