@@ -175,12 +175,28 @@ function initApp() {
     // Antes se mostraba todo a todos, incluido el currículo de secundaria a
     // un niño de 10 años y el catálogo Junior a uno de 17.
     const chosen = params.get('audience') || localStorage.getItem('chanak_audience');
-    state.audience = (chosen === 'junior' || chosen === 'highschool') ? chosen : null;
+    const gradeParam = params.get('grade');
+    if (gradeParam) {
+      const g = gradeParam.toLowerCase();
+      const n = parseInt((g.match(/\d+/) || [])[0], 10);
+      if (n >= 8 || g.includes('seedling') || g.includes('freshman')) {
+        state.audience = 'highschool';
+        state.currentLevel = 'seedling';
+        state.viewMode = 'ruta';
+      }
+    } else {
+      state.audience = (chosen === 'junior' || chosen === 'highschool') ? chosen : null;
+    }
 
     if (state.audience === 'junior') {
       state.viewMode = 'juniors';
     } else if (params.get('level')) {
-      state.currentLevel = params.get('level').toLowerCase();
+      const lvl = params.get('level').toLowerCase();
+      state.currentLevel = lvl;
+      if (['seedling', 'explorer', 'builder', 'launch'].includes(lvl)) {
+        state.audience = 'highschool';
+        state.viewMode = 'ruta';
+      }
     }
   }
 
