@@ -23,9 +23,49 @@ import {
 const SUPABASE_URL = 'https://gepsbesbhsxfyxymemim.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlcHNiZXNiaHN4Znl4eW1lbWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjg1MjgsImV4cCI6MjA4Mzc0NDUyOH0.VQ6q4ex-tWp2Nr2YK-Sd7PPGCZgcQvQUmTGNNjZtp5Q';
 
+// 3 Compromisos Formativos Clave de la Semana (Enfoque Dual Diploma)
+const WEEKLY_GOALS_LIST = [
+  {
+    id: 'english',
+    badge_es: '2 Horas (1h Online)',
+    badge_en: '2 Hours (1h Online)',
+    title_es: 'Inglés Académico (2 Horas / semana)',
+    title_en: 'Academic English (2 Hours / week)',
+    desc_es: '1 Hora de clase virtual interactiva en vivo por Google Meet (Martes 16:00–17:00 CET) + 1 Hora asíncrona de trabajo en plataforma / unidades.',
+    desc_en: '1 Hour live online class on Google Meet (Tuesday 16:00–17:00 CET) + 1 Hour asynchronous coursework on platform / units.',
+    schedule_es: '🇬🇧 Martes 16:00 – 17:00 CET (En vivo)',
+    schedule_en: '🇬🇧 Tuesday 16:00 – 17:00 CET (Live)',
+    icon: '🇬🇧'
+  },
+  {
+    id: 'lifeskills',
+    badge_es: '2 Horas (1h Online)',
+    badge_en: '2 Hours (1h Online)',
+    title_es: 'Life Skills & Liderazgo (2 Horas / semana)',
+    title_en: 'Life Skills & Leadership (2 Hours / week)',
+    desc_es: '1 Hora de mentoría formativa en vivo por Google Meet (Jueves 18:00–19:00 CET) + 1 Hora de proyecto trimestral, bitácora y cápsulas interactivas.',
+    desc_en: '1 Hour live mentoring on Google Meet (Thursday 18:00–19:00 CET) + 1 Hour on quarterly project, journaling & interactive capsules.',
+    schedule_es: '🧭 Jueves 18:00 – 19:00 CET (En vivo)',
+    schedule_en: '🧭 Thursday 18:00 – 19:00 CET (Live)',
+    icon: '🧭'
+  },
+  {
+    id: 'socialstudies',
+    badge_es: '1 Hora Semanal',
+    badge_en: '1 Hour Weekly',
+    title_es: 'American History, Civics o Economy (1 Hora / semana)',
+    title_en: 'American History, Civics or Economy (1 Hour / week)',
+    desc_es: '1 Hora de estudio independiente en plataforma de ciencias sociales estadounidenses (FLDOE #134620), avanzando en lecturas y actividades.',
+    desc_en: '1 Hour independent study on the platform in US social studies (FLDOE #134620), completing readings and activities.',
+    schedule_es: '🏛️ Asíncrono / Plataforma Chanak',
+    schedule_en: '🏛️ Asynchronous / Chanak Platform',
+    icon: '🏛️'
+  }
+];
+
 const VIEWS_BY_AUDIENCE = {
-  junior: ['juniors', 'capsulas', 'habitos'],
-  highschool: ['ruta', 'capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'transversales'],
+  junior: ['juniors', 'capsulas', 'herramientas'],
+  highschool: ['ruta', 'expediente', 'rubrica', 'transversales', 'herramientas', 'capsulas', 'cuaderno', 'test-dones', 'habitos'],
 };
 
 // ---------------- Application State ----------------
@@ -33,7 +73,7 @@ const state = {
   lang: 'es',
   mode: 'portal', // 'portal' or 'dual'
   isEmbed: false,
-  viewMode: 'ruta', // 'ruta', 'test-dones', 'habitos', 'expediente', 'juniors', 'transversales'
+  viewMode: 'ruta', // 'ruta', 'expediente', 'rubrica', 'transversales', 'herramientas', 'juniors'
   currentLevel: 'seedling', // 'seedling', 'explorer', 'builder', 'launch'
   assignedLevel: null,
   selectedTrack: (typeof localStorage !== 'undefined' && localStorage.getItem('chanak_selected_track')) || 'tree',
@@ -88,6 +128,7 @@ window.closeMentorPinModal = closeMentorPinModal;
 window.submitMentorPin = submitMentorPin;
 
 window.setViewMode = setViewMode;
+window.renderRubricaView = renderRubricaView;
 window.chooseAudience = chooseAudience;
 window.resetAudience = resetAudience;
 window.selectHighSchoolLevel = selectHighSchoolLevel;
@@ -130,6 +171,7 @@ window.showCoinToast = showCoinToast;
 window.setRiasecAnswer = setRiasecAnswer;
 window.calculateRiasecProfile = calculateRiasecProfile;
 window.resetRiasecTest = resetRiasecTest;
+window.toggleWeeklyCommitment = toggleWeeklyCommitment;
 
 // ---------------- Initialization ----------------
 function initApp() {
@@ -156,24 +198,26 @@ function initApp() {
       state.currentLevel = 'seedling';
     }
 
-    // El rol NO se toma de la URL. `?role=admin` solía conceder Vista Mentor a
-    // cualquiera que escribiera el parámetro. El desbloqueo ocurre ahora contra
-    // el servidor, en unlockMentorView().
+    // Normalización de Grado 8 / Seedling
+    if (['8', '8th', 'grade8', 'grade 8', 'seedling', '1', 'level1', 'freshman'].includes(state.assignedLevel)) {
+      state.assignedLevel = 'seedling';
+      state.currentLevel = 'seedling';
+    }
+
     state.userRole = 'student';
 
-    // La audiencia sale del nivel firmado en el token, no de una eleccion.
+    // La audiencia sale del nivel firmado en el token: Grado 8 / Seedling es High School
     state.audience = state.assignedLevel === 'junior' ? 'junior' : 'highschool';
     if (state.audience === 'junior') {
       state.currentLevel = null;
       state.viewMode = 'juniors';
+    } else {
+      state.viewMode = 'ruta';
     }
   } else {
     state.isSis = false;
     state.assignedLevel = null;
 
-    // Sin sesión del SIS no se adivina la edad: se elige explícitamente.
-    // Antes se mostraba todo a todos, incluido el currículo de secundaria a
-    // un niño de 10 años y el catálogo Junior a uno de 17.
     const chosen = params.get('audience') || localStorage.getItem('chanak_audience');
     const gradeParam = params.get('grade');
     if (gradeParam) {
@@ -181,6 +225,7 @@ function initApp() {
       const n = parseInt((g.match(/\d+/) || [])[0], 10);
       if (n >= 8 || g.includes('seedling') || g.includes('freshman')) {
         state.audience = 'highschool';
+        state.assignedLevel = 'seedling';
         state.currentLevel = 'seedling';
         state.viewMode = 'ruta';
       }
@@ -191,7 +236,8 @@ function initApp() {
     if (state.audience === 'junior') {
       state.viewMode = 'juniors';
     } else if (params.get('level')) {
-      const lvl = params.get('level').toLowerCase();
+      let lvl = params.get('level').toLowerCase();
+      if (['8', '8th', 'grade8', 'grade 8', '1', 'level1', 'seedling', 'freshman'].includes(lvl)) lvl = 'seedling';
       state.currentLevel = lvl;
       if (['seedling', 'explorer', 'builder', 'launch'].includes(lvl)) {
         state.audience = 'highschool';
@@ -215,8 +261,8 @@ function initApp() {
 
   if (params.get('view')) {
     const v = params.get('view');
-    if (['capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'juniors', 'transversales'].includes(v)) {
-      state.viewMode = v;
+    if (['ruta', 'capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'rubrica', 'herramientas', 'juniors', 'transversales'].includes(v)) {
+      state.viewMode = (v === 'test-dones' || v === 'habitos') ? 'herramientas' : v;
     }
   }
 
@@ -452,8 +498,9 @@ function selectStage(stageKey) {
 }
 
 function selectHighSchoolLevel(levelKey) {
-  if (state.isSis && state.assignedLevel && levelKey !== state.assignedLevel) {
-    alert(`🔒 Nivel ${levelKey.toUpperCase()} bloqueado.\n\nTu nivel activo asignado en el SIS es ${state.assignedLevel.toUpperCase()}.\nLos demás niveles estarán disponibles cuando avances a esa etapa académica.`);
+  const normAssigned = ['8', '8th', 'grade8', 'grade 8', '1', 'level1', 'freshman'].includes(state.assignedLevel) ? 'seedling' : state.assignedLevel;
+  if (state.isSis && normAssigned && levelKey !== normAssigned) {
+    alert(`🔒 Nivel ${levelKey.toUpperCase()} bloqueado.\n\nTu nivel activo asignado en el SIS es ${normAssigned.toUpperCase()}.\nLos demás niveles estarán disponibles cuando avances a esa etapa académica.`);
     return;
   }
   state.currentLevel = levelKey;
@@ -479,7 +526,7 @@ function chooseAudience(audience) {
   if (audience !== 'junior' && audience !== 'highschool') return;
   state.audience = audience;
   try { localStorage.setItem('chanak_audience', audience); } catch (e) { /* modo privado */ }
-  state.viewMode = audience === 'junior' ? 'juniors' : 'capsulas';
+  state.viewMode = audience === 'junior' ? 'juniors' : 'ruta';
   // Un Junior no pertenece a ningun nivel de secundaria; al volver a
   // Secundaria hay que devolverle un nivel o la vista de capsulas recibe null.
   state.currentLevel = audience === 'junior'
@@ -513,12 +560,14 @@ function isRiasecAvailable() {
 }
 
 function updateNavigationUI() {
-  const tabs = ['ruta', 'test-dones', 'habitos', 'expediente', 'juniors', 'transversales'];
+  const tabs = ['ruta', 'expediente', 'rubrica', 'transversales', 'herramientas', 'juniors'];
   tabs.forEach(tab => {
     const el = document.getElementById(`tab-${tab}`);
     if (!el) return;
-    el.classList.toggle('active', state.viewMode === tab || (tab === 'ruta' && ['capsulas', 'cuaderno'].includes(state.viewMode)));
-    // Cada audiencia ve solo sus secciones. Antes todos veían todas.
+    const isAct = state.viewMode === tab || 
+      (tab === 'ruta' && ['capsulas', 'cuaderno'].includes(state.viewMode)) ||
+      (tab === 'herramientas' && ['test-dones', 'habitos'].includes(state.viewMode));
+    el.classList.toggle('active', isAct);
     el.hidden = !isViewAllowed(tab);
   });
 
@@ -533,20 +582,21 @@ function updateNavigationUI() {
     subLevelsBar.style.display = showSubBar ? 'flex' : 'none';
 
     const levelsMeta = [
-      { id: 'seedling', icon: '🌱', label: 'Seedling · 14 años (8th/9th)' },
-      { id: 'explorer', icon: '🧭', label: 'Explorer · 15 años (10th)' },
-      { id: 'builder',  icon: '🔨', label: 'Builder · 16 años (11th)' },
-      { id: 'launch',   icon: '🚀', label: 'Launch · 17 años (12th)' }
+      { id: 'seedling', icon: '🌱', label: 'Seedling · Grado 8/9 (13–14 años)' },
+      { id: 'explorer', icon: '🧭', label: 'Explorer · Grado 10 (15 años)' },
+      { id: 'builder',  icon: '🔨', label: 'Builder · Grado 11 (16 años)' },
+      { id: 'launch',   icon: '🚀', label: 'Launch · Grado 12 (17 años)' }
     ];
 
     levelsMeta.forEach(lvl => {
       const el = document.getElementById(`subtab-${lvl.id}`);
       if (el) {
-        const isAssigned = !state.isSis || !state.assignedLevel || (state.assignedLevel === lvl.id);
+        const normAssigned = ['8', '8th', 'grade8', 'grade 8', '1', 'level1', 'freshman'].includes(state.assignedLevel) ? 'seedling' : state.assignedLevel;
+        const isAssigned = !state.isSis || !normAssigned || (normAssigned === lvl.id);
         const isActive = (state.currentLevel === lvl.id);
         el.classList.toggle('active', isActive);
 
-        if (state.isSis && state.assignedLevel && !isAssigned) {
+        if (state.isSis && normAssigned && !isAssigned) {
           el.innerHTML = `🔒 ${lvl.label} <span style="font-size: 10px; opacity: 0.85;">(Bloqueado)</span>`;
           el.style.opacity = '0.55';
           el.style.cursor = 'not-allowed';
@@ -590,14 +640,21 @@ function renderCurrentView() {
     case 'cuaderno':
       renderUnifiedStudentRouteView(container, state.currentLevel);
       break;
-    case 'test-dones':
-      renderRiasecTestView(container);
+    case 'expediente':
+      renderExpedienteUniversitario(container);
       break;
+    case 'rubrica':
+      renderRubricaView(container);
+      break;
+    case 'transversales':
+      renderTransversalModules(container);
+      break;
+    case 'herramientas':
     case 'habitos':
       renderInteractiveTools(container);
       break;
-    case 'expediente':
-      renderExpedienteUniversitario(container);
+    case 'test-dones':
+      renderRiasecTestView(container);
       break;
     case 'juniors':
       if (state.mode !== 'dual') {
@@ -605,9 +662,6 @@ function renderCurrentView() {
       } else {
         renderUnifiedStudentRouteView(container, 'seedling');
       }
-      break;
-    case 'transversales':
-      renderTransversalModules(container);
       break;
     default:
       renderUnifiedStudentRouteView(container, state.currentLevel);
@@ -669,6 +723,30 @@ function toggleModuleAccordion(modId) {
   }
 }
 
+function toggleWeeklyCommitment(goalId) {
+  let completed = [];
+  try {
+    completed = JSON.parse(localStorage.getItem('chanak_ls_weekly_goals') || '[]');
+  } catch (e) { completed = []; }
+
+  const isDone = completed.includes(goalId);
+  const next = isDone ? completed.filter(x => x !== goalId) : [...completed, goalId];
+
+  try {
+    localStorage.setItem('chanak_ls_weekly_goals', JSON.stringify(next));
+  } catch (e) {}
+
+  if (!isDone && next.length === 3) {
+    awardCoins('weekly_goals_complete', `wgoals:${getWeekNumber()}`, '¡3 Compromisos Semanales Completados! (+25 🪙)');
+  }
+
+  const container = document.getElementById('stage-content-area');
+  if (container && ['ruta', 'capsulas', 'cuaderno'].includes(state.viewMode)) {
+    renderUnifiedStudentRouteView(container, state.currentLevel);
+  }
+}
+window.toggleWeeklyCommitment = toggleWeeklyCommitment;
+
 function renderUnifiedStudentRouteView(container, stageKey) {
   const isEs = state.lang === 'es';
   const isMentor = state.roleView === 'mentor';
@@ -679,8 +757,9 @@ function renderUnifiedStudentRouteView(container, stageKey) {
     return;
   }
 
-  // Bloqueo estricto si el nivel no coincide con el asignado por el SIS
-  if (state.isSis && state.assignedLevel && stageKey !== state.assignedLevel) {
+  // Normalización de grado: Grado 8 / Seedling nunca se bloquea
+  const normAssigned = ['8', '8th', 'grade8', 'grade 8', '1', 'level1', 'freshman'].includes(state.assignedLevel) ? 'seedling' : state.assignedLevel;
+  if (state.isSis && normAssigned && stageKey !== normAssigned) {
     container.innerHTML = `
       <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 48px 24px; text-align: center; max-width: 600px; margin: 40px auto; box-shadow: var(--shadow-sm);">
         <div style="font-size: 52px; margin-bottom: 16px;">🔒</div>
@@ -689,11 +768,11 @@ function renderUnifiedStudentRouteView(container, stageKey) {
         </h3>
         <p style="color: var(--ink-muted); font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
           ${isEs 
-            ? `Este nivel está reservado para etapas posteriores de tu formación académica. Tu nivel actual activo registrado en el SIS es <b>${state.assignedLevel.toUpperCase()}</b>.`
-            : `This level is reserved for later academic stages. Your active level registered in the SIS is <b>${state.assignedLevel.toUpperCase()}</b>.`}
+            ? `Este nivel está reservado para etapas posteriores de tu formación académica. Tu nivel actual activo registrado en el SIS es <b>${normAssigned.toUpperCase()}</b>.`
+            : `This level is reserved for later academic stages. Your active level registered in the SIS is <b>${normAssigned.toUpperCase()}</b>.`}
         </p>
-        <button class="btn-interactive" onclick="selectHighSchoolLevel('${state.assignedLevel}')" style="background: var(--navy); color: #fff; padding: 10px 24px;">
-          ${isEs ? `Ir a mi Nivel Asignado (${state.assignedLevel.toUpperCase()}) →` : `Go to my Assigned Level (${state.assignedLevel.toUpperCase()}) →`}
+        <button class="btn-interactive" onclick="selectHighSchoolLevel('${normAssigned}')" style="background: var(--navy); color: #fff; padding: 10px 24px;">
+          ${isEs ? `Ir a mi Nivel Asignado (${normAssigned.toUpperCase()}) →` : `Go to my Assigned Level (${normAssigned.toUpperCase()}) →`}
         </button>
       </div>
     `;
@@ -708,20 +787,12 @@ function renderUnifiedStudentRouteView(container, stageKey) {
   const levelTitle = levelData.title ? (levelData.title[state.lang] || levelData.title.es || levelData.title) : stageKey;
   const levelSub = levelData.subtitle ? (levelData.subtitle[state.lang] || levelData.subtitle.es || levelData.subtitle) : '';
 
-  // Cálculo de metas semanales (Off-Campus Style)
-  const weekNum = getWeekNumber();
-  const daysInfo = [
-    { idx: 1, name: isEs ? 'Lunes' : 'Monday', short: 'Lun' },
-    { idx: 2, name: isEs ? 'Martes' : 'Tuesday', short: 'Mar' },
-    { idx: 3, name: isEs ? 'Miércoles' : 'Wednesday', short: 'Mié' },
-    { idx: 4, name: isEs ? 'Jueves' : 'Thursday', short: 'Jue' },
-    { idx: 5, name: isEs ? 'Viernes' : 'Friday', short: 'Vie' }
-  ];
-  const nowDay = (new Date()).getDay();
-  let doneDaysCount = 0;
-  daysInfo.forEach(d => {
-    if (localStorage.getItem(`chanak_daily_goal_w${weekNum}_d${d.idx}`) === '1') doneDaysCount++;
-  });
+  // 3 Compromisos Semanales Formativos (Dual Diploma)
+  let completedWeeklyGoals = [];
+  try {
+    completedWeeklyGoals = JSON.parse(localStorage.getItem('chanak_ls_weekly_goals') || '[]');
+  } catch (e) { completedWeeklyGoals = []; }
+  const doneGoalsCount = completedWeeklyGoals.length;
 
   // Itinerario Vocacional Activo
   const currentTrack = VOCATIONAL_TRACKS[state.selectedTrack] || VOCATIONAL_TRACKS.tree;
@@ -753,54 +824,83 @@ function renderUnifiedStudentRouteView(container, stageKey) {
       </p>
     </div>
 
-    <!-- 2. Daily Goals & Weekly Class Schedule Card (Off-Campus Style) -->
-    <div class="daily-goals-card">
-      <div class="daily-goals-top">
-        <div class="daily-goals-title">
-          <span>📋</span> ${isEs ? 'Metas Diarias & Horario Semanal' : 'Daily Goals & Weekly Schedule'}
-          <span style="font-size: 12px; font-weight: 500; color: var(--ink-muted); margin-left: 4px;">
-            (${isEs ? 'Semana' : 'Week'} ${weekNum})
-          </span>
+    <!-- 2. Academic Calendar Structure Banner (3 Quarters + 1 Leveling) -->
+    <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 14px;">
+      <span style="font-size: 24px; flex-shrink: 0; line-height: 1.2;">📅</span>
+      <div style="font-size: 13px; color: #1E3A8A; line-height: 1.55;">
+        <strong style="font-size: 14px; display: block; margin-bottom: 3px; color: #1E40AF;">
+          ${isEs ? 'Estructura del Año Académico: 3 Trimestres Regulares (Q1, Q2, Q3) + 1 Período de Nivelación Formativa' : 'Academic Year Structure: 3 Regular Quarters (Q1, Q2, Q3) + 1 Formative Leveling Period'}
+        </strong>
+        ${isEs 
+          ? 'En Chanak los proyectos oficiales del expediente se entregan en Q1, Q2 y Q3. El 4º período es de nivelación, consolidación de hábitos y tutoría personalizada con tu mentor.' 
+          : 'At Chanak official dossier projects are completed in Q1, Q2, and Q3. The 4th period is reserved for leveling, habit consolidation, and personalized mentoring.'}
+      </div>
+    </div>
+
+    <!-- 3. Weekly Formative Commitments (Dual Diploma Focus: 3 Core Activities) -->
+    <div class="weekly-commitments-card" style="background: #fff; border: 1.5px solid var(--line); border-radius: var(--radius-md); padding: 22px; margin-bottom: 26px; box-shadow: var(--shadow-sm);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">📋</span>
+          <div>
+            <h4 style="font-size: 16px; font-weight: 800; color: var(--navy); margin: 0;">
+              ${isEs ? 'Compromisos Formativos de la Semana (Dual Diploma)' : 'Weekly Formative Commitments (Dual Diploma)'}
+            </h4>
+            <span style="font-size: 12px; color: var(--ink-muted);">
+              ${isEs ? '3 actividades clave: Inglés Académico (2h), Life Skills (2h) y Ciencias Sociales USA (1h)' : '3 core activities: Academic English (2h), Life Skills (2h), and US Social Studies (1h)'}
+            </span>
+          </div>
         </div>
-        <div style="font-size: 13px; font-weight: 600; color: ${doneDaysCount >= 5 ? 'var(--green)' : 'var(--navy)'};">
-          ${doneDaysCount >= 5 ? '🏆 ¡Semana Completa!' : `${doneDaysCount} de 5 ${isEs ? 'días completados' : 'days completed'}`}
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">
+            ${doneGoalsCount} / 3 ${isEs ? 'completadas' : 'completed'} (${Math.round((doneGoalsCount / 3) * 100)}%)
+          </div>
+          ${doneGoalsCount === 3 ? `
+            <span style="font-size: 12px; font-weight: 700; color: #B45309; background: #FEF3C7; border: 1px solid #FDE68A; padding: 4px 10px; border-radius: 20px;">
+              🎉 ${isEs ? '¡Semana Completa! +25 Coins' : 'Week Complete! +25 Coins'}
+            </span>
+          ` : ''}
         </div>
       </div>
 
-      <div class="daily-days-grid">
-        ${daysInfo.map(d => {
-          const isDone = localStorage.getItem(`chanak_daily_goal_w${weekNum}_d${d.idx}`) === '1';
-          const isToday = nowDay === d.idx;
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 16px;">
+        ${WEEKLY_GOALS_LIST.map(g => {
+          const isDone = completedWeeklyGoals.includes(g.id);
           return `
-            <div class="daily-day-btn ${isDone ? 'is-checked' : ''} ${isToday ? 'is-today' : ''}"
-                 onclick="toggleDailyGoalDay(${d.idx})"
-                 title="${isEs ? 'Clic para marcar tu meta diaria completada (+5 🪙)' : 'Click to toggle daily goal (+5 🪙)'}">
-              <div class="day-btn-lbl">${d.short} ${isToday ? '⭐' : ''}</div>
-              <div class="day-btn-status">${isDone ? '✓ Listo' : '○'}</div>
+            <div class="weekly-goal-item ${isDone ? 'is-done' : ''}" onclick="toggleWeeklyCommitment('${g.id}')"
+                 style="background: ${isDone ? '#F0FDF4' : '#F8FAFC'}; border: 1.5px solid ${isDone ? '#86EFAC' : 'var(--line)'}; border-radius: 12px; padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="background: ${isDone ? '#166534' : 'var(--navy)'}; color: #fff; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px;">
+                  ${isEs ? g.badge_es : g.badge_en}
+                </span>
+                <span style="font-size: 18px;">${isDone ? '✅' : '⚪'}</span>
+              </div>
+              <div style="font-size: 14px; font-weight: 800; color: ${isDone ? '#166534' : 'var(--navy)'}; line-height: 1.35;">
+                ${g.icon} ${isEs ? g.title_es : g.title_en}
+              </div>
+              <div style="font-size: 12px; color: var(--ink-muted); line-height: 1.45;">
+                ${isEs ? g.desc_es : g.desc_en}
+              </div>
+              <div style="margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--line); font-size: 11px; color: ${isDone ? '#15803D' : '#0C6E70'}; font-weight: 700;">
+                📅 ${isEs ? g.schedule_es : g.schedule_en}
+              </div>
             </div>
           `;
         }).join('')}
       </div>
 
-      <div class="daily-goals-info">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 18px;">💡</span>
-          <div>
-            <b>${isEs ? 'Clases Virtuales en Vivo:' : 'Live Online Classes:'}</b>
-            <span style="margin-left: 4px;">
-              🇬🇧 <b>${isEs ? 'Martes 16:00 – 17:00 CET' : 'Tuesday 16:00 – 17:00 CET'}</b> (${isEs ? 'Inglés Académico' : 'Academic English'}) · 
-              🧭 <b>${isEs ? 'Jueves 18:00 – 19:00 CET' : 'Thursday 18:00 – 19:00 CET'}</b> (${isEs ? 'Life Skills & Liderazgo' : 'Life Skills & Leadership'})
-            </span>
-          </div>
-        </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--paper); padding: 10px 14px; border-radius: 8px; font-size: 12px;">
+        <span style="color: var(--ink-muted);">
+          💡 <b>${isEs ? 'Clases en Vivo por Google Meet:' : 'Live Classes on Google Meet:'}</b> ${isEs ? 'Martes 16:00 CET (Inglés) · Jueves 18:00 CET (Life Skills)' : 'Tuesday 16:00 CET (English) · Thursday 18:00 CET (Life Skills)'}
+        </span>
         <a href="https://meet.google.com/gye-nzqs-gdd" target="_blank" rel="noopener noreferrer"
            style="background: #16a34a; color: #fff; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
-          📹 ${isEs ? 'Entrar a Meet' : 'Join Meet'} ↗
+          📹 ${isEs ? 'Unirme a Meet' : 'Join Meet'} ↗
         </a>
       </div>
     </div>
 
-    <!-- 3. Biblical Devotional Card -->
+    <!-- 4. Biblical Devotional Card -->
     <div class="devotional-card" style="margin-bottom: 28px;">
       <div class="devotional-ref">
         📖 <span>${verse.ref || 'Cita Bíblica'}</span> · ${isEs ? 'Texto Bíblico del Nivel' : 'Key Scripture'}
@@ -815,7 +915,7 @@ function renderUnifiedStudentRouteView(container, stageKey) {
       ` : ''}
     </div>
 
-    <!-- 4. Special Highlight for Explorer Q1: Test "Quién Soy" -->
+    <!-- 5. Special Highlight for Explorer Q1: Test "Quién Soy" -->
     ${stageKey === 'explorer' ? `
       <div style="background: linear-gradient(135deg, #1e3a8a, #0f2240); color: #fff; border-radius: var(--radius-md); padding: 24px 28px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: var(--shadow-md);">
         <div style="max-width: 620px;">
@@ -829,22 +929,22 @@ function renderUnifiedStudentRouteView(container, stageKey) {
             Descubre tus inclinaciones vocacionales mediante el modelo RIASEC adaptado al servicio cristiano. Genera el entregable oficial <code>Test_Dones_Resultados.pdf</code>.
           </p>
         </div>
-        <button class="btn-primary" style="background: var(--gold); color: #fff; border: none; padding: 12px 22px; font-size: 14px;" onclick="setViewMode('test-dones')">
+        <button class="btn-primary" style="background: var(--gold); color: #fff; border: none; padding: 12px 22px; font-size: 14px;" onclick="setViewMode('herramientas')">
           Hacer Test Vocacional (+50 🪙) →
         </button>
       </div>
     ` : ''}
 
-    <!-- 5. Master Class Section (Libros Formativos de cada Nivel) -->
-    <div class="masterclass-section">
-      <div class="masterclass-head">
+    <!-- 6. Master Class Section (Libros Formativos de cada Nivel con Resumen Ejecutivo) -->
+    <div class="masterclass-section" style="margin-bottom: 32px;">
+      <div class="masterclass-head" style="margin-bottom: 16px;">
         <div>
           <span class="eyebrow-tag" style="color: var(--gold); margin: 0;">MASTER CLASS · FORMACIÓN POR LECTURA</span>
-          <h3 style="font-family: var(--font-display); margin-top: 4px;">
+          <h3 style="font-family: var(--font-display); margin-top: 4px; color: var(--navy); font-size: 22px;">
             📖 ${isEs ? 'Master Class & Lecturas Clave del Nivel' : 'Master Class & Key Level Books'}
           </h3>
           <p style="font-size: 13px; color: var(--ink-muted); margin: 2px 0 0;">
-            ${isEs ? 'Libros formativos de impacto integrados a las sesiones curriculares con ideas fuerza y citas inspiradoras.' : 'Foundational books integrated into curriculum sessions with core principles and quotes.'}
+            ${isEs ? 'Libros formativos de impacto integrados a las sesiones curriculares con ideas fuerza, citas inspiradoras y resumen ejecutivo.' : 'Foundational books integrated into curriculum sessions with core principles, quotes, and executive summaries.'}
           </p>
         </div>
         <span class="badge" style="background: var(--gold-light); color: #7a5a1e; font-weight: 700; font-size: 12px;">
@@ -852,22 +952,34 @@ function renderUnifiedStudentRouteView(container, stageKey) {
         </span>
       </div>
 
-      <div class="masterclass-grid">
+      <div class="masterclass-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
         ${(levelData.books || []).map(bKey => {
           const book = BOOKS[bKey];
           if (!book) return '';
-          const bAudience = book.audience ? (book.audience[state.lang] || book.audience.es || book.audience) : (isEs ? 'Lectura Formativa' : 'Recommended Book');
+          const bAudience = book.audience ? (book.audience[state.lang] || book.audience.es || book.audience) : (isEs ? 'Lectura Altamente Recomendada (Opcional)' : 'Highly Recommended (Optional)');
           const bTitle = book.title ? (book.title[state.lang] || book.title.es || book.title) : bKey;
           const bAuthor = book.author || '';
           const bKeyPoint = book.key ? (book.key[state.lang] || book.key.es || book.key) : '';
           const bQuote = book.quote ? (book.quote[state.lang] || book.quote.es || book.quote) : '';
           return `
-            <div class="masterclass-card">
-              <span class="mc-badge">${bAudience}</span>
-              <div class="mc-title">⚡ ${bTitle}</div>
-              <div class="mc-author">Por ${bAuthor}</div>
-              <div class="mc-key"><b>💡 ${isEs ? 'Idea Fuerza' : 'Key Idea'}:</b> ${bKeyPoint}</div>
-              <div class="mc-quote">"${bQuote}"</div>
+            <div class="masterclass-card" style="display: flex; flex-direction: column; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-xs);">
+              <span class="mc-badge" style="background: var(--gold-light); color: #7a5a1e; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; align-self: flex-start;">
+                📖 ${bAudience}
+              </span>
+              <div class="mc-title" style="font-size: 18px; font-weight: 800; color: var(--navy); font-family: var(--font-display);">⚡ ${bTitle}</div>
+              <div class="mc-author" style="font-size: 12px; color: var(--ink-muted); margin-top: -6px;">Por ${bAuthor}</div>
+              ${book.summary_es ? `
+                <div class="mc-summary" style="background: var(--paper); border-radius: 8px; padding: 12px; font-size: 13px; color: var(--ink); line-height: 1.55; border-left: 3px solid var(--gold);">
+                  <strong style="color: var(--navy); display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase;">📑 ${isEs ? 'Resumen Ejecutivo:' : 'Executive Summary:'}</strong>
+                  ${book.summary_es}
+                </div>
+              ` : ''}
+              <div class="mc-key" style="font-size: 13px; color: var(--navy); line-height: 1.5;">
+                <b>💡 ${isEs ? 'Idea Fuerza' : 'Key Idea'}:</b> ${bKeyPoint}
+              </div>
+              <div class="mc-quote" style="font-size: 12px; color: var(--ink-muted); font-style: italic; border-left: 2px solid var(--green); padding-left: 10px;">
+                "${bQuote}"
+              </div>
             </div>
           `;
         }).join('')}
@@ -1678,6 +1790,26 @@ function renderInteractiveTools(container) {
         </button>
       </div>
 
+      <!-- Card 3: Test Vocacional "Quién Soy" (RIASEC / Dones) -->
+      <div class="reading-card" style="padding: 26px; border-top: 4px solid #0052cc;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span class="eyebrow-tag" style="color: #0052cc; margin: 0;">ENTREGABLE EXPLORER Q1</span>
+          <span class="badge" style="background: var(--paper); border: 1px solid var(--line);">Vocación & Dones</span>
+        </div>
+        <h3 style="font-size: 22px; color: var(--navy); margin-bottom: 6px; font-family: var(--font-display);">
+          🧭 Test "Quién Soy" (RIASEC)
+        </h3>
+        <p style="font-size: 13px; color: var(--ink-muted); margin-bottom: 16px;">
+          Descubre tus inclinaciones vocacionales mediante el modelo RIASEC adaptado a la mayordomía de dones y servicio cristiano.
+        </p>
+        <div style="background: #f0f7ff; border: 1px solid #c8e1ff; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 12px; color: #0052cc; line-height: 1.5;">
+          <strong>🎯 Entregable Oficial:</strong> Genera tu perfil vocacional y el archivo <code>Test_Dones_Resultados.pdf</code> para tu Expediente Universitario.
+        </div>
+        <button class="btn-primary" style="width: 100%; justify-content: center; background: #0052cc; color: #fff; padding: 12px; font-size: 13px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;" onclick="setViewMode('test-dones')">
+          🚀 Abrir Test Vocacional RIASEC (+50 🪙) →
+        </button>
+      </div>
+
     </div>
   `;
 }
@@ -1790,6 +1922,145 @@ function renderExpedienteUniversitario(container) {
           </article>
         `;
       }).join('')}
+    </div>
+  `;
+}
+
+// ============================================================================
+// 6. VISTA: RÚBRICA INSTITUCIONAL 40/30/30 (CANÓNICA)
+// ============================================================================
+function renderRubricaView(container) {
+  const isEs = state.lang === 'es';
+
+  container.innerHTML = `
+    <!-- Header Rúbrica -->
+    <div style="background: linear-gradient(135deg, #09204A, #163275); color: #fff; border-radius: var(--radius-md); padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+      <span class="eyebrow-tag" style="color: #93c5fd; margin: 0; font-size: 11px; letter-spacing: 0.1em;">SISTEMA DE EVALUACIÓN · INSTITUCIONAL · INMUTABLE</span>
+      <h3 style="font-size: 28px; color: #fff; margin: 8px 0 6px; font-family: var(--font-display); font-weight: 800;">
+        📋 Rúbrica Chanak 40 / 30 / 30
+      </h3>
+      <p style="font-size: 14px; color: #e2e8f0; margin: 0; max-width: 740px; line-height: 1.6;">
+        ${isEs
+          ? 'Todos los entregables de Life Skills se evalúan con esta rúbrica de tres criterios estructurados. Es idéntica en todos los niveles (Seedling, Explorer, Launch, Catalyst) y constituye la base formal de validación del Expediente Universitario y la acreditación FLDOE #134620.'
+          : 'All Life Skills deliverables are graded with this three-criterion structured rubric. It is identical across all levels and serves as the foundation for university transcripts and FLDOE #134620 accreditation.'}
+      </p>
+    </div>
+
+    <!-- 3 Criterios de Evaluación -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 28px;">
+      
+      <!-- Criterio 1: 40 pts -->
+      <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column;">
+        <div style="background: linear-gradient(135deg, #0C6E70, #0A5658); color: white; padding: 22px;">
+          <div style="font-size: 38px; font-weight: 900; line-height: 1;">40 pts</div>
+          <div style="font-size: 12px; opacity: 0.85; margin-top: 2px;">${isEs ? 'Puntos de 100' : 'Points out of 100'}</div>
+          <h4 style="margin: 12px 0 0; font-size: 17px; font-weight: 700; color: #fff;">
+            📸 ${isEs ? 'Evidencia Visual o Proyecto Tangible' : 'Visual Evidence or Tangible Project'}
+          </h4>
+        </div>
+        <div style="background: #e6f6f6; padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 8px;">
+          <p style="margin: 0; font-size: 13px; color: #1e3a40; line-height: 1.55;">
+            ${isEs
+              ? 'Fotos verídicas del proceso, enlace a video demostrativo (YouTube / Drive), prototipo real o documento producido según el entregable del trimestre.'
+              : 'Verifiable process photos, video link, functional prototype or project document as specified for the quarter.'}
+          </p>
+          <div style="margin-top: auto; font-size: 11px; font-weight: 700; color: #0C6E70;">
+            ✓ ${isEs ? 'Verificación de autenticidad requerida' : 'Authenticity verification required'}
+          </div>
+        </div>
+      </div>
+
+      <!-- Criterio 2: 30 pts -->
+      <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column;">
+        <div style="background: linear-gradient(135deg, #2B6840, #1D4D2C); color: white; padding: 22px;">
+          <div style="font-size: 38px; font-weight: 900; line-height: 1;">30 pts</div>
+          <div style="font-size: 12px; opacity: 0.85; margin-top: 2px;">${isEs ? 'Puntos de 100' : 'Points out of 100'}</div>
+          <h4 style="margin: 12px 0 0; font-size: 17px; font-weight: 700; color: #fff;">
+            ✍️ ${isEs ? 'Referencia Externa / Feedback de Mentor' : 'External Reference / Mentor Feedback'}
+          </h4>
+        </div>
+        <div style="background: #DCFCE7; padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 8px;">
+          <p style="margin: 0; font-size: 13px; color: #14532d; line-height: 1.55;">
+            ${isEs
+              ? 'Validación o carta firmada por un mentor, supervisor, pastor, padre de familia o líder comunitario que acredite el impacto, servicio y actitud del estudiante.'
+              : 'Endorsement or signed letter from a mentor, pastor, supervisor, parent or community leader validating service and character.'}
+          </p>
+          <div style="margin-top: auto; font-size: 11px; font-weight: 700; color: #166534;">
+            ✓ ${isEs ? 'Firma o correo de respaldo institucional' : 'Institutional signature or contact email'}
+          </div>
+        </div>
+      </div>
+
+      <!-- Criterio 3: 30 pts -->
+      <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column;">
+        <div style="background: linear-gradient(135deg, #B8891E, #8C642B); color: white; padding: 22px;">
+          <div style="font-size: 38px; font-weight: 900; line-height: 1;">30 pts</div>
+          <div style="font-size: 12px; opacity: 0.85; margin-top: 2px;">${isEs ? 'Puntos de 100' : 'Points out of 100'}</div>
+          <h4 style="margin: 12px 0 0; font-size: 17px; font-weight: 700; color: #fff;">
+            📝 ${isEs ? 'Reflexión Personal / Statement' : 'Personal Statement / Reflection'}
+          </h4>
+        </div>
+        <div style="background: #FEF3C7; padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 8px;">
+          <p style="margin: 0; font-size: 13px; color: #78350f; line-height: 1.55;">
+            ${isEs
+              ? 'Ensayo reflexivo de 300–500 palabras estructurado en: lecciones aprendidas, obstáculos de carácter superados y aplicación futura con base bíblica.'
+              : 'Reflective personal statement of 300-500 words on key lessons learned, challenges overcome and future applications.'}
+          </p>
+          <div style="margin-top: auto; font-size: 11px; font-weight: 700; color: #92400e;">
+            ✓ ${isEs ? 'Pensamiento crítico y autoevaluación' : 'Critical thinking and self-evaluation'}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Niveles de Desempeño Chanak -->
+    <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+      <h4 style="font-size: 18px; color: var(--navy); margin-bottom: 16px; font-family: var(--font-display); font-weight: 700;">
+        📊 ${isEs ? 'Niveles de Desempeño Académico' : 'Academic Performance Levels'}
+      </h4>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+        <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 16px; text-align: center;">
+          <div style="font-size: 26px; font-weight: 900; color: #047857;">90–100</div>
+          <div style="font-size: 13px; font-weight: 700; color: #065f46; margin: 4px 0 2px;">⭐ ${isEs ? 'Excelente (Exemplary)' : 'Exemplary'}</div>
+          <div style="font-size: 11px; color: #047857;">${isEs ? 'Supera expectativas y apto para honores' : 'Exceeds expectations, honors ready'}</div>
+        </div>
+
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 16px; text-align: center;">
+          <div style="font-size: 26px; font-weight: 900; color: #166534;">80–89</div>
+          <div style="font-size: 13px; font-weight: 700; color: #14532d; margin: 4px 0 2px;">✅ ${isEs ? 'Satisfactorio (Dominio)' : 'Proficient (Mastery)'}</div>
+          <div style="font-size: 11px; color: #166534;">${isEs ? 'Dominio validado institucionalmente' : 'Institutional validated mastery'}</div>
+        </div>
+
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 16px; text-align: center;">
+          <div style="font-size: 26px; font-weight: 900; color: #b45309;">70–79</div>
+          <div style="font-size: 13px; font-weight: 700; color: #92400e; margin: 4px 0 2px;">⚠️ ${isEs ? 'En Desarrollo (Developing)' : 'Developing'}</div>
+          <div style="font-size: 11px; color: #b45309;">${isEs ? 'Requiere fortalecer evidencias' : 'Requires stronger evidence'}</div>
+        </div>
+
+        <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 16px; text-align: center;">
+          <div style="font-size: 26px; font-weight: 900; color: #b91c1c;">&lt; 70</div>
+          <div style="font-size: 13px; font-weight: 700; color: #991b1b; margin: 4px 0 2px;">🔄 ${isEs ? 'Requiere Revisión' : 'Needs Revision'}</div>
+          <div style="font-size: 11px; color: #b91c1c;">${isEs ? 'Debe nivelar con su mentor' : 'Must level up with mentor'}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banner Umbral de Dominio y Calendario -->
+    <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: var(--radius-md); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+      <div>
+        <strong style="color: #166534; font-size: 14px; display: block;">
+          🔒 ${isEs ? 'Umbral de Dominio Institucional Chanak: 80 / 100 pts (80% mínimo)' : 'Chanak Mastery Threshold: 80 / 100 pts (80% minimum)'}
+        </strong>
+        <span style="font-size: 13px; color: #15803d;">
+          ${isEs
+            ? 'Los estudiantes que no alcancen 80 pts en un trimestre regular (Q1, Q2, Q3) disponen del Período de Nivelación Formativa para subsanar observaciones.'
+            : 'Students not reaching 80 pts in regular quarters (Q1, Q2, Q3) use the Formative Leveling Period to revise submissions.'}
+        </span>
+      </div>
+      <button class="btn-primary" style="background: #166534; color: #fff; padding: 10px 18px; font-size: 13px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;" onclick="setViewMode('expediente')">
+        Ver Mi Expediente →
+      </button>
     </div>
   `;
 }

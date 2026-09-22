@@ -200,69 +200,94 @@ export const BOOKS = {
   mentirasNinas: {
     title: T('Mentiras que las Niñas Creen', 'Lies Girls Believe'),
     author: 'Nancy DeMoss Wolgemuth & Dannah Gresh',
-    audience: T('Recomendado para niñas de 10 a 13 años', 'Recommended for girls ages 10 to 13'),
+    audience: T('Lectura Altamente Recomendada (Opcional) · Juniors', 'Highly Recommended (Optional) · Juniors'),
     key: T('Identifica mentiras sobre Dios, la amistad, la belleza y las emociones, sustituyéndolas por la verdad liberadora de la Palabra.', 'Identifies lies about God, friendship, beauty, and emotions, replacing them with the liberating truth of God\'s Word.'),
-    quote: T('La verdad de Dios es el único escudo frente a las presiones que el mundo intenta sembrar en tu corazón.', 'God\'s truth is the only shield against the pressures the world tries to sow in your heart.')
+    quote: T('La verdad de Dios es el único escudo frente a las presiones que el mundo intenta sembrar en tu corazón.', 'God\'s truth is the only shield against the pressures the world tries to sow in your heart.'),
+    summary_es: 'Guía práctica para preadolescentes que aborda las mentiras comunes sobre la autoestima, las relaciones de amistad y el valor personal, ofreciendo la cosmovisión bíblica como fundamento seguro de identidad y gozo.'
   },
   salvajeCorazon: {
     title: T('Salvaje de Corazón (Edición Jóvenes)', 'Wild at Heart (Young Men Edition)'),
     author: 'John Eldredge',
-    audience: T('Recomendado para niños/chicos de 10 a 13 años', 'Recommended for boys ages 10 to 13'),
+    audience: T('Lectura Altamente Recomendada (Opcional) · Juniors', 'Highly Recommended (Optional) · Juniors'),
     key: T('Aventura, valentía y el diseño heroico que Dios puso en el corazón del varón para proteger, servir a su familia y liderar con rectitud.', 'Adventure, courage, and the heroic design God placed in a young man\'s heart to protect, serve, and lead with righteousness.'),
-    quote: T('Dios diseñó tu corazón para una gran aventura de fe, una causa noble y la valentía de defender la verdad.', 'God designed your heart for a great adventure of faith, a noble cause, and the courage to stand for truth.')
+    quote: T('Dios diseñó tu corazón para una gran aventura de fe, una causa noble y la valentía de defender la verdad.', 'God designed your heart for a great adventure of faith, a noble cause, and the courage to stand for truth.'),
+    summary_es: 'Desafía a los jóvenes a descubrir el propósito noble que Dios sembró en ellos: liderar con coraje, proteger a los vulnerables y vivir la fe como una aventura de servicio y lealtad.'
   },
 
   // Para 14 años (Seedling) - Misionero inspirador
   contrabandistaDios: {
     title: T('El Contrabandista de Dios', 'God\'s Smuggler'),
-    author: 'Hermano Andrés (Brother Andrew) & John Sherrill',
-    audience: T('Lectura inspiradora de fe y valentía para 14 años', 'Inspiring missionary story of faith and courage for age 14'),
-    key: T('Biografía misionera real de un joven común que arriesgó su vida llevando Biblias a lugares de persecución, experimentando milagros y providencia divina.', 'Real-life missionary biography of a young man who risked his life smuggling Bibles into closed nations, witnessing divine miracles.'),
-    quote: T('Cuando la causa es el Reino de Dios, el coraje vence al miedo y las puertas cerradas se abren con la oración.', 'When the cause is God\'s Kingdom, courage overcomes fear and closed doors open through prayer.')
+    author: 'Hermano Andrés & John Sherrill',
+    audience: T('Lectura Altamente Recomendada (Opcional) · Fe y Valentía', 'Highly Recommended (Optional) · Faith & Courage'),
+    key: T('Dios no busca personas extraordinarias con talentos inalcanzables, sino jóvenes comunes dispuestos a obedecer con valentía y poner su vida al servicio de una causa eterna.', 'God does not seek extraordinary people, but ordinary youth willing to obey courageously for an eternal cause.'),
+    quote: T('«Cuando la causa es el Reino de Dios, el coraje vence al miedo y las puertas cerradas se abren con la oración.»', '“When the cause is the Kingdom of God, courage overcomes fear and closed doors open through prayer.”'),
+    summary_es: 'Relata la historia real de Andrew van der Bijl, un joven holandés común que descubrió el llamado de Dios a cruzar la Cortina de Hierro durante la Guerra Fría para llevar Biblias y esperanza a cristianos perseguidos. Equipado con un viejo Volkswagen, oración constante y audacia («Señor, en tu Palabra dices que cegaste los ojos de los hombres; por favor, ciega ahora los ojos de estos guardias»), vio cómo fronteras cerradas se abrían de forma milagrosa. Enseña que la fe no es pasiva, sino una aventura de obediencia donde Dios utiliza a jóvenes dispuestos.'
   },
   habitos: {
     title: T('Hábitos Atómicos', 'Atomic Habits'),
     author: 'James Clear',
-    audience: T('Formación de autodisciplina y sistemas diarios', 'Self-discipline and daily systems'),
-    key: T('El poder del 1%: Las pequeñas decisiones repetidas a diario multiplican tus resultados. Diseña tu entorno para que el buen hábito sea inevitable.', 'The power of 1%: Small decisions repeated daily compound results. Design your environment so good habits become inevitable.'),
-    quote: T('No te elevas al nivel de tus metas, caes al nivel de tus sistemas.', 'You do not rise to the level of your goals, you fall to the level of your systems.')
+    audience: T('Lectura Altamente Recomendada (Opcional) · Autodisciplina y Sistemas', 'Highly Recommended (Optional) · Self-Discipline & Systems'),
+    key: T('Las 4 Leyes del Cambio de Conducta: Hazlo Obvio, Atractivo, Fácil y Satisfactorio. Tu entorno y tus micro-rutinas diarias determinan tu futuro mucho más que la simple motivación.', 'The 4 Laws of Behavior Change: Make it Obvious, Attractive, Easy, and Satisfying. Systems beat willpower.'),
+    quote: T('«No te elevas al nivel de tus metas, caes al nivel de tus sistemas.»', '“You do not rise to the level of your goals, you fall to the level of your systems.”'),
+    summary_es: 'Establece que las grandes transformaciones son el resultado del interés compuesto de pequeñas mejoras del 1% diario. Clear demuestra que no nos elevamos al nivel de nuestras metas, sino que caemos al nivel de nuestros sistemas. Presenta las 4 Leyes del Cambio de Conducta: 1) Hazlo obvio (diseña tu entorno); 2) Hazlo atractivo (asocia hábitos placenteros); 3) Hazlo fácil (reduce fricción y aplica la regla de los 2 minutos); y 4) Hazlo satisfactorio (recompensa inmediata y registro visible de hábitos).'
   },
   temperamento: {
     title: T('El Temperamento Controlado por el Espíritu', 'The Spirit-Controlled Temperament'),
     author: 'Tim LaHaye',
-    audience: T('Autoconocimiento y madurez del carácter', 'Self-awareness and character maturity'),
-    key: T('Autoconocimiento y Fruto del Espíritu: Descubre las fortalezas y debilidades de los temperamentos (Sanguíneo, Colérico, Melancólico, Flemático) y cómo el Espíritu Santo transforma el carácter.', 'Self-awareness & the Fruit of the Spirit: Discover the strengths and weaknesses of temperaments and how the Holy Spirit transforms character.'),
-    quote: T('El carácter en Cristo supera las inclinaciones naturales de la personalidad.', 'Character in Christ overcomes natural personality inclinations.')
+    audience: T('Lectura Altamente Recomendada (Opcional) · Carácter y Temperamento', 'Highly Recommended (Optional) · Character & Temperament'),
+    key: T('Tu temperamento natural explica tus inclinaciones iniciales, pero tu carácter maduro es moldeado por el Espíritu Santo para superar cualquier limitación biológica o emocional.', 'Your natural temperament explains your initial reactions, but character is transformed by the Holy Spirit.'),
+    quote: T('«El carácter en Cristo supera las inclinaciones naturales de la personalidad.»', '“Character in Christ overcomes natural personality inclinations.”'),
+    summary_es: 'Examina a fondo los 4 temperamentos clásicos (Sanguíneo: entusiasta pero disperso; Colérico: líder audaz pero impaciente; Melancólico: analítico y creativo pero propenso al desánimo; Flemático: pacífico y constante pero reacio al cambio). LaHaye expone cómo el Espíritu Santo no destruye tu personalidad, sino que madura tus debilidades a través del Fruto del Espíritu (paciencia, templanza, dominio propio).'
   },
 
   // Para 15–17 años
   lenguajes: {
     title: T('Los 5 Lenguajes del Amor', 'The 5 Love Languages'),
     author: 'Gary Chapman',
-    audience: T('Relaciones familiares y empatía', 'Family relationships and empathy'),
-    key: T('Palabras de afirmación, tiempo de calidad, regalos, actos de servicio y contacto físico. Aprende a expresar amor de forma que la otra persona realmente lo reciba.', 'Words of affirmation, quality time, receiving gifts, acts of service, physical touch. Learn to communicate love effectively.'),
-    quote: T('El amor sincero elige hablar el dialecto emocional de la otra persona.', 'Sincere love chooses to speak the emotional dialect of the other person.')
+    audience: T('Lectura Altamente Recomendada (Opcional) · Relaciones y Empatía', 'Highly Recommended (Optional) · Relationships & Empathy'),
+    key: T('Amar con madurez significa aprender a expresar afecto y servicio en el canal que la otra persona necesita, no solo en el que nos resulta más cómodo a nosotros.', 'Mature love communicates value in the other person\'s language, not merely our own preference.'),
+    quote: T('«El amor sincero elige hablar el dialecto emocional de la otra persona.»', '“Sincere love chooses to speak the emotional dialect of the other person.”'),
+    summary_es: 'Identifica los 5 canales a través de los cuales las personas comunican y reciben aprecio y afecto: 1) Palabras de afirmación; 2) Tiempo de calidad; 3) Recepción de regalos con significado; 4) Actos de servicio práctico; y 5) Contacto físico. Chapman muestra cómo la mayoría de tensiones en el hogar y entre amigos ocurren no por falta de amor, sino por comunicarlo en un dialecto que la otra persona no entiende.'
   },
   padreRico: {
     title: T('Padre Rico, Padre Pobre', 'Rich Dad Poor Dad'),
     author: 'Robert Kiyosaki',
-    audience: T('Inteligencia financiera y mayordomía', 'Financial literacy and stewardship'),
-    key: T('Activos vs. Pasivos, educación financiera, mayordomía y generación de valor sostenible para servir a otros con sabiduría.', 'Assets vs. Liabilities, financial literacy, stewardship, and creating sustainable value.'),
-    quote: T('Los ricos adquieren activos; los pobres y la clase media adquieren pasivos pensando que son activos.', 'The rich acquire assets; the poor and middle class acquire liabilities they think are assets.')
+    audience: T('Lectura Altamente Recomendada (Opcional) · Educación Financiera', 'Highly Recommended (Optional) · Financial Literacy'),
+    key: T('Los activos ponen dinero en tu bolsillo; los pasivos sacan dinero. La verdadera mayordomía financiera requiere entender balances y flujo de caja.', 'Assets put money in your pocket; liabilities take money out. Wise stewardship requires financial literacy.'),
+    quote: T('«Los ricos adquieren activos; los pobres y la clase media adquieren pasivos pensando que son activos.»', '“The rich acquire assets; the poor and middle class acquire liabilities thinking they are assets.”'),
+    summary_es: 'Distingue de forma radical la educación financiera tradicional de la verdadera mayordomía de recursos. Enseña la diferencia entre un activo (lo que genera ingresos y flujo de caja positivo) y un pasivo (lo que consume dinero bajo apariencia de riqueza). Explica por qué trabajar solo por un salario genera dependencia («carrera de la rata») y cómo adquirir activos y comprender balances financieros permite servir y generar impacto real con sabiduría.'
   },
   ganarAmigos: {
     title: T('Cómo Ganar Amigos e Influir sobre las Personas', 'How to Win Friends and Influence People'),
     author: 'Dale Carnegie',
-    audience: T('Liderazgo interpersonal y servicio', 'Interpersonal leadership and service'),
-    key: T('Interés genuino por los demás, escucha activa, respeto y liderazgo empático basado en el servicio.', 'Genuine interest in others, active listening, respect, and empathetic service-based leadership.'),
-    quote: T('Puedes hacer más amigos en dos meses interesándote en los demás que en dos años tratando de que se interesen en ti.', 'You can make more friends in two months by becoming interested in other people than in two years trying to get them interested in you.')
+    audience: T('Lectura Altamente Recomendada (Opcional) · Comunicación y Liderazgo', 'Highly Recommended (Optional) · Communication & Leadership'),
+    key: T('El respeto sincero y el interés genuino por las personas abren más puertas y resuelven más conflictos que cualquier demostración de autoridad o discusión acalorada.', 'Sincere respect and genuine interest in others build trust and open doors far better than arguments.'),
+    quote: T('«Puedes hacer más amigos en dos meses interesándote en los demás que en dos años tratando de que se interesen en ti.»', '“You can make more friends in two months by becoming interested in other people than in two years trying to get them interested in you.”'),
+    summary_es: 'El tratado fundamental de relaciones interpersonales enseña que el liderazgo y la influencia duradera se basan en el interés genuino por los demás, jamás en la manipulación. Carnegie detalla principios esenciales: nunca criticar ni condenar destructivamente, recordar y honrar el nombre de las personas, escuchar con atención sincera, hablar desde los intereses de la otra persona y reconocer los aciertos ajenos con generosidad.'
   },
   sieteEsferas: {
     title: T('Las 7 Esferas de Influencia Cultural', 'The 7 Mountains of Influence'),
-    author: 'Lance Wallnau / Loren Cunningham',
-    audience: T('Vocación e impacto en la sociedad', 'Calling and cultural impact'),
-    key: T('Llevar el testimonio de Cristo a: Artes/Entretenimiento, Negocios, Educación, Familia, Gobierno, Medios y Religión.', 'Bringing the testimony of Christ into Arts, Business, Education, Family, Government, Media, and Religion.'),
-    quote: T('Tu vocación es tu plataforma ministerial en el mundo real.', 'Your vocation is your ministry platform in the real world.')
+    author: 'Lance Wallnau & Loren Cunningham',
+    audience: T('Lectura Altamente Recomendada (Opcional) · Cosmovisión y Vocación', 'Highly Recommended (Optional) · Worldview & Calling'),
+    key: T('Tu carrera profesional y tu talento no son fines egoístas para ganar estatus; son tu plataforma de servicio y mayordomía cultural para bendecir a la sociedad.', 'Your career is your ministry platform in the real world to bring ethical excellence and service to society.'),
+    quote: T('«Tu vocación es tu plataforma ministerial en el mundo real.»', '“Your vocation is your ministry platform in the real world.”'),
+    summary_es: 'Plantea que los creyentes están llamados a ser agentes de transformación en las 7 áreas clave que definen la cultura de una nación: 1) Artes y Medios, 2) Negocios y Economía, 3) Educación, 4) Familia, 5) Gobierno y Leyes, 6) Medios de Comunicación, y 7) Iglesia y Fe. Enseña que tu futura profesión universitaria es tu plataforma misionera en el mundo real para modelar excelencia, ética y justicia.'
+  },
+  liderazgoProposito: {
+    title: T('Liderazgo con Propósito', 'Leadership with Purpose'),
+    author: 'Rick Warren',
+    audience: T('Lectura Altamente Recomendada (Opcional) · Liderazgo y Legado', 'Highly Recommended (Optional) · Leadership & Legacy'),
+    key: T('Lecciones de liderazgo de Nehemías: visión clara, edificación del equipo, superación del desánimo e integridad bajo presión.', 'Nehemiah leadership lessons: clear vision, team building, overcoming discouragement, and integrity under pressure.'),
+    quote: T('El liderazgo que trasciende no busca posición ni aplauso, sino servir a una causa santa con humildad y perseverancia.', 'Transcendent leadership seeks not position or applause, but to serve a holy cause with humility and perseverance.'),
+    summary_es: 'A través de la historia de Nehemías reconstruyendo los muros de Jerusalén, Warren extrae lecciones de liderazgo: 1) Todo proyecto significativo nace en la oración y la visión clara; 2) El líder no hace todo solo, sabe delegar y organizar personas por áreas de afinidad; 3) La oposición y el desánimo no son señales de fracaso, sino pruebas de determinación; y 4) La integridad moral del líder es lo que sostiene la autoridad cuando llegan las crisis.'
+  },
+  deconstruyendoMente: {
+    title: T('Deconstruyendo la Mente Financiera', 'Deconstructing the Financial Mind'),
+    author: 'Mauricio Bock',
+    audience: T('Lectura Altamente Recomendada (Opcional) · Neurofinanzas y Hábitos', 'Highly Recommended (Optional) · Neurofinance & Habits'),
+    key: T('Neurofinanzas y psicología del dinero: identificar sesgos cognitivos, sanar patrones de gasto emocional y alinear recursos con un propósito trascendente.', 'Neurofinance and money psychology: identifying cognitive biases, healing emotional spending, and aligning resources with purpose.'),
+    quote: T('Tu relación con el dinero no depende de cuánto ganas, sino de las creencias y emociones que gobiernan cada decisión.', 'Your relationship with money depends not on what you earn, but on the beliefs and emotions behind every choice.'),
+    summary_es: 'Explora cómo el cerebro toma decisiones económicas. Bock desmitifica la idea de que la economía es puramente lógica y demuestra que la gran mayoría de decisiones financieras se toman desde emociones, heridas o presiones sociales. Ofrece herramientas de reprogramación mental para sustituir la gratificación inmediata por la visión a largo plazo, erradicar el miedo a la escasez y convertir los recursos financieros en herramientas de libertad y mayordomía con propósito.'
   }
 };
 
@@ -522,12 +547,12 @@ export const HIGH_SCHOOL_LEVELS = {
     num: 1,
     gradeUS: '8th / 9th Grade',
     gradeES: '2º / 3º ESO',
-    age: '14 años',
+    age: '13–14 años (Grado 8 / 9)',
     icon: '🌱',
     title: T('Seedling · Fundamento, Identidad & Hábitos', 'Seedling · Foundation, Identity & Habits'),
-    subtitle: T('Identidad en Cristo, Hábitos Atómicos & Primer Servicio', 'Identity in Christ, Atomic Habits & First Service'),
+    subtitle: T('Identidad en Cristo, Hábitos Atómicos & Primer Servicio (Grado 8/9)', 'Identity in Christ, Atomic Habits & First Service (Grade 8/9)'),
     verseKey: 'seedling',
-    books: ['contrabandistaDios', 'habitos', 'temperamento'],
+    books: ['contrabandistaDios', 'habitos', 'ganarAmigos'],
     pdfName: 'life-skills-seedling-14.pdf',
     driveFolder: '03_LIFE_SKILLS (Q1, Q2, Q3)',
     quarters: [
@@ -571,7 +596,7 @@ export const HIGH_SCHOOL_LEVELS = {
     title: T('Explorer · Vocación, Investigación & Propósito', 'Explorer · Calling, Research & Purpose'),
     subtitle: T('Test de Dones, Investigación Comunitaria & Shark Tank Jr.', 'Gifts Test, Community Research & Shark Tank Jr.'),
     verseKey: 'explorer',
-    books: ['ganarAmigos', 'lenguajes'],
+    books: ['temperamento', 'lenguajes'],
     pdfName: 'life-skills-explorer-15.pdf',
     driveFolder: '03_LIFE_SKILLS (Q1, Q2, Q3)',
     quarters: [
@@ -659,7 +684,7 @@ export const HIGH_SCHOOL_LEVELS = {
     title: T('Launch · Capstone, Expediente USA & Legado', 'Launch · Capstone, US Dossier & Legacy'),
     subtitle: T('Obra Maestra, Personal Statement, Resume & Aplicación Universitaria', 'Masterpiece, Personal Statement, Resume & College Application'),
     verseKey: 'launch',
-    books: ['sieteEsferas', 'padreRico'],
+    books: ['liderazgoProposito', 'deconstruyendoMente'],
     pdfName: 'life-skills-launch-17.pdf',
     driveFolder: '03_LIFE_SKILLS + EXPEDIENTE/',
     quarters: [
