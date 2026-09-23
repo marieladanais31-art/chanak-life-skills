@@ -96,6 +96,7 @@ Tus principios y rol formativo:
     ].filter(Boolean);
 
     let geminiRes = null;
+    let usedModel = null;
     for (const mName of candidateModels) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${mName}:generateContent?key=${apiKey}`;
       try {
@@ -105,7 +106,6 @@ Tus principios y rol formativo:
           body: JSON.stringify(geminiBody),
         });
         if (res.status === 400 && geminiBody.generationConfig?.thinkingConfig) {
-          // Si el modelo no admite thinkingConfig, reintentar sin él
           const simpleBody = {
             ...geminiBody,
             generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
@@ -118,6 +118,7 @@ Tus principios y rol formativo:
         }
         geminiRes = res;
         if (res.ok) {
+          usedModel = mName;
           break; // modelo exitoso
         } else {
           console.warn(`Model ${mName} returned ${res.status}, trying next fallback...`);
@@ -150,13 +151,13 @@ Tus principios y rol formativo:
             ? 'No se pudo generar una respuesta en este momento. Por favor reformula tu pregunta.'
             : 'Could not generate a response at this time. Please rephrase your question.',
         }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
+        { status: 200, headers: { 'Content-Type': 'application/json', 'x-gemini-model': usedModel || 'unknown' } }
       );
     }
 
     return new Response(JSON.stringify({ content: replyText }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-gemini-model': usedModel || 'unknown' },
     });
   } catch (error) {
     console.error('Serverless Mentor AI error:', error);
