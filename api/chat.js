@@ -61,9 +61,6 @@ Tus principios y rol formativo:
    - Responde en el mismo idioma que el estudiante (${isEs ? 'español' : 'inglés'}).
    - Mantén respuestas ágiles, concisas y cercanas (máximo 2 a 3 párrafos cortos) para mantener el diálogo interactivo y amigable.`;
 
-    const modelName = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-
     // Construcción de contenidos en formato Gemini (role: 'user' | 'model')
     const contents = messages.map((m) => ({
       role: m.role === 'assistant' || m.role === 'model' ? 'model' : 'user',
@@ -87,33 +84,43 @@ Tus principios y rol formativo:
       ],
     };
 
-    let geminiRes = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(geminiBody),
-    });
+    const candidateModels = [
+      process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+      'gemini-3.5-flash',
+      'gemini-3.1-flash-lite',
+      'gemini-3.7-flash',
+    ].filter(Boolean);
 
-    // Fallback a gemini-3.7-flash si el modelo principal falla
-    if (!geminiRes.ok && modelName !== 'gemini-3.7-flash') {
-      const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key=${apiKey}`;
-      const fbRes = await fetch(fallbackUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(geminiBody),
-      });
-      if (fbRes.ok) {
-        geminiRes = fbRes;
+    let geminiRes = null;
+    for (const mName of candidateModels) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${mName}:generateContent?key=${apiKey}`;
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(geminiBody),
+        });
+        geminiRes = res;
+        if (res.ok) {
+          break; // modelo exitoso
+        } else {
+          console.warn(`Model ${mName} returned ${res.status}, trying next fallback...`);
+        }
+      } catch (err) {
+        console.warn(`Model ${mName} fetch failed:`, err);
       }
     }
 
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text();
-      console.error('Gemini API Error:', geminiRes.status, errText);
+    if (!geminiRes || !geminiRes.ok) {
+      const errText = geminiRes ? await geminiRes.text() : 'No response from models';
+      console.error('Gemini API Error:', geminiRes?.status, errText);
       return new Response(
         JSON.stringify({
-          content: `Gemini API Error (${geminiRes.status}): ${errText}`,
+          content: isEs
+            ? 'Lo siento, el Mentor IA está experimentando alta demanda en este momento. Por favor inténtalo de nuevo en unos segundos.'
+            : 'Sorry, the AI Mentor is experiencing high demand right now. Please try again in a few seconds.',
         }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { status: 503, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
