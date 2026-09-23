@@ -73,11 +73,8 @@ Tus principios y rol formativo:
       },
       contents,
       generationConfig: {
-        maxOutputTokens: 400,
+        maxOutputTokens: 300,
         temperature: 0.7,
-        thinkingConfig: {
-          thinkingBudget: 0,
-        },
       },
       safetySettings: [
         { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
@@ -92,7 +89,6 @@ Tus principios y rol formativo:
       'gemini-3.5-flash-lite',
       'gemini-3.5-flash',
       'gemini-3.6-flash',
-      'gemini-3.7-flash',
     ].filter(Boolean);
 
     let geminiRes = null;
@@ -100,22 +96,11 @@ Tus principios y rol formativo:
     for (const mName of candidateModels) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${mName}:generateContent?key=${apiKey}`;
       try {
-        let res = await fetch(url, {
+        const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(geminiBody),
         });
-        if (res.status === 400 && geminiBody.generationConfig?.thinkingConfig) {
-          const simpleBody = {
-            ...geminiBody,
-            generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
-          };
-          res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(simpleBody),
-          });
-        }
         geminiRes = res;
         if (res.ok) {
           usedModel = mName;
