@@ -61,7 +61,7 @@ Tus principios y rol formativo:
    - Responde en el mismo idioma que el estudiante (${isEs ? 'español' : 'inglés'}).
    - Mantén respuestas ágiles, concisas y cercanas (máximo 2 a 3 párrafos cortos) para mantener el diálogo interactivo y amigable.`;
 
-    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const modelName = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
     // Construcción de contenidos en formato Gemini (role: 'user' | 'model')
@@ -93,9 +93,9 @@ Tus principios y rol formativo:
       body: JSON.stringify(geminiBody),
     });
 
-    // Fallback a gemini-flash-latest si el modelo principal falla
-    if (!geminiRes.ok && modelName !== 'gemini-flash-latest') {
-      const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+    // Fallback a gemini-3.7-flash si el modelo principal falla
+    if (!geminiRes.ok && modelName !== 'gemini-3.7-flash') {
+      const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key=${apiKey}`;
       const fbRes = await fetch(fallbackUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
