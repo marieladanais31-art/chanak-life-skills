@@ -2803,3 +2803,132 @@ function renderTransversalModules(container) {
   `;
 }
 
+
+// ---------------- AI Mentor Logic (Life Skills Socratic Guide) ----------------
+state.aiMessages = state.aiMessages || [
+  {
+    role: 'assistant',
+    content: state.lang === 'es'
+      ? '¡Hola! Soy tu Mentor IA de Life Skills & Liderazgo de Chanak. Estoy aquí para acompañarte a reflexionar sobre tus hábitos, proyectos trimestrales (Escudo de armas, Tracker de 21 días o Proyecto BOLD) y principios de mayordomía bíblica. ¿En qué te gustaría reflexionar o profundizar hoy?'
+      : 'Hello! I am your Chanak Life Skills & Leadership AI Mentor. I am here to guide you in reflecting on habits, quarterly projects, and biblical stewardship. How can I help you reflect today?'
+  }
+];
+state.aiLoading = false;
+
+function toggleAiMentorModal() {
+  const modal = document.getElementById('ai-mentor-modal');
+  if (!modal) return;
+  const isOpen = modal.classList.contains('is-open');
+  if (isOpen) {
+    closeAiMentorModal();
+  } else {
+    modal.classList.add('is-open');
+    renderAiMessages();
+    setTimeout(() => {
+      const input = document.getElementById('ai-mentor-input');
+      if (input) input.focus();
+    }, 100);
+  }
+}
+
+function closeAiMentorModal() {
+  const modal = document.getElementById('ai-mentor-modal');
+  if (modal) modal.classList.remove('is-open');
+}
+
+function renderAiMessages() {
+  const container = document.getElementById('ai-mentor-messages');
+  if (!container) return;
+
+  container.innerHTML = state.aiMessages.map(msg => {
+    const isUser = msg.role === 'user';
+    return `
+      <div class="ai-msg ${isUser ? 'ai-msg-user' : 'ai-msg-assistant'}">
+        ${isUser ? '' : '<span style="font-size: 11px; font-weight: 800; color: var(--navy); display: block; margin-bottom: 3px;">🤖 Mentor IA</span>'}
+        <div>${msg.content.replace(/\n/g, '<br>')}</div>
+      </div>
+    `;
+  }).join('');
+
+  if (state.aiLoading) {
+    container.innerHTML += `
+      <div class="ai-msg ai-msg-assistant" style="opacity: 0.7; font-style: italic;">
+        <span>🤖 Mentor IA está reflexionando...</span>
+      </div>
+    `;
+  }
+
+  container.scrollTop = container.scrollHeight;
+}
+
+function sendQuickPrompt(promptText) {
+  const input = document.getElementById('ai-mentor-input');
+  if (input) {
+    input.value = promptText;
+    handleSendAiMessage(new Event('submit'));
+  }
+}
+
+async function handleSendAiMessage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  if (state.aiLoading) return;
+
+  const input = document.getElementById('ai-mentor-input');
+  if (!input) return;
+  const userText = input.value.trim();
+  if (!userText) return;
+
+  input.value = '';
+  state.aiMessages.push({ role: 'user', content: userText });
+  state.aiLoading = true;
+  renderAiMessages();
+
+  const submitBtn = document.getElementById('ai-mentor-btn-submit');
+  if (submitBtn) submitBtn.disabled = true;
+
+  try {
+    const stageKey = state.selectedHighSchoolLevel || 'seedling';
+    const levelData = (typeof HIGH_SCHOOL_LEVELS !== 'undefined' && HIGH_SCHOOL_LEVELS[stageKey]) || {};
+    const levelTitle = levelData.title ? (levelData.title[state.lang] || levelData.title.es || levelData.title) : stageKey;
+
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: state.aiMessages,
+        stageKey,
+        levelTitle,
+        lang: state.lang || 'es',
+        moduleTitle: 'Life Skills & Formación de Carácter'
+      })
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (res.ok && data?.content) {
+      state.aiMessages.push({ role: 'assistant', content: data.content });
+    } else {
+      const errMsg = (data && data.content) || (state.lang === 'es'
+        ? 'El Mentor IA no está disponible en este momento. Por favor verifica que tu API key de Gemini esté configurada en Vercel.'
+        : 'The AI Mentor is currently unavailable. Please verify your Gemini API key in Vercel.');
+      state.aiMessages.push({ role: 'assistant', content: errMsg });
+    }
+  } catch (err) {
+    console.error('Error enviando mensaje al Mentor IA:', err);
+    state.aiMessages.push({
+      role: 'assistant',
+      content: state.lang === 'es'
+        ? 'No se pudo conectar con el servidor del Mentor IA. Revisa tu conexión a internet.'
+        : 'Could not connect to the AI Mentor server. Please check your internet connection.'
+    });
+  } finally {
+    state.aiLoading = false;
+    if (submitBtn) submitBtn.disabled = false;
+    renderAiMessages();
+  }
+}
+
+window.toggleAiMentorModal = toggleAiMentorModal;
+window.closeAiMentorModal = closeAiMentorModal;
+window.sendQuickPrompt = sendQuickPrompt;
+window.handleSendAiMessage = handleSendAiMessage;

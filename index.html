@@ -276,6 +276,73 @@
     <div id="coin-toast-msg">+10 ChanakCoins</div>
   </div>
 
+  <!-- AI Mentor Floating Button -->
+  <button id="ai-mentor-fab" class="ai-mentor-fab" onclick="toggleAiMentorModal()" title="Hablar con el Mentor IA de Carácter & Life Skills">
+    <span class="ai-mentor-fab-icon">🤖</span>
+    <span>Mentor IA</span>
+  </button>
+
+  <!-- AI Mentor Modal -->
+  <div class="ai-mentor-modal-overlay" id="ai-mentor-modal">
+    <div class="ai-mentor-modal-card">
+      <!-- Modal Header -->
+      <div class="ai-mentor-modal-head">
+        <div>
+          <div class="ai-mentor-head-title">
+            <span>🤖</span>
+            <span>Mentor IA Chanak</span>
+          </div>
+          <div class="ai-mentor-head-sub">Guía Socrática de Carácter, Hábitos & Proyectos</div>
+        </div>
+        <button class="ai-mentor-btn-close" onclick="closeAiMentorModal()" aria-label="Cerrar">✕</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="ai-mentor-body">
+        <!-- Transparency Notice (EU AI Act Art. 50) -->
+        <div class="ai-mentor-notice-box" id="ai-mentor-notice">
+          <span>ℹ️</span>
+          <div>
+            <b>Aviso de Transparencia de IA:</b> Estás interactuando con un asistente de inteligencia artificial (Google Gemini). Su rol es socrático (guiarte a pensar y reflexionar por ti mismo). No reemplaza la guía de tus padres o mentores, ni debe usarse para hacer tus tareas por ti.
+          </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div class="ai-mentor-chat-messages" id="ai-mentor-messages">
+          <!-- Filled dynamically by app.js -->
+        </div>
+
+        <!-- Quick Question Chips -->
+        <div class="ai-mentor-chips-bar">
+          <button class="ai-mentor-chip" onclick="sendQuickPrompt('¿Cómo defino los 4 cuadrantes de mi Escudo de Armas?')">🛡️ Escudo de Armas</button>
+          <button class="ai-mentor-chip" onclick="sendQuickPrompt('¿Cómo mantengo la constancia en mi Tracker de 21 Días?')">⚡ Hábitos 21 Días</button>
+          <button class="ai-mentor-chip" onclick="sendQuickPrompt('¿Cómo descubro mis dones para el Proyecto BOLD?')">🎯 Proyecto BOLD</button>
+          <button class="ai-mentor-chip" onclick="sendQuickPrompt('¿Qué principio bíblico me recomiendas para la mayordomía del tiempo?')">📖 Principio Bíblico</button>
+        </div>
+
+        <!-- Input Bar -->
+        <form class="ai-mentor-input-bar" id="ai-mentor-form" onsubmit="handleSendAiMessage(event)">
+          <input
+            type="text"
+            id="ai-mentor-input"
+            class="ai-mentor-input-field"
+            placeholder="Pregúntale a tu Mentor IA sobre carácter, hábitos o tu proyecto..."
+            autocomplete="off"
+          />
+          <button type="submit" id="ai-mentor-btn-submit" class="ai-mentor-btn-send">
+            <span>Enviar</span>
+            <span>➤</span>
+          </button>
+        </form>
+
+        <!-- Safety Disclaimer -->
+        <div class="ai-mentor-disclaimer">
+          🛡️ Entorno seguro para estudiantes · Sin almacenamiento de datos personales (Zero PII)
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="app.js"></script>
 </body>
 </html>
