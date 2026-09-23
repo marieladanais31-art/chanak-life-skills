@@ -63,6 +63,46 @@ const WEEKLY_GOALS_LIST = [
   }
 ];
 
+// 3 Metas Semanales Clave de Life Skills (Enfoque Off-Campus / SIS)
+const SIS_WEEKLY_GOALS_LIST = [
+  {
+    id: 'capsule',
+    badge_es: 'Cápsula Semanal',
+    badge_en: 'Weekly Capsule',
+    title_es: 'Cápsula de Formación & Carácter (1–2h)',
+    title_en: 'Character & Life Skills Capsule (1–2h)',
+    desc_es: 'Avanza en la sesión activa del trimestre en tu cuaderno digital, reflexionando con principios bíblicos y ética práctica (+15 Coins).',
+    desc_en: 'Advance the active quarterly session in your digital notebook, reflecting on biblical principles and practical ethics (+15 Coins).',
+    schedule_es: '🎯 Cuaderno Digital & Cápsula Interactiva',
+    schedule_en: '🎯 Digital Notebook & Interactive Capsule',
+    icon: '🎯'
+  },
+  {
+    id: 'habit',
+    badge_es: 'Hábito Diario',
+    badge_en: 'Daily Habit',
+    title_es: 'Práctica de Hábitos & Autodisciplina (21 Días)',
+    title_en: 'Habit Practice & Self-Discipline (21 Days)',
+    desc_es: 'Registra tu hábito formativo diario (lectura, devocional, orden o mayordomía) en el Tracker Interactivo (+10 Coins).',
+    desc_en: 'Log your daily habit (reading, devotional, order, or stewardship) on the Interactive Tracker (+10 Coins).',
+    schedule_es: '⚡ Registro continuo en el Habit Tracker',
+    schedule_en: '⚡ Continuous logging on Habit Tracker',
+    icon: '⚡'
+  },
+  {
+    id: 'evidence',
+    badge_es: 'Proyecto Trimestral',
+    badge_en: 'Quarterly Project',
+    title_es: 'Proyecto del Trimestre · Carpeta SIS (20%)',
+    title_en: 'Quarterly Project · SIS Dossier (20%)',
+    desc_es: 'Avanza en tu proyecto oficial (Q1: Escudo de Armas / Q2: Tracker & Servicio / Q3: Proyecto BOLD) para tu carpeta 03_LIFE_SKILLS.',
+    desc_en: 'Advance your official project (Q1: Coat of Arms / Q2: Tracker & Service / Q3: BOLD Project) for your 03_LIFE_SKILLS folder.',
+    schedule_es: '📁 Evidencia oficial para el SIS',
+    schedule_en: '📁 Official evidence for the SIS',
+    icon: '📁'
+  }
+];
+
 const VIEWS_BY_AUDIENCE = {
   junior: ['juniors', 'capsulas', 'herramientas'],
   highschool: ['ruta', 'expediente', 'rubrica', 'transversales', 'herramientas', 'capsulas', 'cuaderno', 'test-dones', 'habitos'],
@@ -544,8 +584,14 @@ function selectStage(stageKey) {
 }
 
 function selectHighSchoolLevel(levelKey) {
+  if (state.roleView === 'mentor') {
+    state.currentLevel = levelKey;
+    updateNavigationUI();
+    renderCurrentView();
+    return;
+  }
   const normAssigned = ['8', '8th', 'grade8', 'grade 8', '1', 'level1', 'freshman'].includes(state.assignedLevel) ? 'seedling' : state.assignedLevel;
-  if (state.isSis && normAssigned && levelKey !== normAssigned) {
+  if (state.isSis && normAssigned && levelKey !== normAssigned && levelKey !== 'seedling') {
     alert(`🔒 Nivel ${levelKey.toUpperCase()} bloqueado.\n\nTu nivel activo asignado en el SIS es ${normAssigned.toUpperCase()}.\nLos demás niveles estarán disponibles cuando avances a esa etapa académica.`);
     return;
   }
@@ -643,11 +689,11 @@ function updateNavigationUI() {
       const el = document.getElementById(`subtab-${lvl.id}`);
       if (el) {
         const normAssigned = ['8', '8th', 'grade8', 'grade 8', '1', 'level1', 'freshman'].includes(state.assignedLevel) ? 'seedling' : state.assignedLevel;
-        const isAssigned = !state.isSis || !normAssigned || (normAssigned === lvl.id);
+        const isAssigned = (state.roleView === 'mentor') || !state.isSis || !normAssigned || (normAssigned === lvl.id) || (lvl.id === 'seedling');
         const isActive = (state.currentLevel === lvl.id);
         el.classList.toggle('active', isActive);
 
-        if (state.isSis && normAssigned && !isAssigned) {
+        if (state.roleView !== 'mentor' && state.isSis && normAssigned && !isAssigned) {
           el.innerHTML = `🔒 ${lvl.label} <span style="font-size: 10px; opacity: 0.85;">(Bloqueado)</span>`;
           el.style.opacity = '0.55';
           el.style.cursor = 'not-allowed';
@@ -835,10 +881,19 @@ function renderUnifiedStudentRouteView(container, stageKey) {
   const verseText = verse.text ? (verse.text[state.lang] || verse.text.es || verse.text) : '';
   const verseCtx = verse.context ? (verse.context[state.lang] || verse.context.es || verse.context) : '';
 
-  const levelTitle = levelData.title ? (levelData.title[state.lang] || levelData.title.es || levelData.title) : stageKey;
+  const levelTitle = levelData.title ? (levelData.title[state.lang] || levelData.title.es || levelData.title) : stageKey.toUpperCase();
   const levelSub = levelData.subtitle ? (levelData.subtitle[state.lang] || levelData.subtitle.es || levelData.subtitle) : '';
 
-  // 3 Compromisos Semanales Formativos (Dual Diploma)
+  // 3 Metas Semanales según audiencia (Off-Campus / SIS vs Dual Diploma)
+  const isDualDiplomaMode = state.mode === 'dual' && !state.isSis;
+  const activeGoalsList = isDualDiplomaMode ? WEEKLY_GOALS_LIST : SIS_WEEKLY_GOALS_LIST;
+  const goalsCardTitle = isDualDiplomaMode 
+    ? (isEs ? 'Compromisos Formativos de la Semana (Dual Diploma)' : 'Weekly Formative Commitments (Dual Diploma)')
+    : (isEs ? 'Tu Enfoque Semanal de Life Skills · Formación y Carácter (Off-Campus)' : 'Your Weekly Life Skills Focus · Character & Growth (Off-Campus)');
+  const goalsCardSubtitle = isDualDiplomaMode
+    ? (isEs ? '3 actividades clave: Inglés Académico (2h), Life Skills (2h) y Ciencias Sociales USA (1h)' : '3 core activities: Academic English (2h), Life Skills (2h), and US Social Studies (1h)')
+    : (isEs ? '3 metas formativas: 1 Sesión Interactiva, Práctica de Hábitos y Avance en tu Proyecto del SIS' : '3 formative goals: 1 Interactive Session, Daily Habit Practice, and SIS Project Progress');
+
   let completedWeeklyGoals = [];
   try {
     completedWeeklyGoals = JSON.parse(localStorage.getItem('chanak_ls_weekly_goals') || '[]');
@@ -858,47 +913,47 @@ function renderUnifiedStudentRouteView(container, stageKey) {
 
   container.innerHTML = `
     <!-- 1. Level Hero Card -->
-    <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+    <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm);">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
-        <span class="eyebrow-tag" style="color: var(--green); margin: 0;">
-          ${isEs ? `NIVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.age || ''} · ${levelData.gradeUS || ''} · FLDOE #134620` : `LEVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.gradeUS || ''}`}
+        <span class="eyebrow-tag" style="color: var(--navy); font-weight: 800; margin: 0;">
+          ${isEs ? `NIVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.age || ''} · ${levelData.gradeUS || ''} · PILAR 3 SIS (20%)` : `LEVEL ${levelData.num || 1} · ${stageKey.toUpperCase()} · ${levelData.gradeUS || ''}`}
         </span>
-        <a href="https://drive.google.com/file/d/1tuB-OX7-mwLIpHNHXPS0lSKaSRponaAk/view" target="_blank" class="btn-interactive" style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+        <a href="https://drive.google.com/file/d/1tuB-OX7-mwLIpHNHXPS0lSKaSRponaAk/view" target="_blank" class="btn-interactive" style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; background: var(--navy); color: #fff; border: none; font-weight: 700;">
           📄 ${isEs ? 'Guía PDF Oficial del Nivel' : 'Official Level PDF Guide'} ↗
         </a>
       </div>
-      <h3 style="font-size: 26px; color: var(--navy); margin-bottom: 6px; font-family: var(--font-display);">
+      <h3 style="font-size: 24px; color: var(--navy); margin-bottom: 6px; font-weight: 800;">
         ${levelTitle}
       </h3>
-      <p style="font-size: 15px; color: var(--ink-muted); margin: 0;">
+      <p style="font-size: 14px; color: var(--ink-muted); margin: 0; line-height: 1.5;">
         ${levelSub}
       </p>
     </div>
 
     <!-- 2. Academic Calendar Structure Banner (3 Quarters + 1 Leveling) -->
-    <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 14px;">
-      <span style="font-size: 24px; flex-shrink: 0; line-height: 1.2;">📅</span>
+    <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 14px;">
+      <span style="font-size: 22px; flex-shrink: 0; line-height: 1.2;">📅</span>
       <div style="font-size: 13px; color: #1E3A8A; line-height: 1.55;">
-        <strong style="font-size: 14px; display: block; margin-bottom: 3px; color: #1E40AF;">
+        <strong style="font-size: 13px; display: block; margin-bottom: 2px; color: #1E40AF;">
           ${isEs ? 'Estructura del Año Académico: 3 Trimestres Regulares (Q1, Q2, Q3) + 1 Período de Nivelación Formativa' : 'Academic Year Structure: 3 Regular Quarters (Q1, Q2, Q3) + 1 Formative Leveling Period'}
         </strong>
         ${isEs 
-          ? 'En Chanak los proyectos oficiales del expediente se entregan en Q1, Q2 y Q3. El 4º período es de nivelación, consolidación de hábitos y tutoría personalizada con tu mentor.' 
-          : 'At Chanak official dossier projects are completed in Q1, Q2, and Q3. The 4th period is reserved for leveling, habit consolidation, and personalized mentoring.'}
+          ? 'En Chanak los proyectos oficiales del expediente se entregan en Q1, Q2 y Q3 (evaluación continua del 20% en el SIS). El 4º período es de nivelación, consolidación de hábitos y tutoría formativa personalizada.' 
+          : 'At Chanak official dossier projects are completed in Q1, Q2, and Q3 (continuous 20% assessment in SIS). The 4th period is reserved for leveling, habit consolidation, and personalized mentoring.'}
       </div>
     </div>
 
-    <!-- 3. Weekly Formative Commitments (Dual Diploma Focus: 3 Core Activities) -->
-    <div class="weekly-commitments-card" style="background: #fff; border: 1.5px solid var(--line); border-radius: var(--radius-md); padding: 22px; margin-bottom: 26px; box-shadow: var(--shadow-sm);">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+    <!-- 3. Weekly Formative Commitments (Off-Campus SIS vs Dual Diploma) -->
+    <div class="weekly-commitments-card" style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 24px;">📋</span>
+          <span style="font-size: 22px;">📋</span>
           <div>
-            <h4 style="font-size: 16px; font-weight: 800; color: var(--navy); margin: 0;">
-              ${isEs ? 'Compromisos Formativos de la Semana (Dual Diploma)' : 'Weekly Formative Commitments (Dual Diploma)'}
+            <h4 style="font-size: 15px; font-weight: 800; color: var(--navy); margin: 0;">
+              ${goalsCardTitle}
             </h4>
             <span style="font-size: 12px; color: var(--ink-muted);">
-              ${isEs ? '3 actividades clave: Inglés Académico (2h), Life Skills (2h) y Ciencias Sociales USA (1h)' : '3 core activities: Academic English (2h), Life Skills (2h), and US Social Studies (1h)'}
+              ${goalsCardSubtitle}
             </span>
           </div>
         </div>
@@ -914,25 +969,25 @@ function renderUnifiedStudentRouteView(container, stageKey) {
         </div>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 16px;">
-        ${WEEKLY_GOALS_LIST.map(g => {
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 14px;">
+        ${activeGoalsList.map(g => {
           const isDone = completedWeeklyGoals.includes(g.id);
           return `
             <div class="weekly-goal-item ${isDone ? 'is-done' : ''}" onclick="toggleWeeklyCommitment('${g.id}')"
-                 style="background: ${isDone ? '#F0FDF4' : '#F8FAFC'}; border: 1.5px solid ${isDone ? '#86EFAC' : 'var(--line)'}; border-radius: 12px; padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s;">
+                 style="background: ${isDone ? '#F0FDF4' : '#F8FAFC'}; border: 1.5px solid ${isDone ? '#86EFAC' : 'var(--line)'}; border-radius: 12px; padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; transition: all 0.2s;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="background: ${isDone ? '#166534' : 'var(--navy)'}; color: #fff; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px;">
                   ${isEs ? g.badge_es : g.badge_en}
                 </span>
-                <span style="font-size: 18px;">${isDone ? '✅' : '⚪'}</span>
+                <span style="font-size: 16px;">${isDone ? '✅' : '⚪'}</span>
               </div>
-              <div style="font-size: 14px; font-weight: 800; color: ${isDone ? '#166534' : 'var(--navy)'}; line-height: 1.35;">
+              <div style="font-size: 13.5px; font-weight: 800; color: ${isDone ? '#166534' : 'var(--navy)'}; line-height: 1.35;">
                 ${g.icon} ${isEs ? g.title_es : g.title_en}
               </div>
               <div style="font-size: 12px; color: var(--ink-muted); line-height: 1.45;">
                 ${isEs ? g.desc_es : g.desc_en}
               </div>
-              <div style="margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--line); font-size: 11px; color: ${isDone ? '#15803D' : '#0C6E70'}; font-weight: 700;">
+              <div style="margin-top: auto; padding-top: 6px; border-top: 1px dashed var(--line); font-size: 11px; color: ${isDone ? '#15803D' : '#0369A1'}; font-weight: 700;">
                 📅 ${isEs ? g.schedule_es : g.schedule_en}
               </div>
             </div>
@@ -940,158 +995,37 @@ function renderUnifiedStudentRouteView(container, stageKey) {
         }).join('')}
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--paper); padding: 10px 14px; border-radius: 8px; font-size: 12px;">
-        <span style="color: var(--ink-muted);">
-          💡 <b>${isEs ? 'Clases en Vivo por Google Meet:' : 'Live Classes on Google Meet:'}</b> ${isEs ? 'Martes 16:00 CET (Inglés) · Jueves 18:00 CET (Life Skills)' : 'Tuesday 16:00 CET (English) · Thursday 18:00 CET (Life Skills)'}
-        </span>
-        <a href="https://meet.google.com/gye-nzqs-gdd" target="_blank" rel="noopener noreferrer"
-           style="background: #16a34a; color: #fff; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
-          📹 ${isEs ? 'Unirme a Meet' : 'Join Meet'} ↗
-        </a>
-      </div>
-    </div>
-
-    <!-- 4. Biblical Devotional Card -->
-    <div class="devotional-card" style="margin-bottom: 28px;">
-      <div class="devotional-ref">
-        📖 <span>${verse.ref || 'Cita Bíblica'}</span> · ${isEs ? 'Texto Bíblico del Nivel' : 'Key Scripture'}
-      </div>
-      <div class="devotional-text">
-        "${verseText}"
-      </div>
-      ${verseCtx ? `
-        <div class="devotional-applied">
-          💡 <b>${isEs ? 'Devocional Aplicado:' : 'Applied Devotional:'}</b> ${verseCtx}
-        </div>
-      ` : ''}
-    </div>
-
-    <!-- 5. Special Highlight for Explorer Q1: Test "Quién Soy" -->
-    ${stageKey === 'explorer' ? `
-      <div style="background: linear-gradient(135deg, #1e3a8a, #0f2240); color: #fff; border-radius: var(--radius-md); padding: 24px 28px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: var(--shadow-md);">
-        <div style="max-width: 620px;">
-          <span class="badge" style="background: rgba(255,255,255,0.2); color: #fff; font-size: 11px; margin-bottom: 8px;">
-            ⭐ PROYECTO ANCLA Q1 · DOSSIER UNIVERSITARIO
+      ${isDualDiplomaMode ? `
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: #F8FAFC; padding: 10px 14px; border-radius: 8px; font-size: 12px; border: 1px solid var(--line);">
+          <span style="color: var(--ink-muted);">
+            💡 <b>${isEs ? 'Clases en Vivo por Google Meet:' : 'Live Classes on Google Meet:'}</b> ${isEs ? 'Martes 16:00 CET (Inglés) · Jueves 18:00 CET (Life Skills)' : 'Tuesday 16:00 CET (English) · Thursday 18:00 CET (Life Skills)'}
           </span>
-          <h4 style="font-size: 20px; color: #fff; margin-bottom: 6px; font-family: var(--font-display);">
-            🧭 Test "Quién Soy" · Perfil Vocacional & Test de Dones
-          </h4>
-          <p style="font-size: 14px; opacity: 0.9; margin: 0; line-height: 1.5;">
-            Descubre tus inclinaciones vocacionales mediante el modelo RIASEC adaptado al servicio cristiano. Genera el entregable oficial <code>Test_Dones_Resultados.pdf</code>.
-          </p>
+          <a href="https://meet.google.com/gye-nzqs-gdd" target="_blank" rel="noopener noreferrer"
+             style="background: #16a34a; color: #fff; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+            📹 ${isEs ? 'Unirme a Meet' : 'Join Meet'} ↗
+          </a>
         </div>
-        <button class="btn-primary" style="background: var(--gold); color: #fff; border: none; padding: 12px 22px; font-size: 14px;" onclick="setViewMode('herramientas')">
-          Hacer Test Vocacional (+50 🪙) →
-        </button>
-      </div>
-    ` : ''}
-
-    <!-- 6. Master Class Section (Libros Formativos de cada Nivel con Resumen Ejecutivo) -->
-    <div class="masterclass-section" style="margin-bottom: 32px;">
-      <div class="masterclass-head" style="margin-bottom: 16px;">
-        <div>
-          <span class="eyebrow-tag" style="color: var(--gold); margin: 0;">MASTER CLASS · FORMACIÓN POR LECTURA</span>
-          <h3 style="font-family: var(--font-display); margin-top: 4px; color: var(--navy); font-size: 22px;">
-            📖 ${isEs ? 'Master Class & Lecturas Clave del Nivel' : 'Master Class & Key Level Books'}
-          </h3>
-          <p style="font-size: 13px; color: var(--ink-muted); margin: 2px 0 0;">
-            ${isEs ? 'Libros formativos de impacto integrados a las sesiones curriculares con ideas fuerza, citas inspiradoras y resumen ejecutivo.' : 'Foundational books integrated into curriculum sessions with core principles, quotes, and executive summaries.'}
-          </p>
-        </div>
-        <span class="badge" style="background: var(--gold-light); color: #7a5a1e; font-weight: 700; font-size: 12px;">
-          ${(levelData.books || []).length} ${isEs ? 'Lecturas de Impacto' : 'Key Readings'}
-        </span>
-      </div>
-
-      <div class="masterclass-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
-        ${(levelData.books || []).map(bKey => {
-          const book = BOOKS[bKey];
-          if (!book) return '';
-          const bAudience = book.audience ? (book.audience[state.lang] || book.audience.es || book.audience) : (isEs ? 'Lectura Altamente Recomendada (Opcional)' : 'Highly Recommended (Optional)');
-          const bTitle = book.title ? (book.title[state.lang] || book.title.es || book.title) : bKey;
-          const bAuthor = book.author || '';
-          const bKeyPoint = book.key ? (book.key[state.lang] || book.key.es || book.key) : '';
-          const bQuote = book.quote ? (book.quote[state.lang] || book.quote.es || book.quote) : '';
-          return `
-            <div class="masterclass-card" style="display: flex; flex-direction: column; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-xs);">
-              <span class="mc-badge" style="background: var(--gold-light); color: #7a5a1e; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; align-self: flex-start;">
-                📖 ${bAudience}
-              </span>
-              <div class="mc-title" style="font-size: 18px; font-weight: 800; color: var(--navy); font-family: var(--font-display);">⚡ ${bTitle}</div>
-              <div class="mc-author" style="font-size: 12px; color: var(--ink-muted); margin-top: -6px;">Por ${bAuthor}</div>
-              ${book.summary_es ? `
-                <div class="mc-summary" style="background: var(--paper); border-radius: 8px; padding: 12px; font-size: 13px; color: var(--ink); line-height: 1.55; border-left: 3px solid var(--gold);">
-                  <strong style="color: var(--navy); display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase;">📑 ${isEs ? 'Resumen Ejecutivo:' : 'Executive Summary:'}</strong>
-                  ${book.summary_es}
-                </div>
-              ` : ''}
-              <div class="mc-key" style="font-size: 13px; color: var(--navy); line-height: 1.5;">
-                <b>💡 ${isEs ? 'Idea Fuerza' : 'Key Idea'}:</b> ${bKeyPoint}
-              </div>
-              <div class="mc-quote" style="font-size: 12px; color: var(--ink-muted); font-style: italic; border-left: 2px solid var(--green); padding-left: 10px;">
-                "${bQuote}"
-              </div>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    </div>
-
-    <!-- 6. Vocational Tracks Picker & Project Context -->
-    <div class="tracks-picker-box">
-      <div class="tracks-picker-head">
-        <span class="eyebrow-tag" style="color: var(--green); margin: 0;">ITINERARIOS VOCACIONALES CHANAK</span>
-        <h4 style="font-family: var(--font-display); margin-top: 4px;">
-          🎯 ${isEs ? 'Elige tu Track Vocacional para los Proyectos' : 'Choose your Vocational Track for Projects'}
-        </h4>
-        <p style="font-size: 13px; color: var(--ink-muted); margin: 2px 0 0;">
-          ${isEs ? 'Cada módulo y entregable trimestral se adapta a la vocación y talentos que Dios te dio:' : 'Every module and quarterly deliverable adapts to your calling and talents:'}
-        </p>
-      </div>
-
-      <div class="tracks-picker-pills">
-        ${Object.values(VOCATIONAL_TRACKS).map(trk => {
-          const isActive = trk.id === state.selectedTrack;
-          const tName = trk.name ? (trk.name[state.lang] || trk.name.es) : trk.id;
-          return `
-            <button class="track-pill-btn ${isActive ? 'is-active' : ''}" onclick="selectVocationalTrack('${trk.id}')">
-              <span>${trk.icon}</span> ${tName}
-            </button>
-          `;
-        }).join('')}
-      </div>
-
-      <div class="track-detail-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <b style="font-size: 14px; color: var(--navy);">
-            ${currentTrack.icon} ${trackName}
-          </b>
-          <span style="font-size: 11px; background: rgba(22, 163, 74, 0.15); color: #166534; padding: 2px 8px; border-radius: 10px; font-weight: 700;">
-            ${isEs ? 'Track Activo' : 'Active Track'}
+      ` : `
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: #F8FAFC; padding: 10px 14px; border-radius: 8px; font-size: 12px; border: 1px solid var(--line);">
+          <span style="color: var(--navy); font-weight: 600;">
+            🌱 <b>${isEs ? 'Evaluación Formativa & Evidencias SIS:' : 'Formative Assessment & SIS Evidence:'}</b> ${isEs ? 'Sube tu entregable trimestral a la carpeta 03_LIFE_SKILLS para tu reporte de calificaciones (Pilar 3 · 20%).' : 'Upload your quarterly project to the 03_LIFE_SKILLS folder for your grade report (Pillar 3 · 20%).'}
+          </span>
+          <span style="background: #E0F2FE; color: #0369A1; padding: 3px 10px; border-radius: 20px; font-weight: 700; font-size: 11px;">
+            Off-Campus SIS
           </span>
         </div>
-        <div style="font-size: 12px; color: var(--ink-muted); margin-bottom: 8px;">
-          ${trackTag}
-        </div>
-        <div style="font-size: 13px; line-height: 1.5; color: var(--ink);">
-          📌 <b>${isEs ? `Aplicación en ${stageKey.toUpperCase()}:` : `Application in ${stageKey.toUpperCase()}:`}</b>
-          ${trackLevelProjects.length > 0 ? trackLevelProjects.map((p, i) => {
-            const pTxt = typeof p === 'object' ? (p[state.lang] || p.es) : p;
-            return `<div style="margin-top: 4px;">• ${pTxt}</div>`;
-          }).join('') : (isEs ? 'Personaliza tus entregables en base a este itinerario.' : 'Customize your deliverables based on this track.')}
-        </div>
-      </div>
+      `}
     </div>
 
-    <!-- 7. CONTINUOUS ROUTE BY QUARTERS WITH INLINE ACCORDION SESSIONS (English I style) -->
-    <div style="margin-bottom: 36px;">
-      <div style="margin-bottom: 18px;">
-        <span class="eyebrow-tag" style="color: var(--navy); margin: 0;">CURRÍCULO INTEGRADO · RUTA CONTINUA</span>
-        <h3 style="font-size: 24px; color: var(--navy); font-family: var(--font-display); margin: 4px 0;">
-          🧭 ${isEs ? 'Ruta Continua de Aprendizaje por Trimestres' : 'Continuous Learning Route by Quarters'}
+    <!-- 4. CONTINUOUS ROUTE BY QUARTERS WITH INLINE ACCORDION SESSIONS (FRONT AND CENTER) -->
+    <div style="margin-bottom: 32px;">
+      <div style="margin-bottom: 16px;">
+        <span class="eyebrow-tag" style="color: var(--navy); margin: 0; font-weight: 800;">CURRÍCULO INTEGRADO · RUTA CONTINUA</span>
+        <h3 style="font-size: 22px; color: var(--navy); margin: 4px 0; font-weight: 800;">
+          🧭 ${isEs ? 'Ruta Continua de Aprendizaje por Trimestres (Q1, Q2, Q3)' : 'Continuous Learning Route by Quarters (Q1, Q2, Q3)'}
         </h3>
-        <p style="font-size: 14px; color: var(--ink-muted); margin: 0;">
-          ${isEs ? 'Haz clic en cada módulo para desplegar sus 8 sesiones/cápsulas directamente abajo. Todo en un único flujo sin perderte.' : 'Click each module to unfold its 8 sessions/capsules directly underneath in a single unified flow.'}
+        <p style="font-size: 13.5px; color: var(--ink-muted); margin: 0;">
+          ${isEs ? 'Haz clic en cada módulo para desplegar sus 8 sesiones interactivas, avanzar en tu cuaderno digital y preparar tu entregable para el SIS.' : 'Click each module to unfold its 8 interactive sessions, advance in your digital notebook, and prepare your SIS deliverable.'}
         </p>
       </div>
 
@@ -1115,10 +1049,10 @@ function renderUnifiedStudentRouteView(container, stageKey) {
           : '';
 
         return `
-          <div class="quarter-section-wrap">
-            <div class="quarter-section-head">
-              <span class="quarter-badge" style="font-size: 13px; padding: 4px 10px;">${q.id}</span>
-              <h3>${qTitle}</h3>
+          <div class="quarter-section-wrap" style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm);">
+            <div class="quarter-section-head" style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 10px;">
+              <span class="quarter-badge" style="background: var(--navy); color: #fff; font-size: 13px; font-weight: 800; padding: 4px 12px; border-radius: 8px;">${q.id}</span>
+              <h3 style="font-size: 18px; color: var(--navy); font-weight: 800; margin: 0;">${qTitle}</h3>
             </div>
 
             <!-- Modules in this Quarter with Inline Accordion -->
@@ -1136,14 +1070,14 @@ function renderUnifiedStudentRouteView(container, stageKey) {
               }[p.status];
 
               return `
-                <div class="module-unit-box">
-                  <div class="module-unit-header" onclick="toggleModuleAccordion('${modId}')">
-                    <div class="unit-head-info">
-                      <span class="unit-head-tag">MÓDULO ${modId.toUpperCase()} · ${sessionCount} SESIONES</span>
-                      <h4 class="unit-head-title">${firstTitle}</h4>
-                      ${eq ? `<p class="unit-head-eq">“${eq}”</p>` : ''}
+                <div class="module-unit-box" style="border: 1px solid var(--line); border-radius: 12px; margin-bottom: 12px; overflow: hidden; background: #fff;">
+                  <div class="module-unit-header" onclick="toggleModuleAccordion('${modId}')" style="padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #FAFBFD; border-bottom: ${isExpanded ? '1px solid var(--line)' : 'none'};">
+                    <div class="unit-head-info" style="flex: 1;">
+                      <span class="unit-head-tag" style="font-size: 11px; font-weight: 800; color: #0284C7; letter-spacing: 0.05em;">MÓDULO ${modId.toUpperCase()} · ${sessionCount} SESIONES</span>
+                      <h4 class="unit-head-title" style="font-size: 15px; font-weight: 800; color: var(--navy); margin: 2px 0;">${firstTitle}</h4>
+                      ${eq ? `<p class="unit-head-eq" style="font-size: 12.5px; color: var(--ink-muted); margin: 0; font-style: italic;">“${eq}”</p>` : ''}
                       
-                      <div style="margin-top: 10px; max-width: 400px;">
+                      <div style="margin-top: 8px; max-width: 380px;">
                         <div class="progress-track" style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
                           <div class="progress-fill" style="width: ${p.pct}%; height: 100%; background: var(--navy); transition: width 0.3s ease;"></div>
                         </div>
@@ -1153,9 +1087,9 @@ function renderUnifiedStudentRouteView(container, stageKey) {
                       </div>
                     </div>
 
-                    <div class="unit-head-right">
+                    <div class="unit-head-right" style="text-align: right;">
                       <span class="unit-status-chip ${p.status}">${stateLabel}</span>
-                      <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--navy); margin-top: 8px;">
+                      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px; font-size: 12px; font-weight: 700; color: var(--navy); margin-top: 6px;">
                         <span>${isExpanded ? (isEs ? 'Ocultar' : 'Hide') : (isEs ? 'Ver sesiones' : 'View sessions')}</span>
                         <span class="unit-expand-arrow ${isExpanded ? 'open' : ''}" id="arrow-${modId}">${isExpanded ? '▼' : '▶'}</span>
                       </div>
@@ -1163,33 +1097,35 @@ function renderUnifiedStudentRouteView(container, stageKey) {
                   </div>
 
                   <!-- Inline Accordion Sessions List -->
-                  <div class="module-sessions-container" id="sessions-${modId}" style="display: ${isExpanded ? 'block' : 'none'};">
-                    <div class="sessions-subheading">
+                  <div class="module-sessions-container" id="sessions-${modId}" style="display: ${isExpanded ? 'block' : 'none'}; padding: 14px 18px; background: #fff;">
+                    <div class="sessions-subheading" style="font-size: 12px; font-weight: 800; color: var(--navy); text-transform: uppercase; margin-bottom: 12px;">
                       📖 ${isEs ? `Sesiones & Cápsulas del Módulo (${sessionCount} Sesiones de 60 min)` : `Module Sessions & Capsules (${sessionCount} 60-min sessions)`}
                     </div>
 
                     ${(modData.sessions || []).map(sess => {
                       const isDone = localStorage.getItem(`chanak_done_${modId}_s${sess.number}`) === 'done';
                       return `
-                        <div class="session-row-item ${isDone ? 'is-done' : ''}">
-                          <div class="session-num-badge">${sess.number}</div>
-                          <div class="session-meta-text">
-                            <div class="session-row-title">${sess.title || `Sesión ${sess.number}`}</div>
-                            ${sess.objective ? `<div class="session-row-obj"><b>🎯 ${isEs ? 'Objetivo:' : 'Objective:'}</b> ${sess.objective}</div>` : ''}
-                            ${sess.keyActivity ? `<div class="session-row-obj" style="margin-top: 2px;"><b>⚡ ${isEs ? 'Actividad:' : 'Activity:'}</b> ${sess.keyActivity}</div>` : ''}
+                        <div class="session-row-item ${isDone ? 'is-done' : ''}" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid #F1F5F9; gap: 12px;">
+                          <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                            <div class="session-num-badge" style="width: 26px; height: 26px; border-radius: 50%; background: ${isDone ? '#DCFCE7' : '#EFF6FF'}; color: ${isDone ? '#166534' : '#1D4ED8'}; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; shrink-0: 0;">${sess.number}</div>
+                            <div class="session-meta-text">
+                              <div class="session-row-title" style="font-weight: 700; font-size: 13.5px; color: var(--navy);">${sess.title || `Sesión ${sess.number}`}</div>
+                              ${sess.objective ? `<div class="session-row-obj" style="font-size: 12px; color: var(--ink-muted);"><b>🎯 ${isEs ? 'Objetivo:' : 'Objective:'}</b> ${sess.objective}</div>` : ''}
+                              ${sess.keyActivity ? `<div class="session-row-obj" style="font-size: 12px; color: var(--ink-muted); margin-top: 1px;"><b>⚡ ${isEs ? 'Actividad:' : 'Activity:'}</b> ${sess.keyActivity}</div>` : ''}
+                            </div>
                           </div>
 
-                          <div style="display: flex; align-items: center; gap: 10px;">
+                          <div style="display: flex; align-items: center; gap: 10px; shrink-0: 0;">
                             ${isDone ? `
                               <span style="font-size: 12px; font-weight: 700; color: var(--green);">
                                 ✓ ${isEs ? 'Completada' : 'Done'}
                               </span>
                             ` : `
-                              <span style="font-size: 11px; color: var(--gold); font-weight: 600;">
+                              <span style="font-size: 11px; color: var(--gold); font-weight: 700;">
                                 +10 🪙
                               </span>
                             `}
-                            <button class="btn-open-session ${isDone ? 'btn-review' : ''}" onclick="openCurriculumModule('${modId}', ${sess.number})">
+                            <button class="btn-open-session ${isDone ? 'btn-review' : ''}" style="padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;" onclick="openCurriculumModule('${modId}', ${sess.number})">
                               ${isDone ? (isEs ? 'Repasar Sesión →' : 'Review Session →') : (isEs ? 'Abrir Cuaderno (+10 🪙) →' : 'Open Notebook (+10 🪙) →')}
                             </button>
                           </div>
@@ -1204,27 +1140,27 @@ function renderUnifiedStudentRouteView(container, stageKey) {
             <!-- Micro-Cápsulas Interactivas del Trimestre (si existen) -->
             ${(q.capsules && q.capsules.length > 0) ? `
               <div style="margin: 16px 0 14px;">
-                <div style="font-size: 12px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+                <div style="font-size: 12px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
                   ⚡ ${isEs ? 'Micro-Cápsulas Interactivas de Práctica (4 Pasos + Quiz)' : 'Interactive Practice Micro-Capsules (4 Steps + Quiz)'}
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px;">
                   ${q.capsules.map(capKey => {
                     const cap = CAPSULES_DATA[capKey];
                     if (!cap) return '';
                     const isDone = localStorage.getItem(`chanak_cap_${capKey}`) === 'done';
                     const capTitle = cap.title ? (cap.title[state.lang] || cap.title.es || cap.title) : capKey;
                     return `
-                      <div class="session-row-item ${isDone ? 'is-done' : ''}" style="margin: 0; background: #ffffff;">
+                      <div class="session-row-item ${isDone ? 'is-done' : ''}" style="margin: 0; background: #F8FAFC; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
                           <span style="font-size: 20px;">${cap.icon || '🚀'}</span>
                           <div>
-                            <div style="font-size: 13px; font-weight: 600; color: var(--navy);">${capTitle}</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--navy);">${capTitle}</div>
                             <div style="font-size: 11px; color: var(--ink-muted);">4 pasos interactivos · Quiz bíblico/ético</div>
                           </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                           ${isDone ? `<span style="font-size: 11px; font-weight: 700; color: var(--green);">✓ Hecho</span>` : `<span style="font-size: 11px; color: var(--gold); font-weight: 700;">+10 🪙</span>`}
-                          <button class="btn-open-session ${isDone ? 'btn-review' : ''}" style="padding: 4px 10px; font-size: 11px;" onclick="openCapsule('${capKey}')">
+                          <button class="btn-open-session ${isDone ? 'btn-review' : ''}" style="padding: 4px 10px; font-size: 11px; border-radius: 6px;" onclick="openCapsule('${capKey}')">
                             ${isDone ? (isEs ? 'Repasar' : 'Review') : (isEs ? 'Iniciar →' : 'Start →')}
                           </button>
                         </div>
@@ -1236,9 +1172,9 @@ function renderUnifiedStudentRouteView(container, stageKey) {
             ` : ''}
 
             <!-- Quarter Deliverable & Drive Folder Card -->
-            <div class="quarter-card" style="margin-top: 14px; background: #ffffff;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-                <span class="quarter-badge" style="background: var(--paper); border: 1px solid var(--line); color: var(--navy);">
+            <div class="quarter-card" style="margin-top: 14px; background: #FAFBFD; border: 1px solid var(--line); border-radius: 12px; padding: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                <span class="quarter-badge" style="background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px;">
                   📁 ${isEs ? `Entregable Oficial del Trimestre ${q.id}` : `Official Deliverable ${q.id}`}
                 </span>
                 <span style="font-size: 12px; font-weight: 700; color: var(--gold);">
@@ -1246,21 +1182,21 @@ function renderUnifiedStudentRouteView(container, stageKey) {
                 </span>
               </div>
 
-              <h4 style="font-size: 16px; color: var(--navy); margin-bottom: 6px;">
+              <h4 style="font-size: 15px; color: var(--navy); font-weight: 800; margin-bottom: 6px;">
                 ${qProject}
               </h4>
 
               ${trackQProject ? `
-                <div style="background: var(--green-light); border-left: 3px solid var(--green); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 12px; color: #166534; margin-bottom: 10px;">
+                <div style="background: var(--green-light); border-left: 3px solid var(--green); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 12px; color: #166534; margin-bottom: 8px;">
                   <b>${currentTrack.icon} ${isEs ? 'Aplicación en tu Track' : 'Application in your Track'}:</b> ${trackQProject}
                 </div>
               ` : ''}
 
-              <div class="deliverable-box">
+              <div class="deliverable-box" style="background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 12px; font-size: 12px;">
                 <b style="font-size: 11px; text-transform: uppercase; color: var(--navy); display: block; margin-bottom: 4px;">
-                  📄 ${isEs ? 'Archivos requeridos en tu Carpeta Drive:' : 'Required files in your Drive folder:'}
+                  📄 ${isEs ? 'Archivos requeridos en tu Carpeta Drive (SIS):' : 'Required files in your Drive folder (SIS):'}
                 </b>
-                <ul class="deliverable-files">
+                <ul class="deliverable-files" style="margin: 0; padding-left: 18px; color: #334155;">
                   ${qFiles.map(f => `<li>📄 <code>${f}</code></li>`).join('')}
                 </ul>
               </div>
@@ -1270,19 +1206,157 @@ function renderUnifiedStudentRouteView(container, stageKey) {
       }).join('')}
     </div>
 
-    <!-- 8. Rubric & Accreditation Footer Card -->
-    <div style="background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 22px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-      <div>
-        <span class="eyebrow-tag" style="color: var(--navy); margin: 0;">ACREDITACIÓN FLDOE #134620</span>
-        <h4 style="font-size: 17px; color: var(--navy); margin: 4px 0 2px; font-family: var(--font-display);">
-          🎓 Rúbrica Oficial de Evaluación 40 / 30 / 30
+    <!-- 5. Special Highlight for Explorer Q1: Test "Quién Soy" -->
+    ${stageKey === 'explorer' ? `
+      <div style="background: linear-gradient(135deg, #193D6D, #0F284E); color: #fff; border-radius: var(--radius-md); padding: 22px 26px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: var(--shadow-sm);">
+        <div style="max-width: 620px;">
+          <span class="badge" style="background: rgba(255,255,255,0.2); color: #fff; font-size: 11px; margin-bottom: 8px;">
+            ⭐ PROYECTO ANCLA Q1 · DOSSIER SIS
+          </span>
+          <h4 style="font-size: 19px; color: #fff; margin-bottom: 6px; font-weight: 800;">
+            🧭 Test "Quién Soy" · Perfil Vocacional & Test de Dones
+          </h4>
+          <p style="font-size: 13.5px; opacity: 0.9; margin: 0; line-height: 1.5;">
+            Descubre tus inclinaciones vocacionales mediante el modelo RIASEC adaptado al servicio cristiano. Genera el entregable oficial <code>Test_Dones_Resultados.pdf</code>.
+          </p>
+        </div>
+        <button class="btn-primary" style="background: var(--gold); color: #fff; border: none; padding: 10px 20px; font-size: 13px; font-weight: 700; border-radius: 8px;" onclick="setViewMode('herramientas')">
+          Hacer Test Vocacional (+50 🪙) →
+        </button>
+      </div>
+    ` : ''}
+
+    <!-- 6. Master Class Section (Libros Formativos de cada Nivel con Resumen Ejecutivo) -->
+    <div class="masterclass-section" style="margin-bottom: 28px;">
+      <div class="masterclass-head" style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <span class="eyebrow-tag" style="color: var(--gold); margin: 0; font-weight: 800;">MASTER CLASS · FORMACIÓN POR LECTURA</span>
+          <h3 style="margin-top: 2px; color: var(--navy); font-size: 20px; font-weight: 800;">
+            📖 ${isEs ? 'Master Class & Lecturas Clave del Nivel' : 'Master Class & Key Level Books'}
+          </h3>
+          <p style="font-size: 13px; color: var(--ink-muted); margin: 2px 0 0;">
+            ${isEs ? 'Libros formativos de impacto con ideas fuerza, citas inspiradoras y resumen ejecutivo desplegable.' : 'Foundational books with core principles, quotes, and expandable executive summaries.'}
+          </p>
+        </div>
+        <span class="badge" style="background: var(--gold-light); color: #7a5a1e; font-weight: 700; font-size: 12px;">
+          ${(levelData.books || []).length} ${isEs ? 'Lecturas de Impacto' : 'Key Readings'}
+        </span>
+      </div>
+
+      <div class="masterclass-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px;">
+        ${(levelData.books || []).map(bKey => {
+          const book = BOOKS[bKey];
+          if (!book) return '';
+          const bAudience = book.audience ? (book.audience[state.lang] || book.audience.es || book.audience) : (isEs ? 'Lectura Altamente Recomendada (Opcional)' : 'Highly Recommended (Optional)');
+          const bTitle = book.title ? (book.title[state.lang] || book.title.es || book.title) : bKey;
+          const bAuthor = book.author || '';
+          const bKeyPoint = book.key ? (book.key[state.lang] || book.key.es || book.key) : '';
+          const bQuote = book.quote ? (book.quote[state.lang] || book.quote.es || book.quote) : '';
+          return `
+            <div class="masterclass-card" style="display: flex; flex-direction: column; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px; box-shadow: var(--shadow-sm);">
+              <span class="mc-badge" style="background: var(--gold-light); color: #7a5a1e; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; align-self: flex-start;">
+                📖 ${bAudience}
+              </span>
+              <div class="mc-title" style="font-size: 16px; font-weight: 800; color: var(--navy);">⚡ ${bTitle}</div>
+              <div class="mc-author" style="font-size: 12px; color: var(--ink-muted); margin-top: -4px;">Por ${bAuthor}</div>
+              
+              <div class="mc-key" style="font-size: 12.5px; color: var(--navy); line-height: 1.45;">
+                <b>💡 ${isEs ? 'Idea Fuerza' : 'Key Idea'}:</b> ${bKeyPoint}
+              </div>
+              <div class="mc-quote" style="font-size: 12px; color: var(--ink-muted); font-style: italic; border-left: 2px solid var(--green); padding-left: 8px; margin: 2px 0;">
+                "${bQuote}"
+              </div>
+
+              ${book.summary_es ? `
+                <details style="margin-top: 4px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 8px 10px; font-size: 12.5px; color: var(--ink);">
+                  <summary style="font-weight: 700; color: var(--navy); cursor: pointer; user-select: none; font-size: 11px; text-transform: uppercase;">
+                    📑 ${isEs ? 'Ver Resumen Ejecutivo del Libro' : 'View Book Summary'}
+                  </summary>
+                  <div style="margin-top: 6px; line-height: 1.5; color: #334155; font-size: 12px;">
+                    ${book.summary_es}
+                  </div>
+                </details>
+              ` : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- 7. Vocational Tracks Picker & Project Context -->
+    <div class="tracks-picker-box" style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
+      <div class="tracks-picker-head" style="margin-bottom: 12px;">
+        <span class="eyebrow-tag" style="color: var(--green); margin: 0; font-weight: 800;">ITINERARIOS VOCACIONALES CHANAK</span>
+        <h4 style="margin-top: 4px; font-size: 17px; font-weight: 800; color: var(--navy);">
+          🎯 ${isEs ? 'Elige tu Track Vocacional para los Proyectos' : 'Choose your Vocational Track for Projects'}
         </h4>
-        <p style="font-size: 13px; color: var(--ink-muted); margin: 0;">
-          40% Cuaderno de Vida & Reflexiones · 30% Proyecto Trimestral & Evidencias Drive · 30% Autoevaluación & Asistencia Virtual
+        <p style="font-size: 13px; color: var(--ink-muted); margin: 2px 0 0;">
+          ${isEs ? 'Cada módulo y entregable trimestral se adapta a la vocación y talentos que Dios te dio:' : 'Every module and quarterly deliverable adapts to your calling and talents:'}
         </p>
       </div>
 
-      <button class="btn-interactive" onclick="setViewMode('expediente')" style="font-size: 13px; padding: 10px 18px; background: #fff;">
+      <div class="tracks-picker-pills" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+        ${Object.values(VOCATIONAL_TRACKS).map(trk => {
+          const isActive = trk.id === state.selectedTrack;
+          const tName = trk.name ? (trk.name[state.lang] || trk.name.es) : trk.id;
+          return `
+            <button class="track-pill-btn ${isActive ? 'is-active' : ''}" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px;" onclick="selectVocationalTrack('${trk.id}')">
+              <span>${trk.icon}</span> ${tName}
+            </button>
+          `;
+        }).join('')}
+      </div>
+
+      <div class="track-detail-card" style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <b style="font-size: 13.5px; color: var(--navy);">
+            ${currentTrack.icon} ${trackName}
+          </b>
+          <span style="font-size: 11px; background: #DCFCE7; color: #166534; padding: 2px 8px; border-radius: 10px; font-weight: 700;">
+            ${isEs ? 'Track Activo' : 'Active Track'}
+          </span>
+        </div>
+        <div style="font-size: 12px; color: var(--ink-muted); margin-bottom: 6px;">
+          ${trackTag}
+        </div>
+        <div style="font-size: 12.5px; line-height: 1.45; color: var(--ink);">
+          📌 <b>${isEs ? `Aplicación en ${stageKey.toUpperCase()}:` : `Application in ${stageKey.toUpperCase()}:`}</b>
+          ${trackLevelProjects.length > 0 ? trackLevelProjects.map((p, i) => {
+            const pTxt = typeof p === 'object' ? (p[state.lang] || p.es) : p;
+            return `<div style="margin-top: 3px;">• ${pTxt}</div>`;
+          }).join('') : (isEs ? 'Personaliza tus entregables en base a este itinerario.' : 'Customize your deliverables based on this track.')}
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Biblical Devotional Card -->
+    <div class="devotional-card" style="background: #FFFBEB; border: 1px solid #FDE68A; border-left: 4px solid var(--gold); border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 18px 22px; margin-bottom: 24px;">
+      <div class="devotional-ref" style="font-size: 12px; font-weight: 800; color: #B45309; text-transform: uppercase; margin-bottom: 4px;">
+        📖 <span>${verse.ref || 'Cita Bíblica'}</span> · ${isEs ? 'Texto Bíblico del Nivel' : 'Key Scripture'}
+      </div>
+      <div class="devotional-text" style="font-size: 15px; font-style: italic; color: #78350F; line-height: 1.5; margin-bottom: 6px;">
+        "${verseText}"
+      </div>
+      ${verseCtx ? `
+        <div class="devotional-applied" style="font-size: 13px; color: #92400E; line-height: 1.5;">
+          💡 <b>${isEs ? 'Devocional Aplicado:' : 'Applied Devotional:'}</b> ${verseCtx}
+        </div>
+      ` : ''}
+    </div>
+
+    <!-- 9. Rubric & Accreditation Footer Card -->
+    <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: var(--shadow-sm);">
+      <div>
+        <span class="eyebrow-tag" style="color: var(--navy); margin: 0; font-weight: 800;">EVALUACIÓN CONTINUA · PILAR 3 SIS (20%)</span>
+        <h4 style="font-size: 16px; color: var(--navy); margin: 2px 0 2px; font-weight: 800;">
+          🎓 Rúbrica Oficial de Evaluación 40 / 30 / 30
+        </h4>
+        <p style="font-size: 12.5px; color: var(--ink-muted); margin: 0;">
+          40% Cuaderno de Vida & Reflexiones · 30% Proyecto Trimestral & Evidencias Drive · 30% Autoevaluación & Asistencia
+        </p>
+      </div>
+
+      <button class="btn-interactive" onclick="setViewMode('expediente')" style="font-size: 12.5px; padding: 8px 16px; background: #FAFBFD; border: 1px solid var(--line); font-weight: 700;">
         Ver Mi Expediente Completo →
       </button>
     </div>
@@ -2290,9 +2364,14 @@ function openCurriculumModule(modId, sessionNum = 1) {
   const modData = EXTENSION_CAPSULES_DATA[modId];
   if (!modData) return;
 
-  if (state.isSis && state.assignedLevel && modData.level && modData.level !== state.assignedLevel) {
-    alert(`🔒 Módulo bloqueado.\n\nEste módulo pertenece al nivel ${modData.level.toUpperCase()}. Tu nivel actual asignado en el SIS es ${state.assignedLevel.toUpperCase()}.`);
-    return;
+  if (state.roleView !== 'mentor' && state.isSis && state.assignedLevel && modData.level) {
+    const normAssigned = ['8', '8th', 'grade8', 'grade 8', '1', 'level1', 'freshman'].includes(state.assignedLevel) ? 'seedling' : state.assignedLevel;
+    if (state.audience === 'highschool' && modData.level === 'seedling') {
+      // Desbloqueado siempre para Secundaria / 8vo grado
+    } else if (normAssigned && modData.level !== normAssigned && normAssigned !== 'junior') {
+      alert(`🔒 Módulo bloqueado.\n\nEste módulo pertenece al nivel ${modData.level.toUpperCase()}. Tu nivel actual asignado en el SIS es ${normAssigned.toUpperCase()}.`);
+      return;
+    }
   }
 
   state.activeModuleId = modId;

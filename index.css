@@ -4,26 +4,29 @@
    ===================================================================== */
 
 :root {
-  --navy: #0f2240;
-  --navy-light: #1a365d;
-  --navy-dark: #091629;
-  --green: #286b43;
-  --green-light: #e8f3ec;
-  --green-border: #bcdcc7;
-  --gold: #b3821a;
-  --gold-light: #fbf5e6;
-  --gold-border: #e9d59e;
-  --paper: #fcfbfa;
-  --ink: #192231;
-  --ink-muted: #5d6778;
-  --line: #e6e3dc;
-  --card-bg: #ffffff;
-  --shadow-sm: 0 2px 8px rgba(15, 34, 64, 0.04);
-  --shadow-md: 0 8px 24px rgba(15, 34, 64, 0.08);
-  --shadow-lg: 0 16px 40px rgba(15, 34, 64, 0.12);
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
+  --navy: #193D6D;         /* Chanak SIS Navy */
+  --navy-light: #25528C;
+  --navy-dark: #0F284E;
+  --sky: #0284C7;
+  --sky-light: #EFF6FF;
+  --sky-border: #BAE6FD;
+  --green: #059669;        /* Emerald / Teal */
+  --green-light: #ECFDF5;
+  --green-border: #A7F3D0;
+  --gold: #D97706;         /* ChanakCoins Amber */
+  --gold-light: #FEF3C7;
+  --gold-border: #FDE68A;
+  --paper: #F8FAFC;        /* Slate 50 from SIS */
+  --ink: #0F172A;          /* Slate 900 */
+  --ink-muted: #64748B;    /* Slate 500 */
+  --line: #E2E8F0;         /* Slate 200 */
+  --card-bg: #FFFFFF;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.12);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
 }
 
 /* `display` de los componentes gana sobre el atributo hidden si no se fuerza.
@@ -50,11 +53,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, .serif-font {
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+h1, h2, h3, h4 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 /* ---------------- Top App Header ---------------- */
@@ -62,7 +65,7 @@ h1, h2, h3, h4, .serif-font {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(252, 251, 250, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
 }
