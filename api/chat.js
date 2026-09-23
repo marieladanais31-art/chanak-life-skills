@@ -73,7 +73,7 @@ Tus principios y rol formativo:
       },
       contents,
       generationConfig: {
-        maxOutputTokens: 1000,
+        maxOutputTokens: 500,
         temperature: 0.7,
       },
       safetySettings: [
@@ -85,9 +85,10 @@ Tus principios y rol formativo:
     };
 
     const candidateModels = [
-      process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+      process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite',
+      'gemini-3.5-flash-lite',
       'gemini-3.5-flash',
-      'gemini-3.1-flash-lite',
+      'gemini-3.6-flash',
       'gemini-3.7-flash',
     ].filter(Boolean);
 
