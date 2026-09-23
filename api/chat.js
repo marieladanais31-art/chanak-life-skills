@@ -111,9 +111,7 @@ Tus principios y rol formativo:
       console.error('Gemini API Error:', geminiRes.status, errText);
       return new Response(
         JSON.stringify({
-          content: isEs
-            ? 'Lo siento, ocurrió un error temporal al conectar con el Mentor IA. Por favor inténtalo de nuevo en un momento.'
-            : 'Sorry, a temporary error occurred connecting with the AI Mentor. Please try again in a moment.',
+          content: `Gemini API Error (${geminiRes.status}): ${errText}`,
         }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
