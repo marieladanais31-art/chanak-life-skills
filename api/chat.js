@@ -87,13 +87,13 @@ Tus principios y rol formativo:
       ],
     };
 
-    const geminiRes = await fetch(geminiUrl, {
-      method: 'POST',
+    // Diagnostic: Query ListModels to get exact active model names from Google
+    const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    const listData = await listRes.json();
+    return new Response(JSON.stringify({ content: JSON.stringify(listData) }), {
+      status: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(geminiBody),
     });
-
-    if (!geminiRes.ok) {
       const errText = await geminiRes.text();
       console.error('Gemini API Error:', geminiRes.status, errText);
 
