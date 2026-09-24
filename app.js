@@ -2852,8 +2852,13 @@ function renderAiMessages() {
 
   if (state.aiLoading) {
     container.innerHTML += `
-      <div class="ai-msg ai-msg-assistant" style="opacity: 0.7; font-style: italic;">
-        <span>🤖 Mentor IA está reflexionando...</span>
+      <div class="ai-msg ai-msg-assistant" style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 11px; font-weight: 800; color: var(--navy);">🤖 Mentor IA</span>
+        <div class="ai-typing-indicator" title="Reflexionando...">
+          <div class="ai-typing-dot"></div>
+          <div class="ai-typing-dot"></div>
+          <div class="ai-typing-dot"></div>
+        </div>
       </div>
     `;
   }

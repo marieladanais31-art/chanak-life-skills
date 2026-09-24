@@ -59,7 +59,9 @@ Tus principios y rol formativo:
 
 4. Formato de Respuesta:
    - Responde en el mismo idioma que el estudiante (${isEs ? 'español' : 'inglés'}).
-   - Mantén respuestas ágiles, concisas y cercanas (máximo 2 a 3 párrafos cortos) para mantener el diálogo interactivo y amigable.`;
+   - Sé conciso, dinámico y directo: máximo 1 a 2 párrafos cortos (entre 60 y 90 palabras).
+   - Termina siempre con 1 sola pregunta socrática estimulante para mantener el diálogo ágil.
+   - Evita preámbulos o rodeos extensos.`;
 
     // Construcción de contenidos en formato Gemini (role: 'user' | 'model')
     const contents = messages.map((m) => ({
@@ -73,7 +75,7 @@ Tus principios y rol formativo:
       },
       contents,
       generationConfig: {
-        maxOutputTokens: 300,
+        maxOutputTokens: 220,
         temperature: 0.7,
       },
       safetySettings: [
@@ -85,9 +87,9 @@ Tus principios y rol formativo:
     };
 
     const candidateModels = [
-      process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite',
+      process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+      'gemini-3.1-flash-lite',
       'gemini-3.5-flash-lite',
-      'gemini-3.5-flash',
       'gemini-3.6-flash',
     ].filter(Boolean);
 
