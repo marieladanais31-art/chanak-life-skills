@@ -438,9 +438,12 @@ function initApp() {
     }
   }
 
-  if (params.get('mode') === 'dual' || window.location.pathname.includes('dualdiploma')) {
+  // Un estudiante Junior (Primaria, token/audiencia junior) nunca entra por la rama común de Dual Diploma (8.º en adelante),
+  // aunque la URL traiga mode=dual: esa rama es otra, con otro horario y sin las cápsulas Junior.
+  if ((params.get('mode') === 'dual' || window.location.pathname.includes('dualdiploma')) && state.audience !== 'junior') {
     state.mode = 'dual';
   }
+  state.country = params.get('country') || '';
   
   if (params.get('embed') === 'true' || params.get('embed') === '1' || window.self !== window.top) {
     state.isEmbed = true;
@@ -918,7 +921,7 @@ function updateNavigationUI() {
 
 // ---------------- View Router ----------------
 function renderCurrentView() {
-  try { updateGuideLink(); } catch (e) { /* la guía es opcional */ }
+  try { updateGuideLink(); applyLiveSchedule(); } catch (e) { /* la guía y el horario son opcionales */ }
   const container = document.getElementById('stage-content-area');
   if (!container) return;
 
@@ -3316,6 +3319,34 @@ function completeJrCap(id) {
   closeJrCap(); celebrate(); renderCurrentView();
 }
 window.openJrCap = openJrCap; window.closeJrCap = closeJrCap; window.jrCapAnswer = jrCapAnswer; window.jrCapChoose = jrCapChoose; window.completeJrCap = completeJrCap; window.setJrCapTramo = setJrCapTramo;
+
+// Horario de clases en vivo: Dual Diploma (8.º en adelante) tiene inglés el martes y Life Skills el jueves;
+// 4.º a 6.º de España (Primaria, Off-Campus) tiene inglés el MIÉRCOLES de 12:00 a 13:00 (hora de España) y NO tiene Life Skills virtual.
+function liveScheduleProfile() {
+  const g = juniorGradeNumber();
+  const c = String(state.country || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  const spain = !c || c === 'es' || c === 'espana' || c === 'spain';
+  if (state.audience === 'junior' && g >= 4 && g <= 6 && spain) return 'primary-es';
+  return 'default';
+}
+function applyLiveSchedule() {
+  const b = document.getElementById('student-meet-banner'); if (!b) return;
+  const profile = liveScheduleProfile();
+  if (!b.dataset.defaultHtml) b.dataset.defaultHtml = b.innerHTML;
+  if (profile === 'default') { if (b.dataset.applied) { b.innerHTML = b.dataset.defaultHtml; delete b.dataset.applied; } return; }
+  b.dataset.applied = profile;
+  b.innerHTML = `<div class="meet-schedule-left">
+      <div class="meet-live-badge">🔴 ${L('AULA VIRTUAL EN VIVO', 'LIVE VIRTUAL CLASSROOM')}</div>
+      <h3 class="meet-title">${L('Clase de inglés en vivo · Google Meet', 'Live English class · Google Meet')}</h3>
+      <p class="meet-desc">${L('Conéctate a tu clase semanal de inglés con tu mentora. Life Skills se trabaja en esta app, a tu ritmo, sin clase virtual.', 'Join your weekly English class with your mentor. Life Skills is done in this app at your own pace, with no virtual class.')}</p>
+      <div class="meet-schedule-chips"><div class="schedule-chip">
+        <span class="chip-day">${L('Miércoles', 'Wednesday')}</span><span class="chip-time">12:00 – 13:00</span>
+        <span class="chip-subject">🇬🇧 English · ${L('hora de España', 'Spain time')}</span></div></div>
+    </div>
+    <div class="meet-schedule-right">
+      <a href="https://meet.google.com/gye-nzqs-gdd" target="_blank" rel="noopener noreferrer" class="btn-meet-join">📹 ${L('Unirme a Clase Virtual (Meet)', 'Join the Virtual Class (Meet)')} ↗</a>
+      <div class="meet-link-sub">meet.google.com/gye-nzqs-gdd</div></div>`;
+}
 
 // Guía PDF del nivel/grado: vive dentro de la app (no en el perfil del estudiante del SIS)
 function updateGuideLink() {
