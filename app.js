@@ -15,6 +15,7 @@ import {
   RIASEC_TEST_DATA,
   VOCATIONAL_TRACKS
 } from './data.js';
+import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait } from './agenda.js';
 
 // ---------------- Backend ----------------
 // La anon key de Supabase es una clave publicable: está pensada para vivir en el
@@ -104,8 +105,8 @@ const SIS_WEEKLY_GOALS_LIST = [
 ];
 
 const VIEWS_BY_AUDIENCE = {
-  junior: ['juniors', 'capsulas', 'herramientas'],
-  highschool: ['ruta', 'expediente', 'rubrica', 'transversales', 'herramientas', 'capsulas', 'cuaderno', 'test-dones', 'habitos'],
+  junior: ['juniors', 'capsulas', 'herramientas', 'caracter'],
+  highschool: ['ruta', 'expediente', 'rubrica', 'transversales', 'herramientas', 'capsulas', 'cuaderno', 'test-dones', 'habitos', 'caracter'],
 };
 
 // ---------------- Application State ----------------
@@ -347,7 +348,7 @@ function initApp() {
 
   if (params.get('view')) {
     const v = params.get('view');
-    if (['ruta', 'capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'rubrica', 'herramientas', 'juniors', 'transversales'].includes(v)) {
+    if (['ruta', 'capsulas', 'cuaderno', 'test-dones', 'habitos', 'expediente', 'rubrica', 'herramientas', 'juniors', 'transversales', 'caracter'].includes(v)) {
       state.viewMode = (v === 'test-dones' || v === 'habitos') ? 'herramientas' : v;
     }
   }
@@ -652,7 +653,7 @@ function isRiasecAvailable() {
 }
 
 function updateNavigationUI() {
-  const tabs = ['ruta', 'expediente', 'rubrica', 'transversales', 'herramientas', 'juniors'];
+  const tabs = ['ruta', 'expediente', 'rubrica', 'transversales', 'herramientas', 'juniors', 'caracter'];
   tabs.forEach(tab => {
     const el = document.getElementById(`tab-${tab}`);
     if (!el) return;
@@ -752,6 +753,9 @@ function renderCurrentView() {
       break;
     case 'test-dones':
       renderRiasecTestView(container);
+      break;
+    case 'caracter':
+      renderCharacterView(container);
       break;
     case 'juniors':
       if (state.mode !== 'dual') {
@@ -2680,6 +2684,128 @@ function filterJuniors(cat) {
   state.juniorsFilter = cat;
   renderCurrentView();
 }
+
+
+// ============================================================================
+// CARÁCTER: semana de la Agenda Devocional, radar de 4 clústeres y paso de restauración
+// ============================================================================
+const L = (es, en) => (state.lang === 'en' ? en : es);
+const escHtml = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Datos de demostración (sin sesión del SIS o sin conexión): 65 monedas repartidas entre los 4 clústeres.
+function demoCharacterSummary() {
+  return { success: true, demo: true, totals: { 1: 20, 2: 15, 3: 10, 4: 20 }, pending_restorations: [], good_standing: true };
+}
+
+// Lee el resumen con el token firmado del SIS (la clave anónima no puede leer tablas; el RPC verifica el token).
+async function fetchCharacterSummary() {
+  if (!state.token) return demoCharacterSummary();
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_life_skills_character_summary`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+      body: JSON.stringify({ p_token: state.token, p_school_year: state.schoolYear || null }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data || data.success !== true) throw new Error((data && data.error) || `HTTP ${res.status}`);
+    return data;
+  } catch (e) {
+    console.warn('Resumen de carácter no disponible, modo demostración:', e);
+    return { ...demoCharacterSummary(), fallback: true };
+  }
+}
+
+function renderWeekCard() {
+  const w = getCurrentAgendaWeek();
+  const en = state.lang === 'en';
+  const cl = CHARACTER_CLUSTERS[w.cluster];
+  return `<section class="char-card" aria-label="${escHtml(L('Rasgo de la semana', 'Trait of the week'))}">
+    <p class="char-eyebrow">${escHtml(L('Semana', 'Week'))} ${w.week} / ${AGENDA_2026_2027.length} · ${escHtml(w.startDate.split('-').reverse().slice(0, 2).join('/'))} – ${escHtml(w.endDate.split('-').reverse().slice(0, 2).join('/'))}</p>
+    <h3 class="char-trait">🧭 ${escHtml(en ? w.traitEn : w.trait)}</h3>
+    <p class="char-def">${escHtml(en ? w.definicionEn : w.definicion)}</p>
+    <p class="char-passage">📖 ${escHtml(en ? w.passageEn : w.passage)} · <em>${escHtml(en ? w.monthlyThemeEn : w.monthlyTheme)}</em></p>
+    <p class="char-verse">${escHtml(L('Versículos de apoyo', 'Supporting verses'))}: ${escHtml(en ? w.versiculoEn : w.versiculo)}</p>
+    <p class="char-cluster">${escHtml(L('Clúster de carácter', 'Character cluster'))}: <strong>${escHtml(cl[state.lang === 'en' ? 'en' : 'es'])}</strong></p>
+    <a class="btn-interactive char-link" href="https://portal.chanakacademy.org/" target="_blank" rel="noopener noreferrer">${escHtml(L('Leer Devocional en Portal Chanak ↗', 'Read the Devotional on Chanak Portal ↗'))}</a>
+  </section>`;
+}
+
+// Radar SVG puro: 4 ejes (arriba, derecha, abajo, izquierda) con los totales de cada clúster.
+function renderCharacterRadar(totals) {
+  const keys = [1, 2, 3, 4];
+  const vals = keys.map((k) => Math.max(0, Number(totals?.[k]) || 0));
+  const max = Math.max(20, ...vals);
+  const cx = 100, cy = 100, R = 62;
+  const ang = [-90, 0, 90, 180].map((d) => (d * Math.PI) / 180);
+  const pt = (i, f) => [cx + R * f * Math.cos(ang[i]), cy + R * f * Math.sin(ang[i])];
+  const ring = (f) => keys.map((_, i) => pt(i, f).map((n) => n.toFixed(1)).join(',')).join(' ');
+  const poly = vals.map((v, i) => pt(i, v / max).map((n) => n.toFixed(1)).join(',')).join(' ');
+  const lab = [[100, 14, 'middle'], [188, 104, 'end'], [100, 196, 'middle'], [12, 104, 'start']];
+  const short = { 1: L('Mayordomía', 'Stewardship'), 2: L('Rigor y Verdad', 'Rigor & Truth'), 3: L('Relaciones y Servicio', 'Relationships & Service'), 4: L('Liderazgo', 'Leadership') };
+  const total = vals.reduce((a, b) => a + b, 0);
+  return `<section class="char-card" aria-label="${escHtml(L('Radar de equilibrio de carácter', 'Character balance radar'))}">
+    <h3 class="char-h3">${escHtml(L('Radar de Equilibrio de Carácter', 'Character Balance Radar'))}</h3>
+    <div class="char-radar-wrap">
+      <svg class="char-radar" viewBox="0 0 200 200" role="img" aria-labelledby="radar-t radar-d">
+        <title id="radar-t">${escHtml(L('Radar de Equilibrio de Carácter', 'Character Balance Radar'))}</title>
+        <desc id="radar-d">${keys.map((k, i) => `${CHARACTER_CLUSTERS[k][state.lang === 'en' ? 'en' : 'es']}: ${vals[i]}`).join('; ')}</desc>
+        ${[0.25, 0.5, 0.75, 1].map((f) => `<polygon points="${ring(f)}" fill="none" stroke="#cbd5e1" stroke-width="0.6"/>`).join('')}
+        ${keys.map((_, i) => `<line x1="${cx}" y1="${cy}" x2="${pt(i, 1)[0].toFixed(1)}" y2="${pt(i, 1)[1].toFixed(1)}" stroke="#cbd5e1" stroke-width="0.6"/>`).join('')}
+        <polygon points="${poly}" fill="rgba(245,158,11,0.35)" stroke="#d97706" stroke-width="1.6"/>
+        ${vals.map((v, i) => `<circle cx="${pt(i, v / max)[0].toFixed(1)}" cy="${pt(i, v / max)[1].toFixed(1)}" r="2.6" fill="#d97706"/>`).join('')}
+        ${lab.map(([x, y, a], i) => `<text x="${x}" y="${y}" text-anchor="${a}" font-size="8.5" fill="#0f172a" font-weight="700">${escHtml(short[i + 1])} · ${vals[i]}</text>`).join('')}
+      </svg>
+      <ul class="char-radar-list">${keys.map((k, i) => `<li><span class="dot c${k}"></span>${escHtml(CHARACTER_CLUSTERS[k][state.lang === 'en' ? 'en' : 'es'])} <strong>${vals[i]}</strong> 🪙</li>`).join('')}
+        <li class="char-total">${escHtml(L('Total', 'Total'))}: <strong>${total}</strong> 🪙</li></ul>
+    </div>
+  </section>`;
+}
+
+function renderRestorationCard(summary) {
+  const pend = summary?.pending_restorations || [];
+  if (!pend.length) {
+    return `<section class="char-card char-good" aria-live="polite"><p>✅ <strong>${escHtml(L('Buen Testimonio (Good Standing)', 'Good Standing'))}</strong> — ${escHtml(L('tu mayordomía va en orden. ¡Sigue así!', 'your stewardship is in order. Keep it up!'))}</p></section>`;
+  }
+  return `<section class="char-card char-restore" role="alert">
+    <h3 class="char-h3">🤝 ${escHtml(L('Paso de Restauración', 'Restoration Step'))}</h3>
+    <p>${escHtml(L('Tu cuenta está en proceso de restitución hasta que tu mentor valide tu evidencia. No es un castigo: es una oportunidad de reparar y servir.', 'Your account is in a restoration process until your mentor validates your evidence. This is not a punishment: it is a chance to repair and serve.'))}</p>
+    <ul>${pend.map((r) => `<li>${escHtml(r.task)}</li>`).join('')}</ul>
+  </section>`;
+}
+
+async function renderCharacterView(container) {
+  container.innerHTML = `<div class="char-view"><p class="char-loading">${escHtml(L('Cargando carácter…', 'Loading character…'))}</p></div>`;
+  const summary = await fetchCharacterSummary();
+  state.characterSummary = summary;
+  if (state.viewMode !== 'caracter') return; // el estudiante cambió de pestaña mientras cargaba
+  const demo = summary.demo ? `<p class="char-demo">${escHtml(summary.fallback ? L('DEMO · no se pudo leer tu resumen; se muestran datos de ejemplo.', 'DEMO · your summary could not be read; sample data is shown.') : L('DEMO · datos de ejemplo (abre Life Skills desde tu panel del SIS para ver los tuyos).', 'DEMO · sample data (open Life Skills from your SIS dashboard to see yours).'))}</p>` : '';
+  container.innerHTML = `<div class="char-view">
+    ${demo}
+    ${renderRestorationCard(summary)}
+    ${renderWeekCard()}
+    ${renderCharacterRadar(summary.totals)}
+    <div class="char-actions no-print">
+      <button type="button" class="btn-interactive" onclick="printCharacterSheet()">🖨️ ${escHtml(L('Imprimir ficha de reto / reporte familiar', 'Print challenge sheet / family report'))}</button>
+    </div>
+  </div>`;
+}
+
+// Ficha A4: se rellena justo antes de imprimir (membrete, estudiante, semana, retos y espacio para firmas).
+function printCharacterSheet() {
+  const w = getCurrentAgendaWeek(); const en = state.lang === 'en';
+  const sheet = document.getElementById('print-sheet'); if (!sheet) { window.print(); return; }
+  const name = state.studentName || '';
+  const set = (id, v) => { const el = sheet.querySelector(`[data-ps="${id}"]`); if (el) el.textContent = v; };
+  set('student', name || '________________________'); set('year', state.schoolYear || '2026-2027');
+  set('week', `${L('Semana', 'Week')} ${w.week}: ${en ? w.traitEn : w.trait} · ${en ? w.passageEn : w.passage}`);
+  set('date', new Date().toLocaleDateString(en ? 'en-US' : 'es-ES'));
+  const t = state.characterSummary?.totals || {};
+  set('coins', [1, 2, 3, 4].map((k) => `${CHARACTER_CLUSTERS[k][en ? 'en' : 'es']}: ${t[k] ?? 0}`).join(' · '));
+  document.body.classList.add('printing-sheet');
+  window.print();
+  setTimeout(() => document.body.classList.remove('printing-sheet'), 500);
+}
+window.printCharacterSheet = printCharacterSheet;
 
 function renderJuniorsStage(container) {
   const isEs = state.lang === 'es';

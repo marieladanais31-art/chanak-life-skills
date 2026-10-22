@@ -141,6 +141,9 @@
       <button class="stage-tab-btn" id="tab-juniors" onclick="setViewMode('juniors')">
         🌿 Catálogo Junior (8–13)
       </button>
+      <button class="stage-tab-btn" id="tab-caracter" onclick="setViewMode('caracter')">
+        🧭 Carácter · Character
+      </button>
     </nav>
 
     <!-- Sub-navigation for High School Levels (visible in relevant tabs) -->
@@ -342,6 +345,28 @@
       </div>
     </div>
   </div>
+
+
+  <!-- Ficha imprimible (A4 vertical) de reto / reporte familiar: solo se ve al imprimir -->
+  <section id="print-sheet" class="print-only" aria-hidden="true">
+    <header class="ps-head">
+      <img src="logo-chanak.png" alt="" width="54" height="54">
+      <div><strong>Chanak International Academy</strong><br><span>Life Skills &amp; Leadership · FLDOE #134620</span></div>
+    </header>
+    <h2>Ficha de reto y reporte familiar / Challenge sheet &amp; family report</h2>
+    <table class="ps-table">
+      <tr><th>Estudiante / Student</th><td data-ps="student"></td><th>Curso / Year</th><td data-ps="year"></td></tr>
+      <tr><th>Semana / Week</th><td colspan="3" data-ps="week"></td></tr>
+      <tr><th>Fecha / Date</th><td data-ps="date"></td><th>ChanakCoins</th><td data-ps="coins"></td></tr>
+    </table>
+    <h3>Reto / Challenge</h3>
+    <div class="ps-lines"><span></span><span></span><span></span></div>
+    <h3>Evidencias presentadas (enlaces Drive / YouTube) / Evidence submitted (links)</h3>
+    <div class="ps-lines"><span></span><span></span><span></span><span></span></div>
+    <h3>Observaciones / Notes</h3>
+    <div class="ps-lines"><span></span><span></span></div>
+    <div class="ps-sign"><div><span></span>Firma del estudiante / Student signature</div><div><span></span>Firma del supervisor / Supervisor signature</div></div>
+  </section>
 
   <script type="module" src="app.js"></script>
 </body>
