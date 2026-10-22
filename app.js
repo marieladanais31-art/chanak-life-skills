@@ -15,7 +15,7 @@ import {
   RIASEC_TEST_DATA,
   VOCATIONAL_TRACKS
 } from './data.js';
-import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait } from './agenda.js';
+import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait, FLORIDA_TZ } from './agenda.js';
 
 // ---------------- Backend ----------------
 // La anon key de Supabase es una clave publicable: está pensada para vivir en el
@@ -2720,6 +2720,7 @@ function renderWeekCard() {
   const en = state.lang === 'en';
   const cl = CHARACTER_CLUSTERS[w.cluster];
   return `<section class="char-card" aria-label="${escHtml(L('Rasgo de la semana', 'Trait of the week'))}">
+    <p class="char-today">${escHtml(new Intl.DateTimeFormat(en ? 'en-US' : 'es-ES', { timeZone: FLORIDA_TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()))} · ${escHtml(L('hora de Florida', 'Florida time'))}</p>
     <p class="char-eyebrow">${escHtml(L('Semana', 'Week'))} ${w.week} / ${AGENDA_2026_2027.length} · ${escHtml(w.startDate.split('-').reverse().slice(0, 2).join('/'))} – ${escHtml(w.endDate.split('-').reverse().slice(0, 2).join('/'))}</p>
     <h3 class="char-trait">🧭 ${escHtml(en ? w.traitEn : w.trait)}</h3>
     <p class="char-def">${escHtml(en ? w.definicionEn : w.definicion)}</p>
@@ -2798,7 +2799,7 @@ function printCharacterSheet() {
   const set = (id, v) => { const el = sheet.querySelector(`[data-ps="${id}"]`); if (el) el.textContent = v; };
   set('student', name || '________________________'); set('year', state.schoolYear || '2026-2027');
   set('week', `${L('Semana', 'Week')} ${w.week}: ${en ? w.traitEn : w.trait} · ${en ? w.passageEn : w.passage}`);
-  set('date', new Date().toLocaleDateString(en ? 'en-US' : 'es-ES'));
+  set('date', new Date().toLocaleDateString(en ? 'en-US' : 'es-ES', { timeZone: FLORIDA_TZ }) + (en ? ' (Florida)' : ' (hora de Florida)'));
   const t = state.characterSummary?.totals || {};
   set('coins', [1, 2, 3, 4].map((k) => `${CHARACTER_CLUSTERS[k][en ? 'en' : 'es']}: ${t[k] ?? 0}`).join(' · '));
   document.body.classList.add('printing-sheet');

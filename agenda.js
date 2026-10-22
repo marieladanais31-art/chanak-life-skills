@@ -812,9 +812,14 @@ export const CLUSTER_BY_TRAIT = {
 
 const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 // Semana lectiva de una fecha (por defecto hoy). Antes del inicio devuelve la semana 1; después del cierre, la 42.
-export function getCurrentAgendaWeek(date = new Date()) {
-  const d = date instanceof Date ? date : new Date(date);
-  const t = iso(d);
+// Hora oficial de Chanak: Florida (America/New_York). Sin fecha explícita se usa el día de calendario de Florida, no el del dispositivo.
+export const FLORIDA_TZ = 'America/New_York';
+export function floridaIsoDate(instant = new Date()) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: FLORIDA_TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(instant).map((x) => [x.type, x.value]));
+  return `${p.year}-${p.month}-${p.day}`;
+}
+export function getCurrentAgendaWeek(date) {
+  const t = date === undefined ? floridaIsoDate() : iso(date instanceof Date ? date : new Date(date));
   if (t < AGENDA_2026_2027[0].startDate) return AGENDA_2026_2027[0];
   const last = AGENDA_2026_2027[AGENDA_2026_2027.length - 1];
   if (t > last.endDate) return last;
