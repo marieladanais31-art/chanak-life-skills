@@ -15,7 +15,16 @@ import {
   RIASEC_TEST_DATA,
   VOCATIONAL_TRACKS
 } from './data.js';
-import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait, FLORIDA_TZ } from './agenda.js';
+import { JUNIOR_TRACKS, JUNIOR_PROJECTS } from './projects.js';
+import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
+
+// ---- Constantes de Juniors (arriba para que existan antes del primer render) ----
+const JK_LEVELS = [
+  { es: 'Semilla', en: 'Seed', icon: '🌱' }, { es: 'Brote', en: 'Sprout', icon: '🌿' }, { es: 'Explorador', en: 'Explorer', icon: '🧭' },
+  { es: 'Constructor', en: 'Builder', icon: '🔨' }, { es: 'Líder', en: 'Leader', icon: '🦁' }, { es: 'Embajador', en: 'Ambassador', icon: '🏆' },
+];
+const JK_AVATARS = ['🦊', '🐼', '🦁', '🐯', '🐙', '🦄', '🐸', '🚀', '🤖', '🦋'];
+const JK_COINS = 25; // el servidor decide el monto real (award_life_skills_coins)
 
 // ---------------- Backend ----------------
 // La anon key de Supabase es una clave publicable: está pensada para vivir en el
@@ -2657,6 +2666,14 @@ function closeWalletModal() {
   if (modal) modal.classList.remove('open');
 }
 
+function openMissionModal(id) {
+  const m = juniorMissions().find((x) => x.id === id); if (!m) return;
+  const isEs = state.lang !== 'en';
+  const t = document.getElementById('sub-modal-title'); const d = document.getElementById('sub-modal-desc');
+  if (t) t.textContent = `${m.icon} ${m.title}`;
+  if (d) d.textContent = m.deliverable ? `${isEs ? 'Entregable' : 'Deliverable'}: ${m.deliverable}` : (m.desc || '');
+  openSubmissionModal(id, m.coins);
+}
 function openSubmissionModal(retoId, reward = COIN_AMOUNTS.reto_submitted) {
   state.activeSubmittingReto = retoId;
   const modal = document.getElementById('submission-modal');
@@ -2672,8 +2689,12 @@ function closeSubmissionModal() {
 
 function confirmSubmission() {
   if (state.activeSubmittingReto) {
-    awardCoins('reto_submitted', `sub:${state.activeSubmittingReto}`, `Reto Enviado (${state.activeSubmittingReto})`);
+    const id = state.activeSubmittingReto;
+    const firstTime = !isMissionDone(id);
+    awardCoins('reto_submitted', `sub:${id}`, `Reto Enviado (${id})`);
+    try { localStorage.setItem(`chanak_jreto_${id}`, 'done'); } catch (e) { /* sin almacenamiento */ }
     closeSubmissionModal();
+    if (firstTime && state.viewMode === 'juniors') { celebrate(); renderCurrentView(); }
   }
 }
 
@@ -2689,8 +2710,8 @@ function filterJuniors(cat) {
 // ============================================================================
 // CARÁCTER: semana de la Agenda Devocional, radar de 4 clústeres y paso de restauración
 // ============================================================================
-const L = (es, en) => (state.lang === 'en' ? en : es);
-const escHtml = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function L(es, en) { return state.lang === 'en' ? en : es; }
+function escHtml(v) { return String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
 // Datos de demostración (sin sesión del SIS o sin conexión): 65 monedas repartidas entre los 4 clústeres.
 function demoCharacterSummary() {
@@ -2807,86 +2828,137 @@ function printCharacterSheet() {
   setTimeout(() => document.body.classList.remove('printing-sheet'), 500);
 }
 window.printCharacterSheet = printCharacterSheet;
+window.openMissionModal = openMissionModal;
+window.setJuniorSkin = setJuniorSkin;
+window.cycleJuniorAvatar = cycleJuniorAvatar;
+
+// ---- Juniors: 80 mini proyectos en 10 tracks + retos de carácter, con piel "aventura" (≤ 11 años) o sobria ----
+
+function juniorGradeNumber() {
+  const raw = new URLSearchParams(window.location.search).get('grade') || '';
+  const n = parseInt((String(raw).match(/\d+/) || [])[0], 10);
+  return Number.isFinite(n) ? n : null;
+}
+// Piel: aventura (videojuego) hasta 5.º grado / 11 años; sobria desde 6.º. Se puede cambiar con el botón o con ?skin=kids|teen.
+function juniorSkin() {
+  const q = new URLSearchParams(window.location.search).get('skin');
+  if (q === 'kids' || q === 'teen') return q;
+  let saved = null; try { saved = localStorage.getItem('chanak_junior_skin'); } catch (e) { /* sin almacenamiento */ }
+  if (saved === 'kids' || saved === 'teen') return saved;
+  const g = juniorGradeNumber();
+  return g !== null && g >= 6 ? 'teen' : 'kids';
+}
+function setJuniorSkin(v) { try { localStorage.setItem('chanak_junior_skin', v); } catch (e) { /* sin almacenamiento */ } renderCurrentView(); }
+function cycleJuniorAvatar() {
+  let cur = 0; try { cur = Number(localStorage.getItem('chanak_junior_avatar') || 0); } catch (e) { /* */ }
+  try { localStorage.setItem('chanak_junior_avatar', String((cur + 1) % JK_AVATARS.length)); } catch (e) { /* */ }
+  renderCurrentView();
+}
+
+// Lista unificada: 80 proyectos + los retos de carácter y servicio originales
+function juniorMissions() {
+  const lang = state.lang === 'en' ? 'en' : 'es';
+  const projects = JUNIOR_PROJECTS.map((p) => {
+    const t = JUNIOR_TRACKS.find((x) => x.id === p.track);
+    return { id: `proj-${String(p.n).padStart(2, '0')}`, n: p.n, track: p.track, icon: t.icon, title: p[lang].title, desc: p[lang].desc, deliverable: p[lang].deliverable, verse: p[lang].verse, ref: p[lang].ref, coins: JK_COINS };
+  });
+  const retos = JUNIORS_RETOS.map((r) => ({
+    id: r.id, n: null, track: 'retos', icon: r.icon || '🏅', title: r.title?.[lang] || r.title?.es || r.id, desc: r.desc?.[lang] || r.desc?.es || '',
+    deliverable: '', verse: '', ref: '', coins: r.coins || JK_COINS,
+  }));
+  return [...projects, ...retos];
+}
+function isMissionDone(id) { try { return localStorage.getItem(`chanak_jreto_${id}`) === 'done'; } catch (e) { return false; } }
+
+function celebrate(msg) {
+  const layer = document.createElement('div'); layer.className = 'jk-confetti'; layer.setAttribute('aria-hidden', 'true');
+  const colors = ['#f59e0b', '#22c55e', '#3b82f6', '#ec4899', '#8b5cf6', '#ef4444'];
+  for (let i = 0; i < 36; i++) {
+    const c = document.createElement('i');
+    c.style.left = `${Math.random() * 100}%`; c.style.background = colors[i % colors.length];
+    c.style.animationDelay = `${Math.random() * 0.4}s`; c.style.transform = `rotate(${Math.random() * 360}deg)`;
+    layer.appendChild(c);
+  }
+  document.body.appendChild(layer); setTimeout(() => layer.remove(), 2600);
+  if (msg) showCoinToast(msg);
+}
 
 function renderJuniorsStage(container) {
-  const isEs = state.lang === 'es';
+  const isEs = state.lang !== 'en';
+  const lang = isEs ? 'es' : 'en';
+  const skin = juniorSkin();
+  const kids = skin === 'kids';
+  const missions = juniorMissions();
+  const done = missions.filter((m) => isMissionDone(m.id));
+  const projectsDone = done.filter((m) => m.track !== 'retos').length;
+  const lvlIdx = Math.min(JK_LEVELS.length - 1, Math.floor(done.length / 8));
+  const lvl = JK_LEVELS[lvlIdx];
+  const toNext = lvlIdx >= JK_LEVELS.length - 1 ? 8 : 8 - (done.length % 8);
+  const xpPct = lvlIdx >= JK_LEVELS.length - 1 ? 100 : Math.round(((done.length % 8) / 8) * 100);
+  let avIdx = 0; try { avIdx = Number(localStorage.getItem('chanak_junior_avatar') || 0) % JK_AVATARS.length; } catch (e) { /* */ }
+  const name = state.studentName ? decodeURIComponent(state.studentName).split(' ')[0] : (isEs ? 'Explorador' : 'Explorer');
   const filter = state.juniorsFilter;
-  // Los filtros se derivan de los propios retos. Antes estaban escritos a mano
-  // con claves que no existían en los datos, así que todos devolvían cero.
-  const tracks = new Map();
-  JUNIORS_RETOS.forEach(r => {
-    if (r.track && !tracks.has(r.track)) tracks.set(r.track, r.trackLabel);
-  });
 
-  const categories = [
-    { key: 'all', label: isEs ? 'Todos los retos' : 'All challenges' },
-    ...Array.from(tracks, ([key, label]) => ({
-      key,
-      label: label?.[state.lang] || label?.es || key,
-    })),
+  const trackCards = [
+    { id: 'all', icon: '🗺️', label: isEs ? 'Todo el mapa' : 'Whole map', color: '#0f172a', total: missions.length, ok: done.length },
+    ...JUNIOR_TRACKS.map((t) => ({ id: t.id, icon: t.icon, label: t[lang], color: t.color, total: 8, ok: done.filter((m) => m.track === t.id).length })),
+    { id: 'retos', icon: '🏅', label: isEs ? 'Retos de carácter y servicio' : 'Character & service challenges', color: '#d97706', total: JUNIORS_RETOS.length, ok: done.filter((m) => m.track === 'retos').length },
   ];
+  const badge = (ok) => (ok >= 8 ? '🥇' : ok >= 6 ? '🥈' : ok >= 3 ? '🥉' : '');
+  const shown = filter === 'all' ? missions : missions.filter((m) => m.track === filter);
 
-  const filteredRetos = filter === 'all'
-    ? JUNIORS_RETOS
-    : JUNIORS_RETOS.filter(r => r.track === filter);
+  // Misión del día: determinista por fecha de Florida entre las pendientes de proyectos
+  const pending = missions.filter((m) => m.track !== 'retos' && !isMissionDone(m.id));
+  const dayKey = Number(floridaIsoDate().replace(/-/g, ''));
+  const daily = pending.length ? pending[dayKey % pending.length] : null;
+  const dailyIsland = daily ? JUNIOR_TRACKS.find((t) => t.id === daily.track) : null;
+
+  const missionCard = (m) => {
+    const ok = isMissionDone(m.id);
+    const t = JUNIOR_TRACKS.find((x) => x.id === m.track);
+    const color = t ? t.color : '#d97706';
+    return `<article class="jk-mission ${ok ? 'is-done' : ''} ${kids ? 'jk-kids' : 'jk-teen'}" style="--jk:${color}">
+      <header class="jk-mission__top"><span class="jk-mission__icon" aria-hidden="true">${ok ? '⭐' : m.icon}</span>
+        <span class="jk-mission__num">${m.n ? `${isEs ? 'Misión' : 'Mission'} ${m.n}` : (isEs ? 'Reto' : 'Challenge')}</span>
+        <span class="jk-mission__coins">${ok ? (isEs ? '✓ ¡Lograda!' : '✓ Done!') : `+${m.coins} 🪙`}</span></header>
+      <h4 class="jk-mission__title">${escHtml(m.title)}</h4>
+      ${m.desc ? `<p class="jk-mission__desc">${escHtml(m.desc)}</p>` : ''}
+      ${m.deliverable ? `<p class="jk-mission__deliv"><b>${kids ? '🎁 ' : ''}${isEs ? 'Entregable' : 'Deliverable'}:</b> ${escHtml(m.deliverable)}</p>` : ''}
+      ${m.verse ? `<p class="jk-mission__verse">📖 “${escHtml(m.verse)}” — ${escHtml(m.ref)}</p>` : ''}
+      <button class="btn-primary jk-mission__cta" onclick="openMissionModal('${m.id}')">${ok ? (isEs ? 'Ver mi entrega →' : 'View my work →') : (kids ? (isEs ? '¡Completar misión! 🚀' : 'Complete mission! 🚀') : (isEs ? 'Entregar evidencia →' : 'Submit evidence →'))}</button>
+    </article>`;
+  };
 
   container.innerHTML = `
-    <!-- Header Juniors -->
-    <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
-      <span class="eyebrow-tag" style="color: var(--green); margin: 0;">PORTAL CHANAK · OFF-CAMPUS JUNIORS</span>
-      <h3 style="font-size: 26px; color: var(--navy); margin: 6px 0 4px; font-family: var(--font-display);">
-        🌿 Catálogo de Retos Junior (8–13 Años)
-      </h3>
-      <p style="font-size: 14px; color: var(--ink-muted); margin: 0;">
-        ${JUNIORS_RETOS.length} ${isEs
-          ? 'mini-proyectos de carácter, mayordomía, ciencia y servicio para estudiantes en etapa elemental e intermedia.'
-          : 'mini-projects in character, stewardship, science and service for elementary and middle school students.'}
-      </p>
-    </div>
+    <div class="jk-root ${kids ? 'jk-skin-kids' : 'jk-skin-teen'}">
+      <section class="jk-hud" aria-label="${isEs ? 'Tu progreso' : 'Your progress'}">
+        <button class="jk-avatar" onclick="cycleJuniorAvatar()" title="${isEs ? 'Cambiar personaje' : 'Change character'}" aria-label="${isEs ? 'Cambiar personaje' : 'Change character'}">${JK_AVATARS[avIdx]}</button>
+        <div class="jk-hud__main">
+          <p class="jk-hud__name">${escHtml(name)} · <b>${lvl.icon} ${isEs ? 'Nivel' : 'Level'} ${lvlIdx + 1}: ${lvl[lang]}</b></p>
+          <div class="jk-xp" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${xpPct}"><i style="width:${xpPct}%"></i></div>
+          <p class="jk-hud__sub">${lvlIdx >= JK_LEVELS.length - 1 ? (isEs ? '¡Nivel máximo! 🏆' : 'Max level! 🏆') : (isEs ? `Te faltan ${toNext} misiones para subir de nivel` : `${toNext} more missions to level up`)}</p>
+        </div>
+        <div class="jk-hud__stats"><span>🎯 <b>${projectsDone}</b>/80</span><span>🪙 <b>${state.coins}</b></span></div>
+        <button class="jk-skin-btn" onclick="setJuniorSkin('${kids ? 'teen' : 'kids'}')">${kids ? (isEs ? '🧭 Modo sobrio' : '🧭 Calm mode') : (isEs ? '🎮 Modo aventura' : '🎮 Adventure mode')}</button>
+      </section>
 
-    <!-- Filter Buttons -->
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
-      ${categories.map(c => `
-        <button class="track-filter-btn ${filter === c.key ? 'active' : ''}" onclick="filterJuniors('${c.key}')">
-          ${c.label}
-        </button>
-      `).join('')}
-    </div>
+      ${daily ? `<section class="jk-daily" style="--jk:${dailyIsland.color}">
+        <div><p class="jk-daily__tag">${kids ? '⚡ ' : ''}${isEs ? 'Misión del día' : 'Mission of the day'} · ${dailyIsland.icon} ${escHtml(dailyIsland[lang])}</p>
+          <h3>${escHtml(daily.title)}</h3><p>${escHtml(daily.desc)}</p></div>
+        <button class="btn-primary" onclick="openMissionModal('${daily.id}')">${kids ? (isEs ? '¡Aceptar reto! 🔥' : 'Accept the challenge! 🔥') : (isEs ? 'Empezar' : 'Start')}</button>
+      </section>` : ''}
 
-    <!-- Grid de Retos -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 32px;">
-      ${filteredRetos.map(r => {
-        const isDone = localStorage.getItem(`chanak_jreto_${r.id}`) === 'done';
-        const trackLabel = r.trackLabel?.[state.lang] || r.trackLabel?.es || r.track || '';
-        const title = r.title?.[state.lang] || r.title?.es || r.id;
-        const desc = r.desc?.[state.lang] || r.desc?.es || '';
-        const coins = r.coins || COIN_AMOUNTS.reto_submitted;
+      <h3 class="jk-h3">${kids ? '🗺️ ' : ''}${isEs ? 'Elige tu isla' : 'Choose your island'}</h3>
+      <div class="jk-islands" role="tablist">
+        ${trackCards.map((t) => `<button class="jk-island ${filter === t.id ? 'is-active' : ''}" role="tab" aria-selected="${filter === t.id}" style="--jk:${t.color}" onclick="filterJuniors('${t.id}')">
+          <span class="jk-island__icon" aria-hidden="true">${t.icon}</span>
+          <span class="jk-island__name">${escHtml(t.label)}</span>
+          <span class="jk-island__prog"><i style="width:${Math.round((t.ok / t.total) * 100)}%"></i></span>
+          <span class="jk-island__count">${t.ok}/${t.total} ${badge(t.ok) && t.id !== 'all' && t.id !== 'retos' ? badge(t.ok) : ''}</span></button>`).join('')}
+      </div>
 
-        return `
-          <article class="module-card is-${isDone ? 'completado' : 'pendiente'}">
-            <header class="module-card__top">
-              <span class="module-card__id">
-                ${r.icon || '🌿'} ${trackLabel}${r.retoNum ? ` · ${isEs ? 'Reto' : 'Challenge'} ${r.retoNum}` : ''}
-              </span>
-              <span class="module-card__state">
-                ${isDone ? (isEs ? '✓ Enviado' : '✓ Submitted') : `+${coins} 🪙`}
-              </span>
-            </header>
-
-            <h4 class="module-card__title">${title}</h4>
-            ${desc ? `<p class="module-card__eq">${desc}</p>` : ''}
-
-            <button class="btn-primary module-card__cta" style="margin-top: auto;"
-                    onclick="openSubmissionModal('${r.id}', ${coins})">
-              ${isDone
-                ? (isEs ? 'Ver mi entrega →' : 'View my submission →')
-                : (isEs ? 'Subir evidencia →' : 'Upload evidence →')}
-            </button>
-          </article>
-        `;
-      }).join('')}
-    </div>
-  `;
+      <div class="jk-grid">${shown.map(missionCard).join('')}</div>
+    </div>`;
 }
 
 // ============================================================================
