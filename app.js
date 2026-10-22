@@ -23,6 +23,7 @@ import { JUNIOR_THEMES, JUNIOR_CAPSULES, JUNIOR_TRAMOS, tramoForGrade, localizeC
 import { lifeSkillsGuideUrl } from './guides.js';
 import { CAPSULE_CLUSTERS, JUNIOR_THEME_CLUSTERS, TRACK_CLUSTERS } from './capsule_clusters.js';
 import { JUNIOR_CAPSULE_EXTRA } from './junior_capsules_extra.js';
+import { JUNIOR_CAPSULES_G } from './junior_capsules_grade.js';
 import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, localizeWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
 
 // ---- Constantes de Juniors (arriba para que existan antes del primer render) ----
@@ -3288,10 +3289,12 @@ function restorationBanner() {
 }
 
 // ---- Cápsulas por tema (4.º–7.º): misión corta cristiana, pregunta de repaso y entregable a elegir ----
-function jrCapTramo() { return tramoForGrade(juniorGradeNumber()) || state.jrCapTramo || '4-5'; }
-function jrCapsList() { const en = state.lang === 'en'; const t = jrCapTramo(); return JUNIOR_CAPSULES.filter((c) => c.tramo === t).map((c) => localizeCapsule(c, en)); }
+// Por GRADO EXACTO (4.º a 7.º): 11 temas × 4 grados. Si el grado no llega por la URL, el estudiante elige el suyo.
+function jrCapGrade() { const g = juniorGradeNumber(); return g >= 4 && g <= 7 ? g : (state.capGrade || 4); }
+function localizeGradeCap(c, en) { return en && c.en ? { ...c, ...c.en, check: { ...c.check, ...c.en.check, answer: c.check.answer } } : c; }
+function jrCapsList() { const en = state.lang === 'en'; const g = jrCapGrade(); return JUNIOR_CAPSULES_G.filter((c) => c.grade === g).map((c) => localizeGradeCap(c, en)); }
 function isJrCapDone(id) { try { return !!localStorage.getItem(`chanak_jcap_${id}`); } catch (e) { return false; } }
-function setJrCapTramo(t) { state.jrCapTramo = t; renderCurrentView(); }
+function setJrCapGrade(g) { state.capGrade = Number(g); renderCurrentView(); }
 function jrCapsuleCard(c, kids) {
   const th = JUNIOR_THEMES.find((x) => x.id === c.theme) || { icon: '💡', es: '', en: '' };
   const ok = isJrCapDone(c.id), en = state.lang === 'en';
@@ -3318,7 +3321,7 @@ function paintJrCap(c) {
   const el = document.getElementById('cap-modal'); if (!el) return;
   const d = state.capDraft || {}, done = isJrCapDone(c.id), th = JUNIOR_THEMES.find((x) => x.id === c.theme) || {}, en = state.lang === 'en';
   const saved = (() => { try { return JSON.parse(localStorage.getItem(`chanak_jcap_${c.id}`) || 'null'); } catch (e) { return null; } })();
-  const q = c.check, answered = d.answered != null, extra = JUNIOR_CAPSULE_EXTRA[c.id];
+  const q = c.check, answered = d.answered != null, extra = c.caso ? { caso: c.caso, evidencia: c.evidencia } : JUNIOR_CAPSULE_EXTRA[c.id];
   el.innerHTML = `<div class="jk-capmodal__box" role="dialog" aria-modal="true">
     <button class="jk-capmodal__x" onclick="closeJrCap()" aria-label="${L('Cerrar', 'Close')}">✕</button>
     <p class="jk-daily__tag">${th.icon || '💡'} ${escHtml(en ? th.en : th.es)}</p>
@@ -3352,7 +3355,7 @@ function completeJrCap(id) {
   try { localStorage.setItem(`chanak_jcap_${id}`, JSON.stringify({ choice: d.choice, ok: d.answered === c.check.answer, ts: Date.now() })); } catch (e) { /* sin almacenamiento */ }
   closeJrCap(); celebrate(); renderCurrentView();
 }
-window.openJrCap = openJrCap; window.closeJrCap = closeJrCap; window.jrCapAnswer = jrCapAnswer; window.jrCapChoose = jrCapChoose; window.completeJrCap = completeJrCap; window.setJrCapTramo = setJrCapTramo;
+window.openJrCap = openJrCap; window.closeJrCap = closeJrCap; window.jrCapAnswer = jrCapAnswer; window.jrCapChoose = jrCapChoose; window.completeJrCap = completeJrCap; window.setJrCapGrade = setJrCapGrade;
 
 // Horario de clases en vivo: Dual Diploma (8.º en adelante) tiene inglés el martes y Life Skills el jueves;
 // 4.º a 6.º de España (Primaria, Off-Campus) tiene inglés el MIÉRCOLES de 12:00 a 13:00 (hora de España) y NO tiene Life Skills virtual.
@@ -3505,7 +3508,7 @@ function renderJuniorsStage(container) {
           <span class="jk-island__count">${t.ok}/${t.total} ${badge(t.ok) && t.id !== 'all' && t.id !== 'retos' ? badge(t.ok) : ''}</span></button>`).join('')}
       </div>
 
-      ${filter === 'caps' ? `<div class="jk-tramos">${JUNIOR_TRAMOS.map((t) => `<button class="jk-skin-btn ${jrCapTramo() === t.id ? 'is-on' : ''}" ${tramoForGrade(juniorGradeNumber()) ? 'disabled' : ''} onclick="setJrCapTramo('${t.id}')">${t.label.replace('.º', isEs ? '.º' : 'th')}</button>`).join('')}</div>` : ''}
+      ${filter === 'caps' ? `<div class="jk-tramos">${[4, 5, 6, 7].map((g) => `<button class="jk-skin-btn ${jrCapGrade() === g ? 'is-on' : ''}" ${juniorGradeNumber() >= 4 && juniorGradeNumber() <= 7 ? 'disabled' : ''} onclick="setJrCapGrade(${g})">${isEs ? `${g}.º grado` : `Grade ${g}`}</button>`).join('')}</div>` : ''}
       <div class="jk-grid">${filter === 'caps' ? jrCapsList().map((c) => jrCapsuleCard(c, kids)).join('') : shown.map(missionCard).join('')}</div>
     </div>`;
 }
