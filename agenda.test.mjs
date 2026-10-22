@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { AGENDA_2026_2027 as A, CLUSTER_BY_TRAIT, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait } from './agenda.js';
+import { floridaIsoDate, AGENDA_2026_2027 as A, CLUSTER_BY_TRAIT, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait } from './agenda.js';
 
 test('42 semanas bilingües con las fechas oficiales y sin huecos', () => {
   assert.equal(A.length, 42);
@@ -19,4 +19,10 @@ test('semana actual por fecha: hoy 22-oct-2026 es la semana 7 (Lealtad / Loyalty
   assert.equal(getCurrentAgendaWeek(new Date(2026, 7, 1)).week, 1);
   assert.equal(getCurrentAgendaWeek(new Date(2027, 8, 1)).week, 42);
   assert.equal(getCurrentAgendaWeek(new Date(2027, 0, 5)).trait, 'Respetuoso'); // vacaciones: sigue la agenda oficial
+});
+
+test('sin fecha explícita se usa el día de Florida (America/New_York)', () => {
+  assert.equal(floridaIsoDate(new Date('2026-10-26T03:30:00Z')), '2026-10-25'); // 23:30 del domingo en Florida
+  assert.equal(floridaIsoDate(new Date('2026-10-26T04:30:00Z')), '2026-10-26'); // 00:30 del lunes en Florida
+  assert.equal(getCurrentAgendaWeek().week >= 1, true);
 });
