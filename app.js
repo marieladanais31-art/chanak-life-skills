@@ -21,7 +21,7 @@ import { DEVOTIONAL_WEEKS, DEVOTIONAL_MONTHS } from './devotional.js';
 import { DAILY_DEVOTIONALS } from './daily.js';
 import { JUNIOR_THEMES, JUNIOR_CAPSULES, JUNIOR_TRAMOS, tramoForGrade, localizeCapsule } from './junior_capsules.js';
 import { lifeSkillsGuideUrl } from './guides.js';
-import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
+import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, localizeWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
 
 // ---- Constantes de Juniors (arriba para que existan antes del primer render) ----
 const JK_LEVELS = [
@@ -3360,6 +3360,38 @@ function updateGuideLink() {
   a.hidden = false; a.href = url; a.textContent = L('📄 Guía PDF de tu nivel', '📄 Your level guide (PDF)');
 }
 
+// ---- Rasgo de la semana (4.º–7.º): la tarjeta que cuenta cómo lo apliqué esta semana ----
+function juniorAgeOk() { const g = juniorGradeNumber(); return g == null || (g >= 4 && g <= 7); }
+function traitDone(w) { try { return JSON.parse(localStorage.getItem(`chanak_jtrait_W${String(w).padStart(2, '0')}`) || 'null'); } catch (e) { return null; } }
+function juniorTraitCard() {
+  const w = localizeWeek(getCurrentAgendaWeek(), state.lang === 'en' ? 'en' : 'es');
+  const done = traitDone(w.week);
+  return `<section class="jk-trait" aria-label="${L('Rasgo de la semana', 'Trait of the week')}">
+    <p class="jk-daily__tag">🌟 ${L('Rasgo de la semana', 'Trait of the week')} · ${L('Semana', 'Week')} ${w.week}/42</p>
+    <h3>${escHtml(w.trait)}</h3>
+    <p class="jk-trait__def">${escHtml(w.definition)}</p>
+    <p class="jk-mission__verse">📖 ${escHtml(w.verses)} · ${escHtml(w.passage)}</p>
+    ${done ? `<p class="jk-capmodal__done">✓ ${L('¡Lo contaste esta semana!', 'You shared it this week!')}</p><p class="jk-trait__saved">“${escHtml(done.text)}”</p>` : `
+      <label class="jk-trait__lbl" for="jtrait-text">${L('¿Cómo apliqué este rasgo esta semana? (cuéntalo con tus palabras)', 'How did I practice this trait this week? (tell it in your own words)')}</label>
+      <textarea id="jtrait-text" class="jk-trait__ta" rows="3" maxlength="600" oninput="document.getElementById('jtrait-btn').disabled = this.value.trim().length < 15"></textarea>
+      <button id="jtrait-btn" class="btn-primary" disabled onclick="saveJuniorTrait(${w.week})">${L('Guardar y ganar 🪙', 'Save and earn 🪙')}</button>`}
+  </section>`;
+}
+function saveJuniorTrait(week) {
+  const el = document.getElementById('jtrait-text'); const text = el ? el.value.trim() : ''; if (text.length < 15 || traitDone(week)) return;
+  awardCoins('quarterly_project', `jtrait:W${String(week).padStart(2, '0')}`, L('Rasgo de la semana', 'Trait of the week'));
+  try { localStorage.setItem(`chanak_jtrait_W${String(week).padStart(2, '0')}`, JSON.stringify({ text, ts: Date.now() })); } catch (e) { /* sin almacenamiento */ }
+  celebrate(); renderCurrentView();
+}
+window.saveJuniorTrait = saveJuniorTrait;
+// Tarjetas de cápsulas por tema, a la vista (no escondidas entre las islas de proyectos)
+function juniorCapsStrip(kids) {
+  const all = jrCapsList(); const pending = all.filter((c) => !isJrCapDone(c.id)); const show = (pending.length ? pending : all).slice(0, 4);
+  return `<section class="jk-capsstrip"><div class="jk-capsstrip__h"><h3 class="jk-h3">${kids ? '💡 ' : ''}${L('Cápsulas de tu grado', 'Capsules for your grade')} <small>${all.length - pending.length}/${all.length}</small></h3>
+    <button class="jk-skin-btn" onclick="filterJuniors('caps')">${L('Ver todas', 'See all')} →</button></div>
+    <div class="jk-grid">${show.map((c) => jrCapsuleCard(c, kids)).join('')}</div></section>`;
+}
+
 function renderJuniorsStage(container) {
   const isEs = state.lang !== 'en';
   const lang = isEs ? 'es' : 'en';
@@ -3419,6 +3451,8 @@ function renderJuniorsStage(container) {
         <div class="jk-hud__stats"><span>🎯 <b>${projectsDone}</b>/80</span><span>🪙 <b>${state.coins}</b></span></div>
         <button class="jk-skin-btn" onclick="setJuniorSkin('${kids ? 'teen' : 'kids'}')">${kids ? (isEs ? '🧭 Modo sobrio' : '🧭 Calm mode') : (isEs ? '🎮 Modo aventura' : '🎮 Adventure mode')}</button>
       </section>
+
+      ${filter === 'all' && juniorAgeOk() ? juniorTraitCard() + juniorCapsStrip(kids) : ''}
 
       ${daily ? `<section class="jk-daily" style="--jk:${dailyIsland.color}">
         <div><p class="jk-daily__tag">${kids ? '⚡ ' : ''}${isEs ? 'Misión del día' : 'Mission of the day'} · ${dailyIsland.icon} ${escHtml(dailyIsland[lang])}</p>
