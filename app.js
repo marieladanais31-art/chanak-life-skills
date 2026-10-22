@@ -19,6 +19,8 @@ import { JUNIOR_TRACKS, JUNIOR_PROJECTS, juniorSkinForGrade } from './projects.j
 import { ES_EN_DYNAMIC } from './i18n_en.js';
 import { DEVOTIONAL_WEEKS, DEVOTIONAL_MONTHS } from './devotional.js';
 import { DAILY_DEVOTIONALS } from './daily.js';
+import { JUNIOR_THEMES, JUNIOR_CAPSULES, JUNIOR_TRAMOS, tramoForGrade, localizeCapsule } from './junior_capsules.js';
+import { lifeSkillsGuideUrl } from './guides.js';
 import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
 
 // ---- Constantes de Juniors (arriba para que existan antes del primer render) ----
@@ -916,6 +918,7 @@ function updateNavigationUI() {
 
 // ---------------- View Router ----------------
 function renderCurrentView() {
+  try { updateGuideLink(); } catch (e) { /* la guía es opcional */ }
   const container = document.getElementById('stage-content-area');
   if (!container) return;
 
@@ -3253,6 +3256,79 @@ function celebrate(msg) {
   if (msg) showCoinToast(msg);
 }
 
+// ---- Cápsulas por tema (4.º–7.º): misión corta cristiana, pregunta de repaso y entregable a elegir ----
+function jrCapTramo() { return tramoForGrade(juniorGradeNumber()) || state.jrCapTramo || '4-5'; }
+function jrCapsList() { const en = state.lang === 'en'; const t = jrCapTramo(); return JUNIOR_CAPSULES.filter((c) => c.tramo === t).map((c) => localizeCapsule(c, en)); }
+function isJrCapDone(id) { try { return !!localStorage.getItem(`chanak_jcap_${id}`); } catch (e) { return false; } }
+function setJrCapTramo(t) { state.jrCapTramo = t; renderCurrentView(); }
+function jrCapsuleCard(c, kids) {
+  const th = JUNIOR_THEMES.find((x) => x.id === c.theme) || { icon: '💡', es: '', en: '' };
+  const ok = isJrCapDone(c.id), en = state.lang === 'en';
+  return `<article class="jk-mission ${ok ? 'is-done' : ''} ${kids ? 'jk-kids' : 'jk-teen'}" style="--jk:#7c3aed">
+    <header class="jk-mission__top"><span class="jk-mission__icon" aria-hidden="true">${ok ? '⭐' : th.icon}</span>
+      <span class="jk-mission__num">${escHtml(en ? th.en : th.es)}</span>
+      <span class="jk-mission__coins">${ok ? L('✓ ¡Lograda!', '✓ Done!') : `+25 🪙`}</span></header>
+    <h4 class="jk-mission__title">${escHtml(c.title)}</h4>
+    <p class="jk-mission__desc">${escHtml(c.hook)}</p>
+    <p class="jk-mission__verse">📖 ${escHtml(c.verse)} — ${escHtml(c.idea)}</p>
+    <button class="btn-primary jk-mission__cta" onclick="openJrCap('${c.id}')">${ok ? L('Ver mi cápsula →', 'View my capsule →') : (kids ? L('¡Empezar cápsula! 🚀', 'Start the capsule! 🚀') : L('Abrir cápsula', 'Open capsule'))}</button>
+  </article>`;
+}
+function openJrCap(id) {
+  const c = jrCapsList().find((x) => x.id === id); if (!c) return;
+  state.capDraft = { id, choice: null, answered: null };
+  let el = document.getElementById('cap-modal');
+  if (!el) { el = document.createElement('div'); el.id = 'cap-modal'; el.className = 'jk-capmodal'; document.body.appendChild(el); }
+  paintJrCap(c);
+  el.classList.add('open');
+}
+function paintJrCap(c) {
+  const el = document.getElementById('cap-modal'); if (!el) return;
+  const d = state.capDraft || {}, done = isJrCapDone(c.id), th = JUNIOR_THEMES.find((x) => x.id === c.theme) || {}, en = state.lang === 'en';
+  const saved = (() => { try { return JSON.parse(localStorage.getItem(`chanak_jcap_${c.id}`) || 'null'); } catch (e) { return null; } })();
+  const q = c.check, answered = d.answered != null;
+  el.innerHTML = `<div class="jk-capmodal__box" role="dialog" aria-modal="true">
+    <button class="jk-capmodal__x" onclick="closeJrCap()" aria-label="${L('Cerrar', 'Close')}">✕</button>
+    <p class="jk-daily__tag">${th.icon || '💡'} ${escHtml(en ? th.en : th.es)}</p>
+    <h3>${escHtml(c.title)}</h3>
+    <p class="jk-capmodal__hook">${escHtml(c.hook)}</p>
+    <p class="jk-mission__verse">📖 ${escHtml(c.verse)} — ${escHtml(c.idea)}</p>
+    <h4>${L('🎯 Tu misión', '🎯 Your mission')}</h4>
+    <ol class="jk-capmodal__steps">${c.steps.map((s) => `<li>${escHtml(s)}</li>`).join('')}</ol>
+    <h4>${L('🧠 Repaso rápido', '🧠 Quick check')}</h4>
+    <p><b>${escHtml(q.question)}</b></p>
+    <div class="jk-capmodal__opts">${q.options.map((o, i) => { const cls = answered ? (i === q.answer ? 'ok' : (d.answered === i ? 'bad' : '')) : ''; return `<button class="jk-capopt ${cls}" ${answered || done ? 'disabled' : ''} onclick="jrCapAnswer(${i})">${escHtml(o)}</button>`; }).join('')}</div>
+    ${answered ? `<p class="jk-capmodal__why">${d.answered === q.answer ? '🎉 ' : '💡 '}${escHtml(q.why)}</p>` : ''}
+    <h4>${L('🎁 Elige tu entregable', '🎁 Choose your deliverable')}</h4>
+    <div class="jk-capmodal__opts">${c.deliverables.map((o, i) => { const on = (done && saved && saved.choice === i) || d.choice === i; return `<button class="jk-capopt ${on ? 'on' : ''}" ${done ? 'disabled' : ''} onclick="jrCapChoose(${i})">${on ? '✅ ' : ''}${escHtml(o)}</button>`; }).join('')}</div>
+    <p class="jk-capmodal__hint">${L('Tu papá, mamá o mentor sube o aprueba el entregable.', 'Your parent or mentor uploads or approves the deliverable.')}</p>
+    <div class="jk-capmodal__foot">${done ? `<span class="jk-capmodal__done">✓ ${L('Cápsula lograda', 'Capsule completed')}</span>` : `<button class="btn-primary" ${answered && d.choice != null ? '' : 'disabled'} onclick="completeJrCap('${c.id}')">${L('¡Completar y ganar 25 🪙!', 'Complete and earn 25 🪙!')}</button>`}</div>
+  </div>`;
+}
+function jrCapAnswer(i) { const c = jrCapsList().find((x) => x.id === state.capDraft?.id); if (!c || state.capDraft.answered != null) return; state.capDraft.answered = i; paintJrCap(c); }
+function jrCapChoose(i) { const c = jrCapsList().find((x) => x.id === state.capDraft?.id); if (!c) return; state.capDraft.choice = i; paintJrCap(c); }
+function closeJrCap() { const el = document.getElementById('cap-modal'); if (el) el.classList.remove('open'); }
+function completeJrCap(id) {
+  const d = state.capDraft; if (!d || d.id !== id || d.choice == null || d.answered == null || isJrCapDone(id)) return;
+  const c = jrCapsList().find((x) => x.id === id);
+  awardCoins('reto_submitted', `jcap:${id}`, `${L('Cápsula', 'Capsule')}: ${c ? c.title : id}`);
+  try { localStorage.setItem(`chanak_jcap_${id}`, JSON.stringify({ choice: d.choice, ok: d.answered === c.check.answer, ts: Date.now() })); } catch (e) { /* sin almacenamiento */ }
+  closeJrCap(); celebrate(); renderCurrentView();
+}
+window.openJrCap = openJrCap; window.closeJrCap = closeJrCap; window.jrCapAnswer = jrCapAnswer; window.jrCapChoose = jrCapChoose; window.completeJrCap = completeJrCap; window.setJrCapTramo = setJrCapTramo;
+
+// Guía PDF del nivel/grado: vive dentro de la app (no en el perfil del estudiante del SIS)
+function updateGuideLink() {
+  let a = document.getElementById('guide-pdf-link');
+  const url = lifeSkillsGuideUrl(juniorGradeNumber());
+  if (!url) { if (a) a.hidden = true; return; }
+  if (!a) {
+    a = document.createElement('a'); a.id = 'guide-pdf-link'; a.className = 'guide-pdf-link'; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    const host = document.querySelector('.header-inner') || document.body; host.appendChild(a);
+  }
+  a.hidden = false; a.href = url; a.textContent = L('📄 Guía PDF de tu nivel', '📄 Your level guide (PDF)');
+}
+
 function renderJuniorsStage(container) {
   const isEs = state.lang !== 'en';
   const lang = isEs ? 'es' : 'en';
@@ -3272,6 +3348,7 @@ function renderJuniorsStage(container) {
   const trackCards = [
     { id: 'all', icon: '🗺️', label: isEs ? 'Todo el mapa' : 'Whole map', color: '#0f172a', total: missions.length, ok: done.length },
     ...JUNIOR_TRACKS.map((t) => ({ id: t.id, icon: t.icon, label: t[lang], color: t.color, total: 8, ok: done.filter((m) => m.track === t.id).length })),
+    ...(jrCapsList().length ? [{ id: 'caps', icon: '💡', label: isEs ? 'Cápsulas por tema (4.º–7.º)' : 'Capsules by theme (grades 4–7)', color: '#7c3aed', total: jrCapsList().length, ok: jrCapsList().filter((c) => isJrCapDone(c.id)).length }] : []),
     { id: 'retos', icon: '🏅', label: isEs ? 'Retos de carácter y servicio' : 'Character & service challenges', color: '#d97706', total: JUNIORS_RETOS.length, ok: done.filter((m) => m.track === 'retos').length },
   ];
   const badge = (ok) => (ok >= 8 ? '🥇' : ok >= 6 ? '🥈' : ok >= 3 ? '🥉' : '');
@@ -3327,7 +3404,8 @@ function renderJuniorsStage(container) {
           <span class="jk-island__count">${t.ok}/${t.total} ${badge(t.ok) && t.id !== 'all' && t.id !== 'retos' ? badge(t.ok) : ''}</span></button>`).join('')}
       </div>
 
-      <div class="jk-grid">${shown.map(missionCard).join('')}</div>
+      ${filter === 'caps' ? `<div class="jk-tramos">${JUNIOR_TRAMOS.map((t) => `<button class="jk-skin-btn ${jrCapTramo() === t.id ? 'is-on' : ''}" ${tramoForGrade(juniorGradeNumber()) ? 'disabled' : ''} onclick="setJrCapTramo('${t.id}')">${t.label.replace('.º', isEs ? '.º' : 'th')}</button>`).join('')}</div>` : ''}
+      <div class="jk-grid">${filter === 'caps' ? jrCapsList().map((c) => jrCapsuleCard(c, kids)).join('') : shown.map(missionCard).join('')}</div>
     </div>`;
 }
 
