@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { JUNIOR_TRACKS, JUNIOR_PROJECTS } from './projects.js';
+import { JUNIOR_TRACKS, JUNIOR_PROJECTS, juniorSkinForGrade } from './projects.js';
 
 test('80 mini proyectos en 10 tracks de 8, numerados 1 a 80', () => {
   assert.equal(JUNIOR_TRACKS.length, 10); assert.equal(JUNIOR_PROJECTS.length, 80);
@@ -10,4 +10,10 @@ test('80 mini proyectos en 10 tracks de 8, numerados 1 a 80', () => {
 test('todos los proyectos están completos en español y en inglés', () => {
   for (const p of JUNIOR_PROJECTS) for (const l of ['es', 'en']) for (const k of ['title', 'desc', 'deliverable', 'verse', 'ref']) assert.ok(p[l][k] && p[l][k].trim().length > 2, `${p.n} ${l} ${k}`);
   for (const t of JUNIOR_TRACKS) { assert.ok(t.es && t.en && t.icon && /^#/.test(t.color)); }
+});
+
+test('modo aventura hasta 6.º grado y modo sobrio desde 7.º', () => {
+  for (const g of [1, 2, 3, 4, 5, 6]) assert.equal(juniorSkinForGrade(g), 'kids', `grado ${g}`);
+  for (const g of [7, 8, 9, 12]) assert.equal(juniorSkinForGrade(g), 'teen', `grado ${g}`);
+  assert.equal(juniorSkinForGrade(NaN), 'kids'); // sin grado conocido
 });

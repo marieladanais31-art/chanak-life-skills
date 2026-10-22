@@ -1534,3 +1534,7 @@ export const JUNIOR_PROJECTS = [
   }
  }
 ];
+
+// Piel de la vista Juniors: modo aventura (videojuego) hasta 6.º grado; modo sobrio desde 7.º. Sin grado conocido: aventura.
+export const ADVENTURE_MAX_GRADE = 6;
+export const juniorSkinForGrade = (grade) => (Number.isFinite(grade) && grade > ADVENTURE_MAX_GRADE ? 'teen' : 'kids');

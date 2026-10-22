@@ -15,7 +15,7 @@ import {
   RIASEC_TEST_DATA,
   VOCATIONAL_TRACKS
 } from './data.js';
-import { JUNIOR_TRACKS, JUNIOR_PROJECTS } from './projects.js';
+import { JUNIOR_TRACKS, JUNIOR_PROJECTS, juniorSkinForGrade } from './projects.js';
 import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
 
 // ---- Constantes de Juniors (arriba para que existan antes del primer render) ----
@@ -2836,17 +2836,18 @@ window.cycleJuniorAvatar = cycleJuniorAvatar;
 
 function juniorGradeNumber() {
   const raw = new URLSearchParams(window.location.search).get('grade') || '';
-  const n = parseInt((String(raw).match(/\d+/) || [])[0], 10);
+  const txt = String(raw);
+  // "1.º ESO / Grade 7" → 7 (se prefiere el número que sigue a "Grade"); si no hay, el primero que aparezca
+  const n = parseInt(((txt.match(/grade\s*(\d+)/i) || txt.match(/(\d+)/) || [])[1]), 10);
   return Number.isFinite(n) ? n : null;
 }
-// Piel: aventura (videojuego) hasta 5.º grado / 11 años; sobria desde 6.º. Se puede cambiar con el botón o con ?skin=kids|teen.
+// Piel: aventura (videojuego) hasta 6.º grado; sobria desde 7.º. Se puede cambiar con el botón o con ?skin=kids|teen.
 function juniorSkin() {
   const q = new URLSearchParams(window.location.search).get('skin');
   if (q === 'kids' || q === 'teen') return q;
   let saved = null; try { saved = localStorage.getItem('chanak_junior_skin'); } catch (e) { /* sin almacenamiento */ }
   if (saved === 'kids' || saved === 'teen') return saved;
-  const g = juniorGradeNumber();
-  return g !== null && g >= 6 ? 'teen' : 'kids';
+  return juniorSkinForGrade(juniorGradeNumber() ?? NaN);
 }
 function setJuniorSkin(v) { try { localStorage.setItem('chanak_junior_skin', v); } catch (e) { /* sin almacenamiento */ } renderCurrentView(); }
 function cycleJuniorAvatar() {
