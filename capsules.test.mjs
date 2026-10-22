@@ -31,3 +31,12 @@ test('clústeres: toda cápsula y reto de data.js está mapeado (data.js intacto
   for (const r of JUNIORS_RETOS) assert.ok(TRACK_CLUSTERS[r.track], r.track);
   assert.deepEqual(CAPSULE_CLUSTERS.padreRico, [1, 4]); assert.deepEqual(CAPSULE_CLUSTERS.saludEmocional, [1]); assert.deepEqual(CAPSULE_CLUSTERS.empatia ?? JUNIOR_THEME_CLUSTERS.empatia, [3]);
 });
+
+import { JUNIOR_CAPSULES_G } from './junior_capsules_grade.js';
+test('44 cápsulas por grado exacto: 11 temas × grados 4-7, ES/EN, 4 pasos', () => {
+  assert.equal(JUNIOR_CAPSULES_G.length, 44);
+  for (const g of [4, 5, 6, 7]) for (const t of JUNIOR_THEMES) { const c = JUNIOR_CAPSULES_G.find((x) => x.grade === g && x.theme === t.id); assert.ok(c, `${t.id} g${g}`); assert.equal(c.id, `${t.id}-g${g}`); assert.ok(c.caso.es && c.caso.en && c.evidencia.es && c.evidencia.en && c.en.title && c.en.steps.length === 3, c.id); assert.ok(JUNIOR_THEME_CLUSTERS[t.id]); }
+  const ids = new Set(JUNIOR_CAPSULES_G.map((c) => c.id)); assert.equal(ids.size, 44);
+  // 4.º y 5.º (y 6.º y 7.º) no son copias: el texto cambia
+  for (const t of JUNIOR_THEMES) { assert.notEqual(JUNIOR_CAPSULES_G.find((x) => x.grade === 4 && x.theme === t.id).caso.es, JUNIOR_CAPSULES_G.find((x) => x.grade === 5 && x.theme === t.id).caso.es); assert.notEqual(JUNIOR_CAPSULES_G.find((x) => x.grade === 6 && x.theme === t.id).caso.es, JUNIOR_CAPSULES_G.find((x) => x.grade === 7 && x.theme === t.id).caso.es); }
+});
