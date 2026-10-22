@@ -17,6 +17,7 @@ import {
 } from './data.js';
 import { JUNIOR_TRACKS, JUNIOR_PROJECTS, juniorSkinForGrade } from './projects.js';
 import { ES_EN_DYNAMIC } from './i18n_en.js';
+import { DEVOTIONAL_WEEKS, DEVOTIONAL_MONTHS } from './devotional.js';
 import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
 
 // ---- Constantes de Juniors (arriba para que existan antes del primer render) ----
@@ -2982,21 +2983,153 @@ function renderRestorationCard(summary) {
   </section>`;
 }
 
-async function renderCharacterView(container) {
-  container.innerHTML = `<div class="char-view"><p class="char-loading">${escHtml(L('Cargando carácter…', 'Loading character…'))}</p></div>`;
-  const summary = await fetchCharacterSummary();
+// ============================================================================
+// CARÁCTER INTERACTIVO: semana elegible, devocional, aplicar, orar, memorizar, conversar en familia y ficha bíblica del mes
+// ============================================================================
+function cStore(key, fallback) { try { const v = localStorage.getItem(`chanak_c_${key}`); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } }
+function cSave(key, val) { try { localStorage.setItem(`chanak_c_${key}`, JSON.stringify(val)); } catch (e) { /* sin almacenamiento */ } }
+function charState() {
+  if (!state.char) state.char = { week: getCurrentAgendaWeek().week, tab: 'devocional', ficha: false, cluster: null };
+  return state.char;
+}
+const TAB_DEFS = [
+  { id: 'devocional', icon: '📖', es: 'Devocional', en: 'Devotional' }, { id: 'aplicar', icon: '🎯', es: 'Aplícalo', en: 'Apply it' },
+  { id: 'orar', icon: '🙏', es: 'Orar', en: 'Pray' }, { id: 'memorizar', icon: '🧠', es: 'Memorizar', en: 'Memorize' }, { id: 'familia', icon: '👨‍👩‍👧', es: 'En familia', en: 'Family talk' },
+];
+const bibleUrl = (ref) => `https://www.biblegateway.com/passage/?search=${encodeURIComponent(ref)}&version=${state.lang === 'en' ? 'NIV' : 'RVR1960'}`;
+const dev = (n) => (DEVOTIONAL_WEEKS[n] || {})[state.lang === 'en' ? 'en' : 'es'] || {};
+const ficha = (monthEs) => (DEVOTIONAL_MONTHS[monthEs] || {})[state.lang === 'en' ? 'en' : 'es'] || null;
+const weekDone = (n) => cStore(`w${n}_note`, '').trim().length >= 15;
+
+function renderWeekStrip() {
+  const cur = getCurrentAgendaWeek().week; const sel = charState().week; const en = state.lang === 'en';
+  return `<nav class="cv-strip" aria-label="${escHtml(L('Semanas del curso', 'School-year weeks'))}">
+    <button class="cv-arrow" onclick="charSelectWeek(${Math.max(1, sel - 1)})" aria-label="${escHtml(L('Semana anterior', 'Previous week'))}">‹</button>
+    <div class="cv-chips" id="cv-chips">${AGENDA_2026_2027.map((w) => `<button class="cv-chip c${w.cluster} ${w.week === sel ? 'is-sel' : ''} ${w.week === cur ? 'is-now' : ''} ${weekDone(w.week) ? 'is-done' : ''}" onclick="charSelectWeek(${w.week})" title="${escHtml(en ? w.traitEn : w.trait)}">
+      <b>${w.week}</b><span>${escHtml(en ? w.traitEn : w.trait)}</span>${weekDone(w.week) ? '<i>✓</i>' : ''}</button>`).join('')}</div>
+    <button class="cv-arrow" onclick="charSelectWeek(${Math.min(42, sel + 1)})" aria-label="${escHtml(L('Semana siguiente', 'Next week'))}">›</button>
+  </nav>`;
+}
+
+function renderWeekHero() {
+  const c = charState(); const w = AGENDA_2026_2027.find((x) => x.week === c.week) || getCurrentAgendaWeek(); const en = state.lang === 'en';
+  const d = dev(w.week); const cl = CHARACTER_CLUSTERS[w.cluster]; const isNow = w.week === getCurrentAgendaWeek().week;
+  const days = cStore(`w${w.week}_days`, [false, false, false, false, false]); const mem = cStore(`w${w.week}_mem`, [false, false, false, false, false]);
+  const dayN = (en ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] : ['Lun', 'Mar', 'Mié', 'Jue', 'Vie']);
+  const portion = d.portion || '';
+  let body = '';
+  if (c.tab === 'devocional') {
+    body = `<p class="cv-text">${escHtml(d.devotional || '')}</p>
+      <p class="cv-read">📖 ${escHtml(L('Lectura de la semana', 'This week’s reading'))}: <b>${escHtml(portion)}</b>
+        <a class="cv-link" href="${bibleUrl(portion)}" target="_blank" rel="noopener noreferrer">${escHtml(L('Leer en la Biblia ↗', 'Read in the Bible ↗'))}</a></p>
+      <p class="cv-verse">✨ ${escHtml(L('Versículos de apoyo', 'Supporting verses'))}: ${(d.support || '').split(/;\s*/).filter(Boolean).map((v) => `<a class="cv-link" href="${bibleUrl(v)}" target="_blank" rel="noopener noreferrer">${escHtml(v)}</a>`).join(' · ')}</p>`;
+  } else if (c.tab === 'aplicar') {
+    const done = days.filter(Boolean).length; const note = cStore(`w${w.week}_note`, '');
+    body = `<p class="cv-text"><b>${escHtml(L('Reto de la semana', 'This week’s challenge'))}:</b> ${escHtml(d.application || '')}</p>
+      <p class="cv-sub">${escHtml(L('Marca cada día que lo practiques:', 'Check each day you practice it:'))}</p>
+      <div class="cv-days">${days.map((on, i) => `<button class="cv-day ${on ? 'on' : ''}" onclick="charToggle(${w.week},'days',${i})" aria-pressed="${on}"><span>${on ? '✅' : '⬜'}</span>${dayN[i]}</button>`).join('')}</div>
+      <div class="cv-bar" role="progressbar" aria-valuenow="${done * 20}" aria-valuemin="0" aria-valuemax="100"><i style="width:${done * 20}%"></i></div>
+      <p class="cv-sub">${done === 5 ? '🎉 ' + escHtml(L('¡Semana completa! Eres constante.', 'Full week! You are consistent.')) : escHtml(L(`${done} de 5 días`, `${done} of 5 days`))}</p>
+      <label class="cv-sub" for="cv-note">${escHtml(L('¿Cómo lo apliqué? ¿Qué pasó, qué hice y cómo resultó?', 'How did I apply it? What happened, what did I do, and how did it turn out?'))}</label>
+      <textarea id="cv-note" class="cv-ta" rows="3" maxlength="800" placeholder="${escHtml(L('Escríbelo con tus palabras…', 'Write it in your own words…'))}">${escHtml(note)}</textarea>
+      <button class="btn-primary cv-save" onclick="charSaveNote(${w.week})">💾 ${escHtml(L('Guardar y ganar monedas', 'Save & earn coins'))}</button>`;
+  } else if (c.tab === 'orar') {
+    const amen = cStore(`w${w.week}_amen`, 0);
+    body = `<blockquote class="cv-prayer">${escHtml(d.prayer || '')}</blockquote>
+      <button class="btn-primary cv-save" onclick="charAmen(${w.week})">🙏 ${escHtml(L('Amén', 'Amen'))}${amen ? ` · ${amen}` : ''}</button>
+      <p class="cv-sub">${escHtml(L('Léela en voz alta con tu familia al empezar el día.', 'Read it out loud with your family to start the day.'))}</p>`;
+  } else if (c.tab === 'memorizar') {
+    const steps = [L('Leer la porción', 'Read the portion'), L('Repetirla en voz alta', 'Say it out loud'), L('Copiarla a mano', 'Copy it by hand'), L('Explicarla con mis palabras', 'Explain it in my own words'), L('Recitarla a mi familia', 'Recite it to my family')];
+    const m = mem.filter(Boolean).length;
+    body = `<p class="cv-read">🧠 ${escHtml(L('Porción para memorizar', 'Portion to memorize'))}: <b>${escHtml(portion)}</b>
+        <a class="cv-link" href="${bibleUrl(portion)}" target="_blank" rel="noopener noreferrer">${escHtml(L('Abrir ↗', 'Open ↗'))}</a></p>
+      <ol class="cv-steps">${steps.map((t, i) => `<li><button class="cv-step ${mem[i] ? 'on' : ''}" onclick="charToggle(${w.week},'mem',${i})" aria-pressed="${!!mem[i]}">${mem[i] ? '✅' : '⬜'} <span>${dayN[i]} · ${escHtml(t)}</span></button></li>`).join('')}</ol>
+      <div class="cv-bar"><i style="width:${m * 20}%"></i></div><p class="cv-sub">${m === 5 ? '🏆 ' + escHtml(L('¡Porción memorizada!', 'Portion memorized!')) : escHtml(L(`${m} de 5 pasos`, `${m} of 5 steps`))}</p>`;
+  } else {
+    const qs = (d.questions && d.questions.length) ? d.questions : (ficha(w.month)?.questions || []);
+    body = `<p class="cv-sub">${escHtml(L('Conversen en familia y anoten ideas:', 'Talk as a family and jot down ideas:'))}</p>` + qs.map((q, i) => `<div class="cv-q"><label for="cv-q${i}">${escHtml(q)}</label>
+      <textarea id="cv-q${i}" class="cv-ta" rows="2" maxlength="500" onchange="charSaveQ(${w.week},${i},this.value)">${escHtml(cStore(`w${w.week}_q${i}`, ''))}</textarea></div>`).join('');
+  }
+  return `<section class="char-card cv-hero c${w.cluster}" aria-live="polite">
+    <p class="char-today">${escHtml(new Intl.DateTimeFormat(en ? 'en-US' : 'es-ES', { timeZone: FLORIDA_TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()))} · ${escHtml(L('hora de Florida', 'Florida time'))}</p>
+    <p class="char-eyebrow">${escHtml(L('Semana', 'Week'))} ${w.week} / 42 · ${escHtml(w.startDate.split('-').reverse().slice(0, 2).join('/'))} – ${escHtml(w.endDate.split('-').reverse().slice(0, 2).join('/'))}${isNow ? ` · <span class="cv-now">${escHtml(L('ESTA SEMANA', 'THIS WEEK'))}</span>` : ''}</p>
+    <h3 class="char-trait">🧭 ${escHtml(en ? w.traitEn : w.trait)}</h3>
+    <p class="char-def">${escHtml(d.definition || (en ? w.definicionEn : w.definicion))}</p>
+    <p class="char-cluster">${escHtml(L('Clúster de carácter', 'Character cluster'))}: <button class="cv-cl" onclick="charShowCluster(${w.cluster})">${escHtml(cl[en ? 'en' : 'es'])} ↗</button></p>
+    <div class="cv-tabs" role="tablist">${TAB_DEFS.map((t) => `<button role="tab" class="cv-tab ${c.tab === t.id ? 'is-active' : ''}" aria-selected="${c.tab === t.id}" onclick="charTab('${t.id}')"><span>${t.icon}</span> ${escHtml(t[en ? 'en' : 'es'])}</button>`).join('')}</div>
+    <div class="cv-panel">${body}</div>
+    <a class="btn-interactive char-link" href="https://portal.chanakacademy.org/" target="_blank" rel="noopener noreferrer">${escHtml(L('Leer Devocional en Portal Chanak ↗', 'Read Devotional on Portal Chanak ↗'))}</a>
+  </section>`;
+}
+
+function renderFichaBiblica() {
+  const w = AGENDA_2026_2027.find((x) => x.week === charState().week) || getCurrentAgendaWeek(); const f = ficha(w.month); const en = state.lang === 'en';
+  if (!f) return '';
+  const open = charState().ficha;
+  const row = (label, v) => (v ? `<div class="cv-frow"><dt>${escHtml(label)}</dt><dd>${escHtml(v)}</dd></div>` : '');
+  return `<section class="char-card cv-ficha">
+    <button class="cv-ficha__head" onclick="charToggleFicha()" aria-expanded="${open}">
+      <span>📜 <b>${escHtml(L('Ficha bíblica del mes', 'Monthly Scripture Passage Card'))}: ${escHtml(en ? w.monthEn : w.month)}</b><em>${escHtml(f.passage)} · ${escHtml(f.theme)}</em></span><span class="cv-caret">${open ? '▾' : '▸'}</span></button>
+    ${open ? `<div class="cv-ficha__body"><p class="cv-text">${escHtml(f.focus)}</p>
+      <dl class="cv-fdl">${row(L('Libro bíblico', 'Book'), f.book)}${row(L('Autor / atribución', 'Author / attribution'), f.author)}${row(L('Tipo de literatura', 'Type of literature'), f.genre)}${row(L('Personajes principales', 'Main characters'), f.characters)}${row(L('Adaptación para menores de 10 años', 'Adaptation for children under 10'), f.under10)}</dl>
+      <p class="cv-sub">${escHtml(L('Palabras clave', 'Key words'))}</p><div class="cv-kw">${(f.keywords || []).map((k) => `<span>${escHtml(k)}</span>`).join('')}</div>
+      <h4 class="cv-h4">${escHtml(L('Contexto', 'Context'))}</h4><p class="cv-text">${escHtml(f.context)}</p>
+      <h4 class="cv-h4">${escHtml(L('¿Qué revela sobre Dios?', 'What does it reveal about God?'))}</h4><p class="cv-text">${escHtml(f.reveals)}</p>
+      <h4 class="cv-h4">${escHtml(L('Aplicación familiar', 'Family application'))}</h4><p class="cv-text">${escHtml(f.application)}</p>
+      <h4 class="cv-h4">${escHtml(L('Preguntas para dialogar', 'Questions to talk about'))}</h4><ul class="cv-ul">${(f.questions || []).map((q) => `<li>${escHtml(q)}</li>`).join('')}</ul>
+      <a class="cv-link" href="${bibleUrl(f.passage)}" target="_blank" rel="noopener noreferrer">${escHtml(L('Leer el pasaje completo ↗', 'Read the full passage ↗'))}</a></div>` : ''}
+  </section>`;
+}
+
+function renderClusterPanel() {
+  const n = charState().cluster; if (!n) return '';
+  const en = state.lang === 'en'; const ws = AGENDA_2026_2027.filter((w) => w.cluster === n);
+  return `<section class="char-card cv-clpanel c${n}"><div class="cv-clpanel__head"><h3 class="char-h3">${escHtml(CHARACTER_CLUSTERS[n][en ? 'en' : 'es'])}</h3><button class="cv-x" onclick="charShowCluster(null)" aria-label="${escHtml(L('Cerrar', 'Close'))}">✕</button></div>
+    <p class="cv-sub">${escHtml(L('Rasgos que fortalecen este clúster (toca uno para verlo):', 'Traits that strengthen this cluster (tap one to open it):'))}</p>
+    <div class="cv-kw">${ws.map((w) => `<button class="cv-pill ${weekDone(w.week) ? 'on' : ''}" onclick="charSelectWeek(${w.week})">${weekDone(w.week) ? '✓ ' : ''}${w.week} · ${escHtml(en ? w.traitEn : w.trait)}</button>`).join('')}</div></section>`;
+}
+
+function charRerender() { const c = document.getElementById('stage-content-area'); if (c && state.viewMode === 'caracter') renderCharacterView(c, true); }
+function charSelectWeek(n) { const c = charState(); c.week = Math.max(1, Math.min(42, n)); c.tab = 'devocional'; charRerender(); setTimeout(() => { const el = document.querySelector('.cv-chip.is-sel'); if (el && el.scrollIntoView) el.scrollIntoView({ inline: 'center', block: 'nearest' }); }, 30); }
+function charTab(t) { charState().tab = t; charRerender(); }
+function charToggleFicha() { const c = charState(); c.ficha = !c.ficha; charRerender(); }
+function charShowCluster(n) { charState().cluster = n; charRerender(); if (n) setTimeout(() => { const el = document.querySelector('.cv-clpanel'); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 30); }
+function charToggle(week, kind, i) { const key = `w${week}_${kind}`; const arr = cStore(key, [false, false, false, false, false]); arr[i] = !arr[i]; cSave(key, arr); charRerender(); if (arr.filter(Boolean).length === 5) celebrate(); }
+function charAmen(week) { cSave(`w${week}_amen`, cStore(`w${week}_amen`, 0) + 1); charRerender(); }
+function charSaveQ(week, i, v) { cSave(`w${week}_q${i}`, String(v).slice(0, 500)); }
+function charSaveNote(week) {
+  const el = document.getElementById('cv-note'); const txt = el ? el.value.trim() : '';
+  if (txt.length < 15) { showCoinToast(L('Cuéntalo con un poco más de detalle (mínimo una frase).', 'Tell it with a bit more detail (at least one sentence).')); return; }
+  cSave(`w${week}_note`, txt.slice(0, 800));
+  const w = AGENDA_2026_2027.find((x) => x.week === week);
+  awardCoins('notebook_save', `trait:w${week}`, `${L('Rasgo', 'Trait')}: ${w ? (state.lang === 'en' ? w.traitEn : w.trait) : week}`);
+  charRerender();
+}
+window.charSelectWeek = charSelectWeek; window.charTab = charTab; window.charToggleFicha = charToggleFicha; window.charShowCluster = charShowCluster;
+window.charToggle = charToggle; window.charAmen = charAmen; window.charSaveQ = charSaveQ; window.charSaveNote = charSaveNote;
+
+async function renderCharacterView(container, cached = false) {
+  if (!cached) container.innerHTML = `<div class="char-view"><p class="char-loading">${escHtml(L('Cargando carácter…', 'Loading character…'))}</p></div>`;
+  const summary = cached && state.characterSummary ? state.characterSummary : await fetchCharacterSummary();
   state.characterSummary = summary;
   if (state.viewMode !== 'caracter') return; // el estudiante cambió de pestaña mientras cargaba
   const demo = summary.demo ? `<p class="char-demo">${escHtml(summary.fallback ? L('DEMO · no se pudo leer tu resumen; se muestran datos de ejemplo.', 'DEMO · your summary could not be read; sample data is shown.') : L('DEMO · datos de ejemplo (abre Life Skills desde tu panel del SIS para ver los tuyos).', 'DEMO · sample data (open Life Skills from your SIS dashboard to see yours).'))}</p>` : '';
+  const keep = cached ? { x: window.scrollX, y: window.scrollY } : null;
   container.innerHTML = `<div class="char-view">
     ${demo}
     ${renderRestorationCard(summary)}
-    ${renderWeekCard()}
+    ${renderWeekStrip()}
+    ${renderWeekHero()}
+    ${renderFichaBiblica()}
     ${renderCharacterRadar(summary.totals)}
+    ${renderClusterPanel()}
     <div class="char-actions no-print">
       <button type="button" class="btn-interactive" onclick="printCharacterSheet()">🖨️ ${escHtml(L('Imprimir ficha de reto / reporte familiar', 'Print Challenge Slip / Family Report'))}</button>
     </div>
   </div>`;
+  if (keep) window.scrollTo(keep.x, keep.y);
+  const sel = container.querySelector('.cv-chip.is-sel'); const strip = container.querySelector('#cv-chips');
+  if (sel && strip) strip.scrollLeft = sel.offsetLeft - strip.clientWidth / 2 + sel.clientWidth / 2;
 }
 
 function printCharacterSheet() {
