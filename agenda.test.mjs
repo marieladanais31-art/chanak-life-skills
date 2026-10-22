@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { floridaIsoDate, AGENDA_2026_2027 as A, CLUSTER_BY_TRAIT, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait } from './agenda.js';
+import { localizeWeek, CLUSTER_NAMES, clusterName, floridaIsoDate, AGENDA_2026_2027 as A, CLUSTER_BY_TRAIT, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait } from './agenda.js';
 
 test('42 semanas bilingües con las fechas oficiales y sin huecos', () => {
   assert.equal(A.length, 42);
@@ -25,4 +25,13 @@ test('sin fecha explícita se usa el día de Florida (America/New_York)', () => 
   assert.equal(floridaIsoDate(new Date('2026-10-26T03:30:00Z')), '2026-10-25'); // 23:30 del domingo en Florida
   assert.equal(floridaIsoDate(new Date('2026-10-26T04:30:00Z')), '2026-10-26'); // 00:30 del lunes en Florida
   assert.equal(getCurrentAgendaWeek().week >= 1, true);
+});
+
+test('inglés por defecto: localizeWeek y CLUSTER_NAMES', () => {
+  const w = localizeWeek(A[6]);
+  assert.equal(w.trait, 'Loyalty'); assert.equal(w.passage, 'Romans 12:1-13'); assert.equal(w.monthlyTheme, 'Service and transformation');
+  assert.equal(w.clusterName, 'Relationships and Community Service');
+  assert.equal(localizeWeek(A[6], 'es').trait, 'Lealtad');
+  assert.equal(CLUSTER_NAMES.en[1], 'Stewardship and Personal Discipline'); assert.equal(clusterName(4), 'Leadership and Purpose'); assert.equal(clusterName(4, 'es'), 'Liderazgo y Propósito');
+  for (const x of A) { assert.ok(x.traitEn && x.passageEn && x.monthlyThemeEn && x.definicionEn && x.versiculoEn, `semana ${x.week}`); }
 });

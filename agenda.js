@@ -826,3 +826,20 @@ export function getCurrentAgendaWeek(date) {
   return AGENDA_2026_2027.find((w) => t >= w.startDate && t <= w.endDate) || AGENDA_2026_2027[0];
 }
 export const clusterOfTrait = (traitEs) => CLUSTER_BY_TRAIT[traitEs] || null;
+
+// Nombres de clústeres por idioma; el inglés es el predeterminado.
+export const CLUSTER_NAMES = {
+  en: Object.fromEntries(Object.entries(CHARACTER_CLUSTERS).map(([k, v]) => [k, v.en])),
+  es: Object.fromEntries(Object.entries(CHARACTER_CLUSTERS).map(([k, v]) => [k, v.es])),
+};
+export const clusterName = (n, lang = 'en') => (CLUSTER_NAMES[lang] || CLUSTER_NAMES.en)[n] || '';
+
+// Textos de una semana en un idioma (inglés por defecto): rasgo, pasaje, tema del mes, definición, versículos y clúster.
+export function localizeWeek(week = getCurrentAgendaWeek(), lang = 'en') {
+  const es = lang === 'es';
+  return {
+    week: week.week, startDate: week.startDate, endDate: week.endDate, cluster: week.cluster, clusterName: clusterName(week.cluster, es ? 'es' : 'en'),
+    trait: es ? week.trait : week.traitEn, passage: es ? week.passage : week.passageEn, monthlyTheme: es ? week.monthlyTheme : week.monthlyThemeEn,
+    definition: es ? week.definicion : week.definicionEn, verses: es ? week.versiculo : week.versiculoEn, month: es ? week.month : week.monthEn,
+  };
+}

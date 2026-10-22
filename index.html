@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en" translate="no">
 <head>
   <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chanak Life Skills & Leadership Studio</title>
   <meta name="description" content="Plataforma interactiva y oficial de Life Skills & Leadership de Chanak International Academy.">
@@ -48,8 +49,8 @@
         <span class="context-pill" id="context-pill">✨ Portal Chanak · Life Skills Studio</span>
 
         <div class="lang-toggle">
-          <button id="btn-lang-es" class="active" onclick="switchLanguage('es')">ES</button>
-          <button id="btn-lang-en" onclick="switchLanguage('en')">EN</button>
+          <button id="btn-lang-en" class="active" aria-pressed="true" onclick="switchLanguage('en')">EN</button>
+          <button id="btn-lang-es" aria-pressed="false" onclick="switchLanguage('es')">ES</button>
         </div>
 
         <button class="btn-interactive" onclick="openWalletModal()" title="Ver balance de ChanakCoins">
@@ -347,26 +348,8 @@
   </div>
 
 
-  <!-- Ficha imprimible (A4 vertical) de reto / reporte familiar: solo se ve al imprimir -->
-  <section id="print-sheet" class="print-only" aria-hidden="true">
-    <header class="ps-head">
-      <img src="logo-chanak.png" alt="" width="54" height="54">
-      <div><strong>Chanak International Academy</strong><br><span>Life Skills &amp; Leadership · FLDOE #134620</span></div>
-    </header>
-    <h2>Ficha de reto y reporte familiar / Challenge sheet &amp; family report</h2>
-    <table class="ps-table">
-      <tr><th>Estudiante / Student</th><td data-ps="student"></td><th>Curso / Year</th><td data-ps="year"></td></tr>
-      <tr><th>Semana / Week</th><td colspan="3" data-ps="week"></td></tr>
-      <tr><th>Fecha / Date</th><td data-ps="date"></td><th>ChanakCoins</th><td data-ps="coins"></td></tr>
-    </table>
-    <h3>Reto / Challenge</h3>
-    <div class="ps-lines"><span></span><span></span><span></span></div>
-    <h3>Evidencias presentadas (enlaces Drive / YouTube) / Evidence submitted (links)</h3>
-    <div class="ps-lines"><span></span><span></span><span></span><span></span></div>
-    <h3>Observaciones / Notes</h3>
-    <div class="ps-lines"><span></span><span></span></div>
-    <div class="ps-sign"><div><span></span>Firma del estudiante / Student signature</div><div><span></span>Firma del supervisor / Supervisor signature</div></div>
-  </section>
+  <!-- Ficha imprimible (A4 vertical): se construye al imprimir, en el idioma activo -->
+  <section id="print-sheet" class="print-only" aria-hidden="true"></section>
 
   <script type="module" src="app.js"></script>
 </body>

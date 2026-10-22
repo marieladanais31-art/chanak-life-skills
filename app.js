@@ -16,6 +16,7 @@ import {
   VOCATIONAL_TRACKS
 } from './data.js';
 import { JUNIOR_TRACKS, JUNIOR_PROJECTS, juniorSkinForGrade } from './projects.js';
+import { ES_EN_DYNAMIC } from './i18n_en.js';
 import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
 
 // ---- Constantes de Juniors (arriba para que existan antes del primer render) ----
@@ -25,6 +26,97 @@ const JK_LEVELS = [
 ];
 const JK_AVATARS = ['🦊', '🐼', '🦁', '🐯', '🐙', '🦄', '🐸', '🚀', '🤖', '🦋'];
 const JK_COINS = 25; // el servidor decide el monto real (award_life_skills_coins)
+
+// ---- Textos fijos del index.html (el inglés es el idioma principal; el español es la alternativa) ----
+const STATIC_EN = {
+ "🎓 Estudiante": "🎓 Student",
+ "🧑‍🏫 Mentor": "🧑‍🏫 Mentor",
+ "🌱 Secundaria (8–12)": "🌱 High School (8–12)",
+ "🌿 Junior (1–7)": "🌿 Junior (1–7)",
+ "🌱 Sembrador": "🌱 Sower",
+ "Carácter · Propósito · Servicio · Emprendimiento · College Prep": "Character · Purpose · Service · Entrepreneurship · College Prep",
+ "Desarrollo de carácter, autodisciplina, mayordomía financiera, relaciones sanas y liderazgo de impacto real con cosmovisión bíblica.": "Character formation, self-discipline, financial stewardship, healthy relationships and impactful leadership with a Biblical worldview.",
+ "🔴 AULA VIRTUAL EN VIVO": "🔴 LIVE VIRTUAL CLASSROOM",
+ "Clases Virtuales Oficiales · Google Meet": "Official Virtual Classes · Google Meet",
+ "Conéctate a tus sesiones semanales con tu mentora para debate, tutoría y defensa oral de proyectos.": "Join your weekly sessions with your mentor for discussion, tutoring and oral defense of projects.",
+ "Martes": "Tuesday",
+ "Jueves": "Thursday",
+ "📹 Unirme a Clase Virtual (Meet) ↗": "📹 Join the Virtual Class (Meet) ↗",
+ "Vista Mentor / Docente Activa · Guía Pedagógica FLDOE #134620": "Mentor / Teacher View Active · Teaching Guide FLDOE #134620",
+ "Visualizando preguntas esenciales, minutado de sesión, estándares de Florida y advertencias de errores conceptuales comunes.": "Showing essential questions, session timing, Florida standards and warnings about common misconceptions.",
+ "✕ Salir a Vista Estudiante": "✕ Exit to Student View",
+ "🧭 Mi Ruta de Aprendizaje": "🧭 My Learning Path",
+ "🎓 Expediente Universitario": "🎓 University Portfolio",
+ "📋 Rúbrica 40/30/30": "📋 40/30/30 Rubric",
+ "💊 Vitaminas": "💊 Vitamins",
+ "🛠️ Herramientas Interactivas": "🛠️ Interactive Tools",
+ "🌿 Catálogo Junior (8–13)": "🌿 Junior Catalog (8–13)",
+ "🧭 Carácter · Character": "🧭 Character",
+ "🌱 Seedling · Grado 8/9 (13–14 años)": "🌱 Seedling · Grade 8/9 (ages 13–14)",
+ "🧭 Explorer · Grado 10 (15 años)": "🧭 Explorer · Grade 10 (age 15)",
+ "🔨 Builder · Grado 11 (16 años)": "🔨 Builder · Grade 11 (age 16)",
+ "🚀 Launch · Grado 12 (17 años)": "🚀 Launch · Grade 12 (age 17)",
+ "Acceso a Vista Mentor": "Mentor View Access",
+ "Esta vista contiene las guías docentes, minutados y criterios de evaluación formativa. Ingresa el PIN institucional para desbloquear.": "This view contains the teaching guides, session timing and formative assessment criteria. Enter the institutional PIN to unlock.",
+ "PIN de Docente Institucional:": "Institutional Teacher PIN:",
+ "PIN incorrecto. Verifica con la coordinación académica.": "Incorrect PIN. Check with the academic coordination.",
+ "Cancelar": "Cancel",
+ "Desbloquear →": "Unlock →",
+ "Billetera ChanakCoins": "ChanakCoins Wallet",
+ "Moneda virtual de crecimiento, mayordomía y confianza formativa.": "Virtual currency of growth, stewardship and formative trust.",
+ "ChanakCoins Activas": "Active ChanakCoins",
+ "Nivel de Confianza:": "Trust Level:",
+ "Acumula 100 🪙 para ascender al rango de": "Collect 100 🪙 to rise to the rank of",
+ "Mayordomo": "Steward",
+ "Entendido": "Got it",
+ "Subir Reto a Drive": "Upload Challenge to Drive",
+ "Sigue las instrucciones oficiales de entrega de Chanak para validar tu evidencia.": "Follow Chanak's official submission instructions to validate your evidence.",
+ "📂 Carpeta de Destino en Google Drive:": "📂 Destination Folder in Google Drive:",
+ "Guarda la foto o documento del proceso (debe verse tu trabajo).": "Save the photo or document of the process (your work must be visible).",
+ "Nombra el archivo con tu nombre y el número de reto.": "Name the file with your name and the challenge number.",
+ "Tu mentora validará la evidencia para acreditar las monedas en tu SIS.": "Your mentor will validate the evidence to credit the coins in your SIS.",
+ "✓ Marcar como Completado (+": "✓ Mark as Completed (+",
+ "Dual Diploma & Portal de Apoyo Académico · Florida · Panamá · España": "Dual Diploma & Academic Support Portal · Florida · Panama · Spain",
+ "Mentor IA": "AI Mentor",
+ "Mentor IA Chanak": "Chanak AI Mentor",
+ "Guía Socrática de Carácter, Hábitos & Proyectos": "Socratic Guide for Character, Habits & Projects",
+ "Aviso de Transparencia de IA:": "AI Transparency Notice:",
+ "Estás interactuando con un asistente de inteligencia artificial (Google Gemini). Su rol es socrático (guiarte a pensar y reflexionar por ti mismo). No reemplaza la guía de tus padres o mentores, ni debe usarse para hacer tus tareas por ti.": "You are interacting with an artificial intelligence assistant (Google Gemini). Its role is Socratic (guiding you to think and reflect for yourself). It does not replace the guidance of your parents or mentors, and must not be used to do your homework for you.",
+ "🛡️ Escudo de Armas": "🛡️ Coat of Arms",
+ "✍️ Cuaderno de Vida · Reflexión del Estudiante:": "✍️ Life Notebook · Student Reflection:",
+ "🔒 Vista pedagógica restringida a tutores y coordinadores": "🔒 Teaching view restricted to tutors and coordinators",
+ "🧑‍🏫 Vista Mentor Desbloqueada con Éxito": "🧑‍🏫 Mentor View Unlocked Successfully",
+ "🛡️ Escudo de Armas guardado correctamente": "🛡️ Coat of Arms saved successfully",
+ "⚠️ No se pudo registrar tus ChanakCoins. Habla con tu mentora.": "⚠️ Your ChanakCoins could not be recorded. Talk to your mentor.",
+ "✓ Ya registrado anteriormente — sin monedas duplicadas": "✓ Already recorded earlier — no duplicate coins",
+ "⚠️ Sin conexión con el SIS — tus ChanakCoins no se registraron.": "⚠️ No connection to the SIS — your ChanakCoins were not recorded.",
+ "💾 Guardar Reflexión (+10 🪙)": "💾 Save Reflection (+10 🪙)",
+ "⚡ Hábitos 21 Días": "⚡ 21-Day Habits",
+ "🎯 Proyecto BOLD": "🎯 BOLD Project",
+ "📖 Principio Bíblico": "📖 Biblical Principle",
+ "Enviar": "Send",
+ "🛡️ Entorno seguro para estudiantes · Sin almacenamiento de datos personales (Zero PII)": "🛡️ Safe environment for students · No personal data stored (Zero PII)"
+};
+const STATIC_ATTR_EN = {
+ "Ver balance de ChanakCoins": "View ChanakCoins balance",
+ "Ingresa el PIN": "Enter the PIN",
+ "Hablar con el Mentor IA de Carácter & Life Skills": "Talk to the Character & Life Skills AI Mentor",
+ "Cerrar": "Close",
+ "Pregúntale a tu Mentor IA sobre carácter, hábitos o tu proyecto...": "Ask your AI Mentor about character, habits or your project..."
+};
+// Ficha A4: se construye justo antes de imprimir en el idioma activo (membrete, estudiante, semana, reto, evidencias y firmas).
+const PRINT_LABELS = {
+  en: {
+    header: 'Chanak International Academy · Private School Registration FLDOE #134620', program: '20% Life Skills & Leadership Track · SIS Folder: 02 Life Skills',
+    title: 'Challenge Slip / Family Report', student: 'Student Name', stage: 'Grade / Life Stage', year: 'School Year', week: 'Week / Trait', challenge: 'Challenge Title',
+    date: 'Date', coins: 'ChanakCoins by cluster', evidence: 'Evidence Link (Google Drive / Video)', notes: 'Notes', sigStudent: 'Student Signature', sigMentor: 'Supervisor / Mentor Signature',
+  },
+  es: {
+    header: 'Chanak International Academy · Escuela privada registrada FLDOE #134620', program: 'Ruta 20% Life Skills & Leadership · Carpeta SIS: 02 Life Skills',
+    title: 'Ficha de reto / Reporte familiar', student: 'Nombre del estudiante', stage: 'Grado / Etapa', year: 'Año escolar', week: 'Semana / Rasgo', challenge: 'Título del reto',
+    date: 'Fecha', coins: 'ChanakCoins por clúster', evidence: 'Enlace de evidencia (Google Drive / Video)', notes: 'Observaciones', sigStudent: 'Firma del estudiante', sigMentor: 'Firma del supervisor / mentor',
+  },
+};
 
 // ---------------- Backend ----------------
 // La anon key de Supabase es una clave publicable: está pensada para vivir en el
@@ -120,7 +212,7 @@ const VIEWS_BY_AUDIENCE = {
 
 // ---------------- Application State ----------------
 const state = {
-  lang: 'es',
+  lang: 'en', // el inglés es el idioma principal
   mode: 'portal', // 'portal' or 'dual'
   isEmbed: false,
   viewMode: 'ruta', // 'ruta', 'expediente', 'rubrica', 'transversales', 'herramientas', 'juniors'
@@ -351,8 +443,10 @@ function initApp() {
     document.body.classList.add('embed-mode');
   }
 
-  if (params.get('lang') === 'en') {
-    state.lang = 'en';
+  {
+    let saved = null; try { saved = localStorage.getItem('chanak_lang'); } catch (e) { /* sin almacenamiento */ }
+    const q = params.get('lang');
+    state.lang = (q === 'es' || q === 'en') ? q : (saved === 'es' || saved === 'en' ? saved : 'en');
   }
 
   if (params.get('view')) {
@@ -413,6 +507,7 @@ function initApp() {
   updateHeaderWallet();
   updateRoleUI();
   updateNavigationUI();
+  syncLanguageUI(state.lang);
   renderCurrentView();
 }
 
@@ -550,9 +645,101 @@ function updateRoleUI() {
   }
 }
 
+// Recorre el HTML fijo (no la vista dinámica) y alterna los textos; guarda el original en español para poder volver.
+// Traduce todo el texto en pantalla (HTML fijo y vistas dinámicas) con diccionarios, sin tocar las vistas originales:
+// guarda el texto en español en cada nodo para poder volver al español. El inglés es el idioma principal.
+// Motivos de las monedas (los textos que la app muestra al ganar ChanakCoins).
+function coinReasonEn(r) {
+  let m;
+  if ((m = r.match(/^Sesión (\d+) completada \((.+)\)$/))) return `Session ${m[1]} completed (${m[2]})`;
+  if ((m = r.match(/^Módulo (.+) Completado$/))) return `Module ${m[1]} Completed`;
+  if ((m = r.match(/^Guardado en Cuaderno \((.+)\)$/))) return `Saved in Notebook (${m[1]})`;
+  if ((m = r.match(/^Cápsula Completada \((.+)\)$/))) return `Capsule Completed (${m[1]})`;
+  if ((m = r.match(/^Reto Enviado \((.+)\)$/))) return `Challenge Submitted (${m[1]})`;
+  const fixed = { 'Meta Diaria Cumplida (+5 🪙)': 'Daily Goal Completed (+5 🪙)', 'Test de Dones y Vocación (Explorer Q1)': 'Gifts & Vocation Test (Explorer Q1)' };
+  return fixed[r] !== undefined ? fixed[r] : null;
+}
+function patternEn(t) {
+  let m;
+  if ((m = t.match(/^MÓDULO (\S+) · (\d+) SESIONES$/))) return `MODULE ${m[1]} · ${m[2]} SESSIONS`;
+  if ((m = t.match(/^Por (?!qué\b)(.+)$/))) return `By ${m[1]}`;
+  if ((m = t.match(/^(\d+)\/21 Días$/))) return `${m[1]}/21 Days`;
+  if ((m = t.match(/^✓ Completar Sesión (\d+) →$/))) return `✓ Complete Session ${m[1]} →`;
+  if ((m = t.match(/^(LS\d-\d+): (.+)$/))) { const inner = enOf(m[2]); return inner == null ? null : `${m[1]}: ${inner}`; }
+  // avisos de ChanakCoins: "+10 ChanakCoins · <motivo>"
+  if ((m = t.match(/^\+(\d+) ChanakCoins · (.+)$/))) { const r = coinReasonEn(m[2]); return r == null ? null : `+${m[1]} ChanakCoins · ${r}`; }
+  if ((m = t.match(/^CÁPSULA FORMATIVA · (.+)$/))) return `FORMATIVE CAPSULE · ${m[1]}`;
+  if ((m = t.match(/^([“"])(.+)([”"])$/))) { const inner = enOf(m[2]); return inner == null ? null : `${m[1]}${inner}${m[3]}`; }
+  return null;
+}
+function enOf(t) { return STATIC_EN[t] !== undefined ? STATIC_EN[t] : (ES_EN_DYNAMIC[t] !== undefined ? ES_EN_DYNAMIC[t] : patternEn(t)); }
+var __i18nBusy = false; // var: se usa en el primer render, antes de llegar a esta línea
+function translateTree(root, lang) {
+  if (!root || __i18nBusy) return;
+  __i18nBusy = true;
+  try {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((n) => {
+      const p = n.parentElement;
+      if (!p || p.closest('script,style,textarea,.print-only')) return;
+      if (n.__es === undefined) {
+        const t = n.nodeValue.replace(/\s+/g, ' ').trim();
+        const en = t ? enOf(t) : null;
+        if (en == null) { n.__es = null; n.__seen = n.nodeValue; return; }
+        n.__es = n.nodeValue; n.__esKey = t; n.__en = n.nodeValue.replace(t, en);
+      }
+      if (n.__es === null) {
+        // nodo que cambió de contenido desde la última vez (vista re-renderizada): reintenta
+        if (n.nodeValue !== n.__seen) { n.__es = undefined; translateTree(n.parentElement, lang); }
+        return;
+      }
+      const want = lang === 'en' ? n.__en : n.__es;
+      if (n.nodeValue !== want && (n.nodeValue === n.__es || n.nodeValue === n.__en)) n.nodeValue = want;
+    });
+  } finally { __i18nBusy = false; }
+}
+function applyStaticI18n(lang) {
+  translateTree(document.body, lang);
+  document.body.querySelectorAll('[title],[placeholder],[aria-label]').forEach((el) => {
+    ['title', 'placeholder', 'aria-label'].forEach((a) => {
+      if (!el.hasAttribute(a)) return;
+      const k = `__es_${a}`; if (el[k] === undefined) el[k] = STATIC_ATTR_EN[el.getAttribute(a)] !== undefined ? el.getAttribute(a) : null;
+      if (el[k] === null) return;
+      el.setAttribute(a, lang === 'en' ? STATIC_ATTR_EN[el[k]] : el[k]);
+    });
+  });
+  document.documentElement.lang = lang === 'en' ? 'en' : 'es';
+}
+// Las vistas y ventanas se dibujan después: un observador traduce lo nuevo en inglés (con una pequeña espera).
+(function watchDom() {
+  let t = null;
+  const run = () => { if (state.lang === 'en') translateTree(document.body, 'en'); };
+  const start = () => {
+    new MutationObserver(() => { if (__i18nBusy) return; clearTimeout(t); t = setTimeout(run, 40); }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  };
+  if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+})();
+
 // ---------------- Language Switcher ----------------
+// Selector [EN | ES] y textos fijos del HTML según el idioma activo (también al arrancar).
+function syncLanguageUI(lang) {
+  const btnEs = document.getElementById('btn-lang-es'); const btnEn = document.getElementById('btn-lang-en');
+  if (btnEs) { btnEs.classList.toggle('active', lang === 'es'); btnEs.setAttribute('aria-pressed', String(lang === 'es')); }
+  if (btnEn) { btnEn.classList.toggle('active', lang === 'en'); btnEn.setAttribute('aria-pressed', String(lang === 'en')); }
+  applyStaticI18n(lang);
+  const mottoEl = document.getElementById('ui-motto'); const leadEl = document.getElementById('ui-hero-lead');
+  if (mottoEl) mottoEl.textContent = lang === 'es' ? 'Carácter · Propósito · Servicio · Emprendimiento · College Prep' : 'Character · Purpose · Service · Entrepreneurship · College Prep';
+  if (leadEl) leadEl.textContent = lang === 'es'
+    ? 'Desarrollo de carácter, autodisciplina, mayordomía financiera, relaciones sanas y liderazgo de impacto real con cosmovisión bíblica.'
+    : 'Character formation, self-discipline, financial stewardship, healthy relationships and impactful leadership with a Biblical worldview.';
+}
+
 function switchLanguage(lang) {
+  lang = lang === 'es' ? 'es' : 'en';
   state.lang = lang;
+  try { localStorage.setItem('chanak_lang', lang); } catch (e) { /* sin almacenamiento */ }
+  applyStaticI18n(lang);
   const btnEs = document.getElementById('btn-lang-es');
   const btnEn = document.getElementById('btn-lang-en');
   if (btnEs) btnEs.classList.toggle('active', lang === 'es');
@@ -2740,15 +2927,15 @@ function renderWeekCard() {
   const w = getCurrentAgendaWeek();
   const en = state.lang === 'en';
   const cl = CHARACTER_CLUSTERS[w.cluster];
-  return `<section class="char-card" aria-label="${escHtml(L('Rasgo de la semana', 'Trait of the week'))}">
+  return `<section class="char-card" aria-label="${escHtml(L('Rasgo semanal', 'Weekly Trait'))}">
     <p class="char-today">${escHtml(new Intl.DateTimeFormat(en ? 'en-US' : 'es-ES', { timeZone: FLORIDA_TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()))} · ${escHtml(L('hora de Florida', 'Florida time'))}</p>
     <p class="char-eyebrow">${escHtml(L('Semana', 'Week'))} ${w.week} / ${AGENDA_2026_2027.length} · ${escHtml(w.startDate.split('-').reverse().slice(0, 2).join('/'))} – ${escHtml(w.endDate.split('-').reverse().slice(0, 2).join('/'))}</p>
     <h3 class="char-trait">🧭 ${escHtml(en ? w.traitEn : w.trait)}</h3>
     <p class="char-def">${escHtml(en ? w.definicionEn : w.definicion)}</p>
-    <p class="char-passage">📖 ${escHtml(en ? w.passageEn : w.passage)} · <em>${escHtml(en ? w.monthlyThemeEn : w.monthlyTheme)}</em></p>
+    <p class="char-passage">📖 <b>${escHtml(L('Pasaje bíblico del mes', 'Monthly Scripture Passage'))}:</b> ${escHtml(en ? w.passageEn : w.passage)} · <em>${escHtml(en ? w.monthlyThemeEn : w.monthlyTheme)}</em></p>
     <p class="char-verse">${escHtml(L('Versículos de apoyo', 'Supporting verses'))}: ${escHtml(en ? w.versiculoEn : w.versiculo)}</p>
     <p class="char-cluster">${escHtml(L('Clúster de carácter', 'Character cluster'))}: <strong>${escHtml(cl[state.lang === 'en' ? 'en' : 'es'])}</strong></p>
-    <a class="btn-interactive char-link" href="https://portal.chanakacademy.org/" target="_blank" rel="noopener noreferrer">${escHtml(L('Leer Devocional en Portal Chanak ↗', 'Read the Devotional on Chanak Portal ↗'))}</a>
+    <a class="btn-interactive char-link" href="https://portal.chanakacademy.org/" target="_blank" rel="noopener noreferrer">${escHtml(L('Leer Devocional en Portal Chanak ↗', 'Read Devotional on Portal Chanak ↗'))}</a>
   </section>`;
 }
 
@@ -2786,10 +2973,10 @@ function renderCharacterRadar(totals) {
 function renderRestorationCard(summary) {
   const pend = summary?.pending_restorations || [];
   if (!pend.length) {
-    return `<section class="char-card char-good" aria-live="polite"><p>✅ <strong>${escHtml(L('Buen Testimonio (Good Standing)', 'Good Standing'))}</strong> — ${escHtml(L('tu mayordomía va en orden. ¡Sigue así!', 'your stewardship is in order. Keep it up!'))}</p></section>`;
+    return `<section class="char-card char-good" aria-live="polite"><p>✅ <strong>${escHtml(L('Buen Testimonio', 'Good Standing'))}</strong> — ${escHtml(L('tu mayordomía va en orden. ¡Sigue así!', 'your stewardship is in order. Keep it up!'))}</p></section>`;
   }
   return `<section class="char-card char-restore" role="alert">
-    <h3 class="char-h3">🤝 ${escHtml(L('Paso de Restauración', 'Restoration Step'))}</h3>
+    <h3 class="char-h3">🤝 ${escHtml(L('Paso de Restauración', 'Stewardship Restoration Step'))}</h3>
     <p>${escHtml(L('Tu cuenta está en proceso de restitución hasta que tu mentor valide tu evidencia. No es un castigo: es una oportunidad de reparar y servir.', 'Your account is in a restoration process until your mentor validates your evidence. This is not a punishment: it is a chance to repair and serve.'))}</p>
     <ul>${pend.map((r) => `<li>${escHtml(r.task)}</li>`).join('')}</ul>
   </section>`;
@@ -2807,22 +2994,31 @@ async function renderCharacterView(container) {
     ${renderWeekCard()}
     ${renderCharacterRadar(summary.totals)}
     <div class="char-actions no-print">
-      <button type="button" class="btn-interactive" onclick="printCharacterSheet()">🖨️ ${escHtml(L('Imprimir ficha de reto / reporte familiar', 'Print challenge sheet / family report'))}</button>
+      <button type="button" class="btn-interactive" onclick="printCharacterSheet()">🖨️ ${escHtml(L('Imprimir ficha de reto / reporte familiar', 'Print Challenge Slip / Family Report'))}</button>
     </div>
   </div>`;
 }
 
-// Ficha A4: se rellena justo antes de imprimir (membrete, estudiante, semana, retos y espacio para firmas).
 function printCharacterSheet() {
-  const w = getCurrentAgendaWeek(); const en = state.lang === 'en';
+  const w = getCurrentAgendaWeek(); const en = state.lang === 'en'; const T = PRINT_LABELS[en ? 'en' : 'es'];
   const sheet = document.getElementById('print-sheet'); if (!sheet) { window.print(); return; }
-  const name = state.studentName || '';
-  const set = (id, v) => { const el = sheet.querySelector(`[data-ps="${id}"]`); if (el) el.textContent = v; };
-  set('student', name || '________________________'); set('year', state.schoolYear || '2026-2027');
-  set('week', `${L('Semana', 'Week')} ${w.week}: ${en ? w.traitEn : w.trait} · ${en ? w.passageEn : w.passage}`);
-  set('date', new Date().toLocaleDateString(en ? 'en-US' : 'es-ES', { timeZone: FLORIDA_TZ }) + (en ? ' (Florida)' : ' (hora de Florida)'));
   const t = state.characterSummary?.totals || {};
-  set('coins', [1, 2, 3, 4].map((k) => `${CHARACTER_CLUSTERS[k][en ? 'en' : 'es']}: ${t[k] ?? 0}`).join(' · '));
+  const stage = new URLSearchParams(window.location.search).get('grade') || state.assignedLevel || '';
+  const day = new Date().toLocaleDateString(en ? 'en-US' : 'es-ES', { timeZone: FLORIDA_TZ }) + (en ? ' (Florida)' : ' (hora de Florida)');
+  const line = (n) => `<div class="ps-lines">${'<span></span>'.repeat(n)}</div>`;
+  sheet.innerHTML = `
+    <header class="ps-head"><img src="logo-chanak.png" alt="" width="54" height="54"><div><strong>${escHtml(T.header)}</strong><br><span>${escHtml(T.program)}</span></div></header>
+    <h2>${escHtml(T.title)}</h2>
+    <table class="ps-table">
+      <tr><th>${escHtml(T.student)}</th><td>${escHtml(decodeURIComponent(state.studentName || '') || '')}</td><th>${escHtml(T.year)}</th><td>${escHtml(state.schoolYear || '2026-2027')}</td></tr>
+      <tr><th>${escHtml(T.stage)}</th><td>${escHtml(stage)}</td><th>${escHtml(T.date)}</th><td>${escHtml(day)}</td></tr>
+      <tr><th>${escHtml(T.week)}</th><td colspan="3">${escHtml(`${en ? 'Week' : 'Semana'} ${w.week}: ${en ? w.traitEn : w.trait} · ${en ? w.passageEn : w.passage}`)}</td></tr>
+      <tr><th>${escHtml(T.coins)}</th><td colspan="3">${[1, 2, 3, 4].map((k) => `${escHtml(CHARACTER_CLUSTERS[k][en ? 'en' : 'es'])}: ${t[k] ?? 0}`).join(' · ')}</td></tr>
+    </table>
+    <h3>${escHtml(T.challenge)}</h3>${line(2)}
+    <h3>${escHtml(T.evidence)}</h3>${line(3)}
+    <h3>${escHtml(T.notes)}</h3>${line(2)}
+    <div class="ps-sign"><div><span></span>${escHtml(T.sigStudent)}</div><div><span></span>${escHtml(T.sigMentor)}</div></div>`;
   document.body.classList.add('printing-sheet');
   window.print();
   setTimeout(() => document.body.classList.remove('printing-sheet'), 500);
