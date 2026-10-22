@@ -2874,6 +2874,17 @@ function sendQuickPrompt(promptText) {
   }
 }
 
+// Reto o filtro de Juniors que el estudiante tiene abierto (el servidor limita al resto de temas permitidos).
+function currentJuniorTopic() {
+  try {
+    const f = state.juniorsFilter;
+    if (!f || f === 'all') return '';
+    const r = JUNIORS_RETOS.find((x) => x.track === f);
+    const label = r && r.trackLabel;
+    return label ? (label[state.lang] || label.es || '') : '';
+  } catch (e) { return ''; }
+}
+
 async function handleSendAiMessage(e) {
   if (e && e.preventDefault) e.preventDefault();
   if (state.aiLoading) return;
@@ -2904,6 +2915,8 @@ async function handleSendAiMessage(e) {
         stageKey,
         levelTitle,
         lang: state.lang || 'es',
+        audience: state.audience === 'junior' ? 'junior' : 'highschool',
+        topic: state.audience === 'junior' ? currentJuniorTopic() : undefined,
         moduleTitle: 'Life Skills & Formación de Carácter'
       })
     });
