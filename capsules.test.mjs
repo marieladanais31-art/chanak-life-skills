@@ -16,3 +16,18 @@ test('tramos y guías PDF por grado', () => {
   for (let g = 1; g <= 12; g++) assert.match(lifeSkillsGuideUrl(g), /^https:\/\/drive\.google\.com\/file\/d\/[\w-]+\/view$/);
   assert.equal(lifeSkillsGuideUrl(13), null);
 });
+import { JUNIOR_CAPSULE_EXTRA } from './junior_capsules_extra.js';
+import { CAPSULE_CLUSTERS, JUNIOR_THEME_CLUSTERS, TRACK_CLUSTERS } from './capsule_clusters.js';
+import { CAPSULES_DATA, JUNIORS_RETOS } from './data.js';
+test('4 pasos: caso real y evidencia en las 22 cápsulas, ES/EN', () => {
+  for (const c of JUNIOR_CAPSULES) {
+    const x = JUNIOR_CAPSULE_EXTRA[c.id]; assert.ok(x, c.id);
+    for (const l of ['es', 'en']) { assert.ok(x.caso[l].split(/\s+/).length >= 60, c.id + l); assert.ok(x.evidencia[l].length > 20, c.id + l); }
+    assert.ok(JUNIOR_THEME_CLUSTERS[c.theme]?.length, 'cluster ' + c.theme);
+  }
+});
+test('clústeres: toda cápsula y reto de data.js está mapeado (data.js intacto)', () => {
+  for (const k of Object.keys(CAPSULES_DATA)) assert.ok(CAPSULE_CLUSTERS[k]?.every((n) => n >= 1 && n <= 4), k);
+  for (const r of JUNIORS_RETOS) assert.ok(TRACK_CLUSTERS[r.track], r.track);
+  assert.deepEqual(CAPSULE_CLUSTERS.padreRico, [1, 4]); assert.deepEqual(CAPSULE_CLUSTERS.saludEmocional, [1]); assert.deepEqual(CAPSULE_CLUSTERS.empatia ?? JUNIOR_THEME_CLUSTERS.empatia, [3]);
+});

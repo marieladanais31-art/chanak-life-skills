@@ -21,6 +21,8 @@ import { DEVOTIONAL_WEEKS, DEVOTIONAL_MONTHS } from './devotional.js';
 import { DAILY_DEVOTIONALS } from './daily.js';
 import { JUNIOR_THEMES, JUNIOR_CAPSULES, JUNIOR_TRAMOS, tramoForGrade, localizeCapsule } from './junior_capsules.js';
 import { lifeSkillsGuideUrl } from './guides.js';
+import { CAPSULE_CLUSTERS, JUNIOR_THEME_CLUSTERS, TRACK_CLUSTERS } from './capsule_clusters.js';
+import { JUNIOR_CAPSULE_EXTRA } from './junior_capsules_extra.js';
 import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, localizeWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
 
 // ---- Constantes de Juniors (arriba para que existan antes del primer render) ----
@@ -1363,7 +1365,7 @@ function renderUnifiedStudentRouteView(container, stageKey) {
                           <span style="font-size: 20px;">${cap.icon || '🚀'}</span>
                           <div>
                             <div style="font-size: 13px; font-weight: 700; color: var(--navy);">${capTitle}</div>
-                            <div style="font-size: 11px; color: var(--ink-muted);">4 pasos interactivos · Quiz bíblico/ético</div>
+                            <div style="font-size: 11px; color: var(--ink-muted);">4 pasos interactivos · Quiz bíblico/ético</div>${clusterChips(CAPSULE_CLUSTERS[capKey])}
                           </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -1602,6 +1604,7 @@ function renderJuniorCapsulesView(container) {
   const keys = juniorCapsuleKeys();
 
   container.innerHTML = `
+    ${restorationBanner()}
     <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 26px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
       <span class="eyebrow-tag" style="color: var(--green); margin: 0;">
         ${isEs ? 'PORTAL CHANAK · JUNIORS · CÁPSULAS DE FUNDAMENTO' : 'CHANAK PORTAL · JUNIORS · FOUNDATION CAPSULES'}
@@ -1630,6 +1633,7 @@ function renderJuniorCapsulesView(container) {
               <span class="module-card__state">${isDone ? (isEs ? '✓ Completada' : '✓ Completed') : '+10 🪙'}</span>
             </header>
             <h4 class="module-card__title">${cap.icon || '🚀'} ${capTitle}</h4>
+            ${clusterChips(CAPSULE_CLUSTERS[capKey])}
             <button class="btn-primary module-card__cta" style="margin-top: auto;" onclick="openCapsule('${capKey}')">
               ${isDone ? (isEs ? 'Repasar cápsula →' : 'Review capsule →') : (isEs ? 'Iniciar cápsula →' : 'Start capsule →')}
             </button>
@@ -3259,6 +3263,30 @@ function celebrate(msg) {
   if (msg) showCoinToast(msg);
 }
 
+// ---- Clústeres de carácter (aditivo) y Paso de Restauración visible mientras el mentor no valide ----
+function clusterChips(ids) {
+  if (!ids || !ids.length) return '';
+  const en = state.lang === 'en';
+  return `<p class="cl-chips">${ids.map((k) => `<span class="cl-chip c${k}" title="${escHtml(CHARACTER_CLUSTERS[k][en ? 'en' : 'es'])}">🧭 ${k} · ${escHtml(CHARACTER_CLUSTERS[k][en ? 'en' : 'es'])}</span>`).join('')}</p>`;
+}
+function ensureRestorationState() {
+  if (!state.token || state.restoreFetched) return;
+  state.restoreFetched = true;
+  fetchCharacterSummary().then((sum) => {
+    state.characterSummary = sum;
+    if ((sum?.pending_restorations || []).length && ['juniors', 'capsulas', 'ruta'].includes(state.viewMode)) renderCurrentView();
+  }).catch(() => { /* sin resumen: no se muestra el paso */ });
+}
+function restorationBanner() {
+  ensureRestorationState();
+  const pend = state.characterSummary?.pending_restorations || [];
+  if (!pend.length) return '';
+  return `<section class="char-card char-restore" role="alert" style="margin-bottom:16px">
+    <h3 class="char-h3">🤝 ${escHtml(L('Paso de Restauración', 'Stewardship Restoration Step'))}</h3>
+    <p>${escHtml(L('Tienes un ajuste pendiente. Tus ChanakCoins de cápsulas siguen sumando, pero este paso queda abierto hasta que tu mentor valide tu evidencia. No es un castigo: es una oportunidad de reparar y servir.', 'You have a pending adjustment. Your capsule ChanakCoins still count, but this step stays open until your mentor validates your evidence. It is not a punishment: it is a chance to repair and serve.'))}</p>
+    <ul>${pend.map((r) => `<li>${escHtml(r.task)}</li>`).join('')}</ul></section>`;
+}
+
 // ---- Cápsulas por tema (4.º–7.º): misión corta cristiana, pregunta de repaso y entregable a elegir ----
 function jrCapTramo() { return tramoForGrade(juniorGradeNumber()) || state.jrCapTramo || '4-5'; }
 function jrCapsList() { const en = state.lang === 'en'; const t = jrCapTramo(); return JUNIOR_CAPSULES.filter((c) => c.tramo === t).map((c) => localizeCapsule(c, en)); }
@@ -3272,6 +3300,7 @@ function jrCapsuleCard(c, kids) {
       <span class="jk-mission__num">${escHtml(en ? th.en : th.es)}</span>
       <span class="jk-mission__coins">${ok ? L('✓ ¡Lograda!', '✓ Done!') : `+25 🪙`}</span></header>
     <h4 class="jk-mission__title">${escHtml(c.title)}</h4>
+    ${clusterChips(JUNIOR_THEME_CLUSTERS[c.theme])}
     <p class="jk-mission__desc">${escHtml(c.hook)}</p>
     <p class="jk-mission__verse">📖 ${escHtml(c.verse)} — ${escHtml(c.idea)}</p>
     <button class="btn-primary jk-mission__cta" onclick="openJrCap('${c.id}')">${ok ? L('Ver mi cápsula →', 'View my capsule →') : (kids ? L('¡Empezar cápsula! 🚀', 'Start the capsule! 🚀') : L('Abrir cápsula', 'Open capsule'))}</button>
@@ -3289,22 +3318,27 @@ function paintJrCap(c) {
   const el = document.getElementById('cap-modal'); if (!el) return;
   const d = state.capDraft || {}, done = isJrCapDone(c.id), th = JUNIOR_THEMES.find((x) => x.id === c.theme) || {}, en = state.lang === 'en';
   const saved = (() => { try { return JSON.parse(localStorage.getItem(`chanak_jcap_${c.id}`) || 'null'); } catch (e) { return null; } })();
-  const q = c.check, answered = d.answered != null;
+  const q = c.check, answered = d.answered != null, extra = JUNIOR_CAPSULE_EXTRA[c.id];
   el.innerHTML = `<div class="jk-capmodal__box" role="dialog" aria-modal="true">
     <button class="jk-capmodal__x" onclick="closeJrCap()" aria-label="${L('Cerrar', 'Close')}">✕</button>
     <p class="jk-daily__tag">${th.icon || '💡'} ${escHtml(en ? th.en : th.es)}</p>
     <h3>${escHtml(c.title)}</h3>
+    ${clusterChips(JUNIOR_THEME_CLUSTERS[c.theme])}
+    <h4 class="jk-step-h"><span>1</span> ${L('Principio clave', 'Key principle')}</h4>
     <p class="jk-capmodal__hook">${escHtml(c.hook)}</p>
     <p class="jk-mission__verse">📖 ${escHtml(c.verse)} — ${escHtml(c.idea)}</p>
-    <h4>${L('🎯 Tu misión', '🎯 Your mission')}</h4>
+    ${extra && extra.caso ? `<h4 class="jk-step-h"><span>2</span> ${L('Caso real / dilema práctico', 'Real case / practical dilemma')}</h4>
+    <p class="jk-capmodal__case">${escHtml(extra.caso[en ? 'en' : 'es'])}</p>` : ''}
+    <h4 class="jk-step-h"><span>3</span> ${L('Reto de aplicación', 'Application challenge')}</h4>
     <ol class="jk-capmodal__steps">${c.steps.map((s) => `<li>${escHtml(s)}</li>`).join('')}</ol>
-    <h4>${L('🧠 Repaso rápido', '🧠 Quick check')}</h4>
-    <p><b>${escHtml(q.question)}</b></p>
+    <p><b>🧠 ${L('Repaso rápido', 'Quick check')}:</b> ${escHtml(q.question)}</p>
     <div class="jk-capmodal__opts">${q.options.map((o, i) => { const cls = answered ? (i === q.answer ? 'ok' : (d.answered === i ? 'bad' : '')) : ''; return `<button class="jk-capopt ${cls}" ${answered || done ? 'disabled' : ''} onclick="jrCapAnswer(${i})">${escHtml(o)}</button>`; }).join('')}</div>
     ${answered ? `<p class="jk-capmodal__why">${d.answered === q.answer ? '🎉 ' : '💡 '}${escHtml(q.why)}</p>` : ''}
-    <h4>${L('🎁 Elige tu entregable', '🎁 Choose your deliverable')}</h4>
+    <p><b>🎁 ${L('Elige tu entregable', 'Choose your deliverable')}:</b></p>
     <div class="jk-capmodal__opts">${c.deliverables.map((o, i) => { const on = (done && saved && saved.choice === i) || d.choice === i; return `<button class="jk-capopt ${on ? 'on' : ''}" ${done ? 'disabled' : ''} onclick="jrCapChoose(${i})">${on ? '✅ ' : ''}${escHtml(o)}</button>`; }).join('')}</div>
-    <p class="jk-capmodal__hint">${L('Tu papá, mamá o mentor sube o aprueba el entregable.', 'Your parent or mentor uploads or approves the deliverable.')}</p>
+    ${extra && extra.evidencia ? `<h4 class="jk-step-h"><span>4</span> ${L('Criterio de evidencia', 'Evidence criterion')}</h4>
+    <p class="jk-capmodal__evid">📎 ${escHtml(extra.evidencia[en ? 'en' : 'es'])}</p>
+    <p class="jk-capmodal__hint">${L('Tu papá, mamá o mentor enlaza la evidencia en la carpeta «02 Life Skills» del SIS.', 'Your parent or mentor links the evidence in the SIS folder “02 Life Skills”.')}</p>` : `<p class="jk-capmodal__hint">${L('Tu papá, mamá o mentor sube o aprueba el entregable.', 'Your parent or mentor uploads or approves the deliverable.')}</p>`}
     <div class="jk-capmodal__foot">${done ? `<span class="jk-capmodal__done">✓ ${L('Cápsula lograda', 'Capsule completed')}</span>` : `<button class="btn-primary" ${answered && d.choice != null ? '' : 'disabled'} onclick="completeJrCap('${c.id}')">${L('¡Completar y ganar 25 🪙!', 'Complete and earn 25 🪙!')}</button>`}</div>
   </div>`;
 }
@@ -3432,6 +3466,7 @@ function renderJuniorsStage(container) {
         <span class="jk-mission__num">${m.n ? `${isEs ? 'Misión' : 'Mission'} ${m.n}` : (isEs ? 'Reto' : 'Challenge')}</span>
         <span class="jk-mission__coins">${ok ? (isEs ? '✓ ¡Lograda!' : '✓ Done!') : `+${m.coins} 🪙`}</span></header>
       <h4 class="jk-mission__title">${escHtml(m.title)}</h4>
+      ${clusterChips(TRACK_CLUSTERS[m.track])}
       ${m.desc ? `<p class="jk-mission__desc">${escHtml(m.desc)}</p>` : ''}
       ${m.deliverable ? `<p class="jk-mission__deliv"><b>${kids ? '🎁 ' : ''}${isEs ? 'Entregable' : 'Deliverable'}:</b> ${escHtml(m.deliverable)}</p>` : ''}
       ${m.verse ? `<p class="jk-mission__verse">📖 “${escHtml(m.verse)}” — ${escHtml(m.ref)}</p>` : ''}
@@ -3441,6 +3476,7 @@ function renderJuniorsStage(container) {
 
   container.innerHTML = `
     <div class="jk-root ${kids ? 'jk-skin-kids' : 'jk-skin-teen'}">
+      ${restorationBanner()}
       <section class="jk-hud" aria-label="${isEs ? 'Tu progreso' : 'Your progress'}">
         <button class="jk-avatar" onclick="cycleJuniorAvatar()" title="${isEs ? 'Cambiar personaje' : 'Change character'}" aria-label="${isEs ? 'Cambiar personaje' : 'Change character'}">${JK_AVATARS[avIdx]}</button>
         <div class="jk-hud__main">
