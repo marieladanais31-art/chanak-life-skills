@@ -18,6 +18,7 @@ import {
 import { JUNIOR_TRACKS, JUNIOR_PROJECTS, juniorSkinForGrade } from './projects.js';
 import { ES_EN_DYNAMIC } from './i18n_en.js';
 import { DEVOTIONAL_WEEKS, DEVOTIONAL_MONTHS } from './devotional.js';
+import { DAILY_DEVOTIONALS } from './daily.js';
 import { AGENDA_2026_2027, CHARACTER_CLUSTERS, getCurrentAgendaWeek, clusterOfTrait, FLORIDA_TZ, floridaIsoDate } from './agenda.js';
 
 // ---- Constantes de Juniors (arriba para que existan antes del primer render) ----
@@ -2989,7 +2990,7 @@ function renderRestorationCard(summary) {
 function cStore(key, fallback) { try { const v = localStorage.getItem(`chanak_c_${key}`); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } }
 function cSave(key, val) { try { localStorage.setItem(`chanak_c_${key}`, JSON.stringify(val)); } catch (e) { /* sin almacenamiento */ } }
 function charState() {
-  if (!state.char) state.char = { week: getCurrentAgendaWeek().week, tab: 'devocional', ficha: false, cluster: null };
+  if (!state.char) state.char = { week: getCurrentAgendaWeek().week, tab: 'devocional', ficha: false, cluster: null, day: null };
   return state.char;
 }
 const TAB_DEFS = [
@@ -3011,6 +3012,45 @@ function renderWeekStrip() {
   </nav>`;
 }
 
+// ---- Devocional diario (lunes a viernes) ----
+const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri'];
+function floridaWeekdayIdx() { // 0 = lunes … 4 = viernes; null = fin de semana (hora de Florida)
+  const d = new Intl.DateTimeFormat('en-US', { timeZone: FLORIDA_TZ, weekday: 'short' }).format(new Date());
+  const i = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].indexOf(d); return i < 0 ? null : i;
+}
+function selectedDay(week) {
+  const c = charState();
+  if (c.day !== null && c.day !== undefined) return c.day;
+  const today = floridaWeekdayIdx();
+  return week === getCurrentAgendaWeek().week && today !== null ? today : 0;
+}
+function renderDailyCapsule(w) {
+  const en = state.lang === 'en'; const dd = DAILY_DEVOTIONALS[w.week]; if (!dd) return '';
+  const idx = selectedDay(w.week); const key = DAY_KEYS[idx]; const item = dd[key]; if (!item) return '';
+  const t = item[en ? 'en' : 'es']; const read = cStore(`w${w.week}_read`, [false, false, false, false, false]);
+  const todayIdx = floridaWeekdayIdx(); const isCur = w.week === getCurrentAgendaWeek().week;
+  const dayName = en ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] : ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+  const short = en ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] : ['Lun', 'Mar', 'Mié', 'Jue', 'Vie'];
+  const d = dev(w.week);
+  const kind = item.type === 'passage_portion' ? `📖 ${L('Porción de la semana', 'This week’s portion')}: ${d.portion || ''}`
+    : item.type === 'month_passage' ? `📜 ${L('Pasaje del mes', 'Passage of the month')}: ${(ficha(w.month) || {}).passage || ''}`
+    : `💡 ${L('Reflexión de carácter', 'Character reflection')}: ${CHARACTER_CLUSTERS[item.cluster][en ? 'en' : 'es']}`;
+  const readN = read.filter(Boolean).length;
+  const pill = (i) => `<button class="cv-dpill c${(dd[DAY_KEYS[i]] || {}).cluster || w.cluster} ${i === idx ? 'is-sel' : ''} ${read[i] ? 'is-read' : ''} ${isCur && i === todayIdx ? 'is-today' : ''}" onclick="charDay(${i})" aria-pressed="${i === idx}">${short[i]}${read[i] ? ' ✓' : ''}</button>`;
+  return `<article class="cv-daily" aria-label="${escHtml(L('Devocional del día', 'Daily devotional'))}">
+    <div class="cv-daily__top"><span class="cv-daily__tag">☀️ ${escHtml(L('Para empezar el día', 'To start the day'))}</span><div class="cv-dpills">${[0, 1, 2, 3, 4].map(pill).join('')}</div></div>
+    <p class="cv-daily__kind">${escHtml(dayName[idx])} · ${escHtml(kind)}</p>
+    <h4 class="cv-daily__title">${escHtml(t.title)}</h4>
+    <p class="cv-text">${escHtml(t.text)}</p>
+    <p class="cv-daily__practice">🎯 <b>${escHtml(L('Práctica de hoy', 'Today’s practice'))}:</b> ${escHtml(t.practice)}</p>
+    <div class="cv-daily__foot"><button class="cv-readbtn ${read[idx] ? 'on' : ''}" onclick="charRead(${w.week},${idx})" aria-pressed="${!!read[idx]}">${read[idx] ? '✅ ' + escHtml(L('¡Leído!', 'Read!')) : '☐ ' + escHtml(L('Marcar como leído', 'Mark as read'))}</button>
+      <span class="cv-sub">${escHtml(L(`${readN} de 5 días`, `${readN} of 5 days`))}${readN === 5 ? ' 🎉' : ''}</span></div>
+  </article>`;
+}
+function charDay(i) { charState().day = i; charRerender(); }
+function charRead(week, i) { const k = `w${week}_read`; const a = cStore(k, [false, false, false, false, false]); a[i] = !a[i]; cSave(k, a); charRerender(); if (a.filter(Boolean).length === 5) celebrate(); }
+window.charDay = charDay; window.charRead = charRead;
+
 function renderWeekHero() {
   const c = charState(); const w = AGENDA_2026_2027.find((x) => x.week === c.week) || getCurrentAgendaWeek(); const en = state.lang === 'en';
   const d = dev(w.week); const cl = CHARACTER_CLUSTERS[w.cluster]; const isNow = w.week === getCurrentAgendaWeek().week;
@@ -3019,7 +3059,7 @@ function renderWeekHero() {
   const portion = d.portion || '';
   let body = '';
   if (c.tab === 'devocional') {
-    body = `<p class="cv-text">${escHtml(d.devotional || '')}</p>
+    body = `${renderDailyCapsule(w)}<h5 class="cv-h5">${escHtml(L('Mini devocional de la semana', 'Weekly mini devotional'))}</h5><p class="cv-text">${escHtml(d.devotional || '')}</p>
       <p class="cv-read">📖 ${escHtml(L('Lectura de la semana', 'This week’s reading'))}: <b>${escHtml(portion)}</b>
         <a class="cv-link" href="${bibleUrl(portion)}" target="_blank" rel="noopener noreferrer">${escHtml(L('Leer en la Biblia ↗', 'Read in the Bible ↗'))}</a></p>
       <p class="cv-verse">✨ ${escHtml(L('Versículos de apoyo', 'Supporting verses'))}: ${(d.support || '').split(/;\s*/).filter(Boolean).map((v) => `<a class="cv-link" href="${bibleUrl(v)}" target="_blank" rel="noopener noreferrer">${escHtml(v)}</a>`).join(' · ')}</p>`;
@@ -3090,7 +3130,7 @@ function renderClusterPanel() {
 }
 
 function charRerender() { const c = document.getElementById('stage-content-area'); if (c && state.viewMode === 'caracter') renderCharacterView(c, true); }
-function charSelectWeek(n) { const c = charState(); c.week = Math.max(1, Math.min(42, n)); c.tab = 'devocional'; charRerender(); setTimeout(() => { const el = document.querySelector('.cv-chip.is-sel'); if (el && el.scrollIntoView) el.scrollIntoView({ inline: 'center', block: 'nearest' }); }, 30); }
+function charSelectWeek(n) { const c = charState(); c.week = Math.max(1, Math.min(42, n)); c.tab = 'devocional'; c.day = null; charRerender(); setTimeout(() => { const el = document.querySelector('.cv-chip.is-sel'); if (el && el.scrollIntoView) el.scrollIntoView({ inline: 'center', block: 'nearest' }); }, 30); }
 function charTab(t) { charState().tab = t; charRerender(); }
 function charToggleFicha() { const c = charState(); c.ficha = !c.ficha; charRerender(); }
 function charShowCluster(n) { charState().cluster = n; charRerender(); if (n) setTimeout(() => { const el = document.querySelector('.cv-clpanel'); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 30); }
