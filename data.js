@@ -5884,6 +5884,19 @@ export const VOCATIONAL_TRACKS = {
   }
 };
 
+// Additive 9–12 curriculum; legacy module identifiers above are NEVER changed.
+export const TEENS_ADDITIONAL_UNITS = Object.freeze([
+  { id:'teens-ai-ethics-v1', title:T('IA ética y productividad','Ethical AI & Productivity'),
+    objectives:T('Prompts responsables, fuentes verificadas y transparencia académica.','Responsible prompts, verified sources and academic integrity.'),
+    deliverable:T('Informe con fuentes contrastadas y bitácora de prompts.','Source-verified report and AI prompt log.') },
+  { id:'teens-cv-portfolio-v1', title:T('CV, vocación y portafolio','CV, Vocation & Portfolio'),
+    objectives:T('CV acorde a la edad, proyectos y presencia digital segura.','Age-appropriate CV, projects and safe online presence.'),
+    deliverable:T('CV y portafolio de proyectos reales.','CV and portfolio of authentic projects.') },
+  { id:'teens-community-project-v1', title:T('Emprendimiento e impacto comunitario','Entrepreneurship & Community Impact'),
+    objectives:T('Necesidad local, presupuesto, ética, actas de equipo y pitch.','Local need, budget, ethics, team minutes and pitch.'),
+    deliverable:T('Plan de equipo, pitch y aportación individual.','Team plan, pitch and individual contribution.') }
+]);
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { EXTENSION_CAPSULES_DATA, VOCATIONAL_TRACKS };
 }
@@ -5897,6 +5910,7 @@ if (typeof window !== 'undefined') {
     CAPSULES_DATA,
     EXPEDIENTE_CATEGORIES,
     EXTENSION_CAPSULES_DATA,
-    VOCATIONAL_TRACKS
+    VOCATIONAL_TRACKS,
+    TEENS_ADDITIONAL_UNITS
   };
 }
