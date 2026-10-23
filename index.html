@@ -163,6 +163,15 @@
       </button>
     </div>
 
+
+    <!-- Additive Teens panel; never replaces the existing route, transcript or forms. -->
+    <section id="teens-additive-section" class="teens-institutional-panel" hidden aria-label="Módulos complementarios para Teens">
+      <h2>Chanak DUAL DIPLOMA <span>FLDOE #134620 · MSA-CESS Official Candidate</span></h2>
+      <p>Life Skills & Leadership · Complementos para grados 9–12</p>
+      <div id="teens-additive-grid" class="teens-additive-grid"></div>
+      <p class="teens-evidence-notice">Los entregables históricos permanecen en el expediente oficial de Dual Diploma. Las nuevas actividades no sustituyen los trabajos ya presentados.</p>
+    </section>
+
     <!-- Content Stage Container -->
     <div id="stage-content-area">
       <!-- Dynamic content rendered via app.js -->
@@ -351,6 +360,18 @@
   <!-- Ficha imprimible (A4 vertical): se construye al imprimir, en el idioma activo -->
   <section id="print-sheet" class="print-only" aria-hidden="true"></section>
 
+  <style>
+  .teens-institutional-panel{background:#0f172a;color:#fff;border-radius:16px;padding:24px;margin:0 0 24px;border-top:4px solid #f59e0b}
+  .teens-institutional-panel[hidden]{display:none}
+  .teens-institutional-panel h2{color:#fff;font-size:1.25rem;margin:0 0 8px}
+  .teens-institutional-panel h2 span{display:block;color:#f59e0b;font-size:.76rem;margin-top:6px}
+  .teens-institutional-panel p{color:#e2e8f0}
+  .teens-additive-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:16px}
+  .teens-additive-card{padding:16px;border:1px solid #475569;border-radius:12px;background:#1e293b}
+  .teens-additive-card h3{color:#fbbf24;font-size:1rem;margin:0 0 8px}
+  .teens-additive-card p{font-size:.875rem;margin:0 0 10px}
+  .teens-evidence-notice{font-size:.78rem;margin-top:14px}
+  </style>
   <script type="module" src="app.js"></script>
 </body>
 </html>
