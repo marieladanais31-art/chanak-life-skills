@@ -13,7 +13,8 @@ import {
   EXPEDIENTE_CATEGORIES,
   EXTENSION_CAPSULES_DATA,
   RIASEC_TEST_DATA,
-  VOCATIONAL_TRACKS
+  VOCATIONAL_TRACKS,
+  TEENS_ADDITIONAL_UNITS
 } from './data.js';
 import { JUNIOR_TRACKS, JUNIOR_PROJECTS, juniorSkinForGrade } from './projects.js';
 import { ES_EN_DYNAMIC } from './i18n_en.js';
@@ -3701,3 +3702,39 @@ window.toggleAiMentorModal = toggleAiMentorModal;
 window.closeAiMentorModal = closeAiMentorModal;
 window.sendQuickPrompt = sendQuickPrompt;
 window.handleSendAiMessage = handleSendAiMessage;
+
+// Isolated presentation of new Teens units. Existing views, IDs and evidence are untouched.
+function renderTeensAdditions() {
+  const panel = document.getElementById('teens-additive-section');
+  const grid = document.getElementById('teens-additive-grid');
+  if (!panel || !grid) return;
+  const teen = state.audience === 'highschool' &&
+    ['seedling','explorer','builder','launch'].includes(state.currentLevel) &&
+    state.mode === 'dual';
+  panel.hidden = !teen;
+  if (!teen) return;
+  const language = state.lang === 'es' ? 'es' : 'en';
+  grid.replaceChildren();
+  for (const unit of TEENS_ADDITIONAL_UNITS) {
+    const card = document.createElement('article');
+    card.className = 'teens-additive-card';
+    const heading = document.createElement('h3');
+    heading.textContent = unit.title[language];
+    const details = document.createElement('p');
+    details.textContent = unit.objectives[language];
+    const evidence = document.createElement('p');
+    evidence.textContent = (language === 'es' ? 'Entregable: ' : 'Evidence: ') + unit.deliverable[language];
+    card.append(heading, details, evidence);
+    grid.append(card);
+  }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderTeensAdditions);
+} else {
+  renderTeensAdditions();
+}
+document.addEventListener('click', event => {
+  if (event.target.closest('#stage-tabs-bar, #sub-levels-bar, #audience-toggle-bar, #btn-lang-en, #btn-lang-es')) {
+    queueMicrotask(renderTeensAdditions);
+  }
+});
