@@ -53,6 +53,11 @@
           <button id="btn-lang-es" aria-pressed="false" onclick="switchLanguage('es')">ES</button>
         </div>
 
+        <button class="btn-interactive" onclick="saveMyProgress()" title="Guardar mi progreso en un archivo / Save my progress to a file">💾</button>
+        <label class="btn-interactive" style="cursor:pointer" title="Restaurar mi progreso desde un archivo / Restore my progress from a file">📂
+          <input type="file" accept="application/json,.json" style="display:none" onchange="restoreMyProgress(this)">
+        </label>
+
         <button class="btn-interactive" onclick="openWalletModal()" title="Ver balance de ChanakCoins">
           🪙 <b id="header-coin-count">20</b> <span id="ui-coins-lbl">Coins</span>
         </button>

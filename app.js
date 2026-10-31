@@ -16,6 +16,7 @@ import {
   VOCATIONAL_TRACKS
 } from './data.js';
 import { JUNIOR_TRACKS, JUNIOR_PROJECTS, juniorSkinForGrade } from './projects.js';
+import { downloadProgress, restoreFromFile } from './progress_backup.js';
 import { ES_EN_DYNAMIC } from './i18n_en.js';
 import { DEVOTIONAL_WEEKS, DEVOTIONAL_MONTHS } from './devotional.js';
 import { DAILY_DEVOTIONALS } from './daily.js';
@@ -267,6 +268,24 @@ const state = {
   coatRaices: localStorage.getItem('chanak_coat_raices') || 'Familia y tradición de esfuerzo',
   coatTalentos: localStorage.getItem('chanak_coat_talentos') || 'Liderazgo y escritura',
   coatSueno: localStorage.getItem('chanak_coat_sueno') || 'Universidad y servicio de impacto'
+};
+
+// ---------------- Copia de seguridad del progreso (vive en el navegador) ----------------
+window.saveMyProgress = () => {
+  const n = downloadProgress();
+  alert(state.lang === 'es' ? `Progreso guardado (${n} datos). Guarda el archivo en un lugar seguro.` : `Progress saved (${n} items). Keep the file somewhere safe.`);
+};
+window.restoreMyProgress = async (input) => {
+  const file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  const es = state.lang === 'es';
+  if (!confirm(es ? 'Se restaurará el progreso del archivo en este dispositivo. ¿Continuar?' : 'The progress in the file will be restored on this device. Continue?')) return;
+  try {
+    const n = await restoreFromFile(file);
+    alert(es ? `Progreso restaurado (${n} datos). La página se recargará.` : `Progress restored (${n} items). The page will reload.`);
+    location.reload();
+  } catch (e) { alert(e.message); }
 };
 
 // ---------------- Global Function Attachments ----------------
