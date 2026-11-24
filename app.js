@@ -347,6 +347,14 @@ function initApp() {
   
   const studentNameParam = (params.get('student_name') || '').toLowerCase();
   const isGabrielOrDaniel = studentNameParam.includes('gabriel') || studentNameParam.includes('daniel');
+  const isDavid = studentNameParam.includes('david') || studentNameParam.includes('fernández') || studentNameParam.includes('fernandez');
+  const gradeParam = (params.get('grade') || '').toLowerCase();
+  const gradeNum = parseInt((gradeParam.match(/\d+/) || [])[0], 10);
+  const isHighSchoolGrade = (Number.isFinite(gradeNum) && gradeNum >= 8) ||
+    gradeParam.includes('eso') || gradeParam.includes('bach') ||
+    gradeParam.includes('freshman') || gradeParam.includes('sophomore') ||
+    gradeParam.includes('senior');
+  const isHighSchoolStudent = isGabrielOrDaniel || isDavid || isHighSchoolGrade || params.get('audience') === 'highschool' || params.get('mode') === 'dual';
 
   if (params.get('token')) {
     state.token = params.get('token');
@@ -354,7 +362,7 @@ function initApp() {
     state.studentName = params.get('student_name');
     state.schoolYear = params.get('school_year');
     state.isSis = true;
-    state.mode = 'portal';
+    state.mode = (params.get('mode') === 'dual' || isHighSchoolStudent) ? 'dual' : 'portal';
 
     // Parse signed token (5 parts: student_id.school_year.level.expires_at.signature)
     const tokenParts = state.token.split('.');
@@ -364,7 +372,7 @@ function initApp() {
     } else if (params.get('level')) {
       rawLevel = params.get('level').toLowerCase();
     } else {
-      rawLevel = 'seedling';
+      rawLevel = isHighSchoolStudent ? 'seedling' : 'junior';
     }
 
     if (rawLevel.includes('seedling') || rawLevel.includes('8') || rawLevel.includes('freshman') || rawLevel === '1') {
@@ -376,21 +384,22 @@ function initApp() {
     } else if (rawLevel.includes('launch') || rawLevel.includes('12') || rawLevel.includes('senior') || rawLevel === '4') {
       state.assignedLevel = 'launch';
     } else if (rawLevel.includes('junior')) {
-      state.assignedLevel = 'junior';
+      state.assignedLevel = isHighSchoolStudent ? 'seedling' : 'junior';
     } else {
-      state.assignedLevel = 'seedling';
+      state.assignedLevel = isHighSchoolStudent ? 'seedling' : 'junior';
     }
 
     state.currentLevel = state.assignedLevel;
 
-    // Normalización especial para Gabriel, Daniel o estudiantes en Grado 8+ / Secundaria
-    if (isGabrielOrDaniel || ['seedling', 'explorer', 'builder', 'launch'].includes(state.assignedLevel)) {
+    // Normalización para estudiantes de High School / Secundaria (David, Gabriel, Daniel, Grado 8+)
+    if (isHighSchoolStudent || ['seedling', 'explorer', 'builder', 'launch'].includes(state.assignedLevel)) {
       state.audience = 'highschool';
-      if (isGabrielOrDaniel || !state.currentLevel || state.currentLevel === 'junior') {
+      if (!state.currentLevel || state.currentLevel === 'junior') {
         state.assignedLevel = 'seedling';
         state.currentLevel = 'seedling';
       }
       state.viewMode = 'ruta';
+      state.mode = 'dual';
       try { localStorage.setItem('chanak_audience', 'highschool'); } catch (e) {}
     } else {
       state.audience = state.assignedLevel === 'junior' ? 'junior' : 'highschool';
@@ -407,15 +416,15 @@ function initApp() {
     state.assignedLevel = null;
 
     const chosen = params.get('audience') || localStorage.getItem('chanak_audience');
-    const gradeParam = params.get('grade');
     const levelParam = params.get('level');
     let resolvedHs = false;
 
-    if (isGabrielOrDaniel) {
+    if (isHighSchoolStudent) {
       state.audience = 'highschool';
       state.assignedLevel = 'seedling';
       state.currentLevel = 'seedling';
       state.viewMode = 'ruta';
+      state.mode = 'dual';
       resolvedHs = true;
       try { localStorage.setItem('chanak_audience', 'highschool'); } catch (e) {}
     } else if (gradeParam) {
@@ -426,6 +435,7 @@ function initApp() {
         state.assignedLevel = 'seedling';
         state.currentLevel = 'seedling';
         state.viewMode = 'ruta';
+        state.mode = 'dual';
         resolvedHs = true;
         try { localStorage.setItem('chanak_audience', 'highschool'); } catch (e) {}
       }
@@ -462,7 +472,7 @@ function initApp() {
 
   // Un estudiante Junior (Primaria, token/audiencia junior) nunca entra por la rama común de Dual Diploma (8.º en adelante),
   // aunque la URL traiga mode=dual: esa rama es otra, con otro horario y sin las cápsulas Junior.
-  if ((params.get('mode') === 'dual' || window.location.pathname.includes('dualdiploma')) && state.audience !== 'junior') {
+  if ((params.get('mode') === 'dual' || window.location.pathname.includes('dualdiploma') || isHighSchoolStudent) && state.audience !== 'junior') {
     state.mode = 'dual';
   }
   state.country = params.get('country') || '';
